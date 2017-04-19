@@ -1,3 +1,5 @@
+-*- coding: utf-8 -*-
+
 #create connection
 client = pyorient.OrientDB("localhost", 2424);
 session_id = client.connect( "admin", "admin" );
