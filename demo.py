@@ -1,4 +1,5 @@
--*- coding: utf-8 -*-
+import pyorient
+import pyorient.ogm
 
 #create connection
 client = pyorient.OrientDB("localhost", 2424);
