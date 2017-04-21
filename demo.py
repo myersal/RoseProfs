@@ -4,19 +4,17 @@ import pyorient.ogm
 #create connection
 client = pyorient.OrientDB("localhost", 2424);
 session_id = client.connect( "root", "wai3feex" );
- 
-#create a databse 
-client.db_create( 'db_name', pyorient.DB_TYPE_GRAPH, pyorient.STORAGE_TYPE_MEMORY );
 
 #open databse 
-client.db_open( DB_Demo, "admin", "admin" );
+client.db_open( roseprofs, "root", "wai3feex" );
 
-#create class 
-cluster_id = client.command( "create class my_class extends V" );
+#create new proffessor and student, then edge
 
-#create property
-cluster_id = client.command( "create property my_class.id Integer" );
-cluster_id = client.command( "create property my_class.name String" );
+proffessor = client.command("select * from prof where name = " + "Goebel";
+student = client.command("select * from stud where username = " + "suckup");
 
-#insert record
-client.command("insert into my_class ( 'id',’name' ) values( 1201, 'satish')");
+#insert edge
+
+new_edge = client.command("create edge prof_rate from " + student + " to " + proffessor + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
+
+print(client.command("select * from prof_rate"); 
