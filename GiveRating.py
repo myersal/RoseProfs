@@ -339,9 +339,9 @@ while (True):
 		print("Not a valid username. Please try again")
 
 while (True):
-	print("What would you like to do?")
-	cmd = raw_input(':')
 	while (True):
+                print("What would you like to do?")
+                cmd = raw_input(':')
 		if cmd.lower() == "rate":
 			print("What professor would you like to rate?")
 			prof = raw_input(':')
@@ -565,7 +565,6 @@ while (True):
 			
 		else:
 			print("invalid command")
-			break
 
 		
 
