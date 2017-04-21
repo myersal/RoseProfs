@@ -12,9 +12,10 @@ try:
 
 	client = pyorient.OrientDB("localhost", 2424);
 	session_id = client.connect( "root", "wai3feex" );
-	client.db_open( "DB_Demo", "root", "wai3feex" );
+	client.db_open( "roseprofs", "admin", "admin" );
+        
 except:
-	print("Orient DB not working")
+	print("Orient DB not working on line 18")
 
 conn = redis.Redis()
 mongoClient = MongoClient()
@@ -23,7 +24,19 @@ students = db.students
 professors = db.professors
 print("GO")
 
+def rateProf(username, professor, comm, grade, help, cool):
+        professors = client.command("select * from prof where name = '" + professor + "'");
+        students = client.command("select * from stud where username = '" + username  + "'");
 
+        if(len(professors) != 0 and len(students) != 0):
+                currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
+
+                if(len(currentEdges) == 0):
+                        #insert edge
+                        new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + professors[0]._rid + " set cool = " + str(cool) + ", help = " + str(help) + ", comm = " + str(comm) + ", grad = " + str(grade));
+		
+                else:
+                        print("the user has already rated the professor");
 
 def add_prof(name, dept):
 	if professors.count({'Name': str(name)}) != 0:
@@ -34,8 +47,39 @@ def add_prof(name, dept):
 			'Department': str(dept)
 		}
 	)
-	conn.zadd("professors", name, 0)
+	conn.zadd("professors", name, "0")
+        try:
+                addProf(name)
+        except:
+                print("Orient Failed line 54")
 	return res
+
+def addStudent(username):
+
+        students = client.command("select * from stud where username = '" + username + "'");
+
+
+
+        if(len(students) == 0):
+                new_edge = client.command("create vertex stud set username = '" + username + "'");
+		
+        else:
+                print("the user already exists");
+
+
+
+def addProf(name):
+
+        professors = client.command("select * from prof where name = '" + name + "'");
+
+
+
+        if(len(professors) == 0):
+                new_edge = client.command("create vertex prof set name = '" + name + "'");
+		
+        else:
+                print("the professor already exists");
+
 
 
 def edit_prof_name(name, new_name):
@@ -44,11 +88,11 @@ def edit_prof_name(name, new_name):
 		{'$set': {'Name': str(new_name)}}
 	)
 	conn.zrem("professors", name)
-	conn.zadd("professors", new_name, 0)
-	classes = conn.zmembers("classes")
+	conn.zadd("professors", new_name, "0")
+	classes = conn.zrangebyscore("classes", 0, -1)
 	for c in classes:
 		if conn.zrem(c, name):
-			conn.zadd(c, new_name)
+			conn.zadd(c, new_name, "0")
 	return res
 
 
@@ -63,7 +107,7 @@ def edit_prof_dept(name, new_dept):
 def del_prof(name):
 	res = professors.delete_one({'Name': str(name)})
 	conn.zrem("professors", name)
-	classes = conn.zmembers("classes")
+	classes = conn.zrangebyscore("classes", 0, -1)
 	for c in classes:
 		conn.zrem(c, name)
 	return res
@@ -83,8 +127,8 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 			]
 		}}
 	)
-	conn.zadd("classes", number)
-	conn.zadd(number, professor)
+	conn.zadd("classes", number, "0")
+	conn.zadd(number, professor, "0")
 	return res
 
 
@@ -163,7 +207,7 @@ def del_class_from_prof(professor, number):
 		}}
 	)
 	conn.zrem(number, professor)
-	if not conn.zmembers(number):
+	if not conn.zrangebyscore(number, 0, -1):
 		conn.zrem("classes", number)
 		conn.delete(number)
 	return res
@@ -172,15 +216,19 @@ def del_class_from_prof(professor, number):
 def add_student(username, password, year, major):
     if students.count({'Username': str(username)}) != 0:
         return 0
-	res = students.insert_one(
-		{
-			'Username': str(username),
-			'Password': str(password),
-			'Year': str(year),
-			'Major': str(major)
-		}
-	)
-	return res
+    res = students.insert_one(
+        {
+                'Username': str(username),
+                'Password': str(password),
+                'Year': str(year),
+                'Major': str(major)
+        }
+    )
+    try:
+        addStudent(username)
+    except:
+        print("Orient fail 230")
+    return res
 
 
 def edit_student_username(username, new_username):
@@ -245,7 +293,7 @@ while (True):
 			
 			
 	elif students.count({"Username": username}) != 0:
-                curs = students.find({"Username": username}, {"Name" : True})
+                curs = students.find({"Username": username})
                 for c in curs:
                         print("Welcome ")
                         pprint(c)
@@ -267,7 +315,7 @@ while (True):
 				break
 			points = 8;
 			print("You have 8 points to distribute among these four catagories: Communication\nGrading\nHelpfulness\nCoolness")
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Communication?  \nYou have " + points + " points left!")
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Communication?  \nYou have " + str(points) + " points left!")
 			comm = raw_input(':')
 			try:
 				comm = int(comm)
@@ -283,7 +331,7 @@ while (True):
 				break
 				
 				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Grading?  \nYou have " + points + " points left!")
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Grading?  \nYou have " + str(points) + " points left!")
 			grade = raw_input(':')
 			try:
 				grade = int(grade)
@@ -299,7 +347,7 @@ while (True):
 				break
 				
 				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Helpfulness?  \nYou have " + points + " points left!")
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Helpfulness?  \nYou have " + str(points) + " points left!")
 			help = raw_input(':')
 			try:
 				help = int(help)
@@ -315,16 +363,15 @@ while (True):
 				break
 			
 			cool = points
-			print("That leaves " + points + " points for the coolness rating!")
+			print("That leaves " + str(points) + " points for the coolness rating!")
 			
 			
 			students.update({"Username": username}, {"$addToSet": {"ProfRatings": {'Professor': prof,'Communication':comm, "Grading": grade, "Helpfulness" : help, "Coolness" : cool}}})
 			
 			try:
-				edgeName = username + prof
-				client.command("INSERT INTO " + edgeName +" ( 'comm','grad','help','cool' ) VALUES(" + comm + ", " + grade + ", "+ help +", "+ cool +")");
+				rateProf(username, prof, comm, grade, help, cool)
 			except:
-				print("FAIL OF ORIENT")
+				print("FAIL OF ORIENT line 374")
 				break;
 
 		
