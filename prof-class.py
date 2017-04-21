@@ -10,7 +10,7 @@ def add_prof(name, dept):
     cursor = db.professors.find({'Name': str(name)})
     if cursor:
         return 0
-    res = db.insert_one(
+    res = db.professors.insert_one(
         {
             'Name': str(name),
             'Department': str(dept)
