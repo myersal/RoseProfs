@@ -563,7 +563,7 @@ while (True):
                         break
                 break
 				
-		elif (cmd.lower() == "create forum"):
+		elif(cmd.lower() == "create forum"):
 			createForum(username);
 			
 		else:
