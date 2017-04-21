@@ -1,4 +1,4 @@
-#insert a new student into the database and check for errors
+#insert a new professor into the database and check for errors
 import pyorient
 import pyorient.ogm
 
@@ -9,17 +9,15 @@ session_id = client.connect( "root", "wai3feex" );
 #open databse 
 client.db_open("roseprofs", "admin", "admin" );
 
-#find proffessor and student, then create edge
+username = raw_input("insert a student to add to the database: ");
 
-name = raw_input("insert a student to add to the database: ");
-
-students = client.command("select * from stud where name = '" + name + "'");
+professors = client.command("select * from stud where username = '" + username + "'");
 
 
 
 if(len(professors) == 0):
-	new_edge = client.command("create vertex prof set name = '" + name + "'");
-	print(client.command("select * from prof"));
+	new_edge = client.command("create vertex stud set username = '" + username + "'");
+	print(client.command("select * from stud"));
 		
 else:
 	print("the user already exists");
