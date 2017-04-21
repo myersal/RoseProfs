@@ -7,6 +7,8 @@ from pprint import pprint
 import sys
 from time import gmtime, strftime;
 
+databaseOpen = True
+
 try:
 	import pyorient
 	import pyorient.ogm
@@ -342,7 +344,7 @@ while (True):
 	else:
 		print("Not a valid username. Please try again")
 
-if True:
+if databaseOpen:
 	while (True):
                 print("What would you like to do?")
                 cmd = ""
@@ -570,9 +572,11 @@ if True:
 			del_class_from_prof(professor, num)
 
 				
-		elif(cmd.lower() == "create forum"):
+		elif(cmd.lower() == "create forum" or cmd.lower() == "createforum"):
 			createForum(username)
-			
+                elif(cmd.lower() == "log out" or cmd.lower() == "logout"):
+                        print("You just logged out!!!!! Bye!")	
+                        break
 		else:
 			print("invalid command")
 
