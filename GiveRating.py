@@ -443,7 +443,7 @@ while (True):
 			print("Who is the Professor to be deleted?")
 			name = raw_input(':')
 			
-			if professors.count({"Name": name}) > 0:
+                        if professors.count({"Name": name}) > 0:
 				del_prof(name)
 				print("Professor deleted")
 			else:
