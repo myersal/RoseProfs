@@ -231,7 +231,7 @@ while (True):
 		username = raw_input(':')
 		if (username == ""):
 			print ("Username cannot be empty")
-                elif students.count({"Username": username} != 0):
+                elif students.count({"Username": username}) != 0:
                         print("Username is already taken")
 		else:
 			print("What would you like to be your password?")
@@ -351,7 +351,7 @@ while (True):
 		elif(cmd.lower() == "edit username" or cmd.lower() == "editusername"):
 			print("What is your new username?")
 			pwd = raw_input(':')
-			if students.count({"Username": username} == 0):
+			if students.count({"Username": username}) == 0:
 				edit_student_password(username, pwd)
 				print("Username changed!")
 			else:
@@ -361,7 +361,7 @@ while (True):
 		elif(cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor"):
 			print("Who is the new Professor?")
 			name = raw_input(':')
-                        if professors.count({"Name": name} != 0):
+                        if professors.count({"Name": name}) != 0:
 				print("Professor exists already")
                                 break
 			print("What is his/her department")
@@ -385,7 +385,7 @@ while (True):
 			print("What is his/her new name?")
 			newname = raw_input(':')
 			
-			if professors.count({"Name": newname} == 0):
+			if professors.count({"Name": newname}) == 0:
 				edit_prof_name(name, newname)
 				print("Professor name changed!")
 			else:
@@ -398,7 +398,7 @@ while (True):
 			print("Who is the Professor to be deleted?")
 			name = raw_input(':')
 			
-			if professors.count({"Name": name} > 0):
+			if professors.count({"Name": name}) > 0:
 				del_prof(name)
 				print("Professor deleted")
 			else:
@@ -411,7 +411,7 @@ while (True):
 		elif(cmd.lower() == "new class" or cmd.lower() == "new class"):
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
-			if professors.count({"Name": professor} == 0):
+			if professors.count({"Name": professor}) == 0:
 				print("Professor does not exist")
 				break
 			print("What is the name of the class?")
@@ -465,7 +465,7 @@ while (True):
 		elif(cmd.lower() == "delete class" or cmd.lower() == "deleteclass"):
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
-			if professors.count({"Name": professor} == 0):
+			if professors.count({"Name": professor}) == 0:
 				print("Professor does not exist")
 				break
 			print("What is the number of the class?")
