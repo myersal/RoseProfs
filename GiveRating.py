@@ -565,6 +565,9 @@ while (True):
 				
 		elif (cmd.lower() == "create forum"):
 			createForum(username);
+			
+		else:
+			print("invalid command");
 
 		
 
