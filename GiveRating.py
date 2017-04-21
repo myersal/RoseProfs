@@ -10,7 +10,7 @@ try:
 
 	client = pyorient.OrientDB("localhost", 2424);
 	session_id = client.connect( "root", "wai3feex" );
-	client.db_open( DB_Demo, "admin", "admin" );
+	client.db_open( DB_Demo, "root", "wai3feex" );
 except:
 	print("Orient DB not working")
 
@@ -18,20 +18,235 @@ conn = redis.Redis()
 
 mongClient = MongoClient()
 db = mongClient['rose-profs']
-students = db.Students
-profs = db.Professors
+students = db.students
+profs = db.professors
 
+
+
+def add_prof(name, dept):
+    cursor = db.professors.find({'Name': str(name)})
+    if cursor:
+        return 0
+    res = db.insert_one(
+        {
+            'Name': str(name),
+            'Department': str(dept)
+        }
+    )
+	conn.zadd("professors", name, 0)
+	return res
+
+
+def edit_prof_name(name, new_name):
+    res = db.professors.update_one(
+        {'Name': str(name)},
+        {'$set': {'Name': str(new_name)}}
+    )
+	conn.zrem("professors", name)
+	conn.zadd("professors", new_name, 0)
+	classes = conn.zmembers("classes")
+	for c in classes:
+		if conn.zrem(c, name):
+			conn.zadd(c, new_name)
+    return res
+
+
+def edit_prof_dept(name, new_dept):
+    res = db.professors.update_one(
+        {'Name': str(name)},
+        {'$set': {'Department': str(new_dept)}}
+    )
+    return res
+
+
+def del_prof(name):
+    res = db.professors.delete_one({'Name': str(name)})
+	conn.zrem("professors", name)
+	classes = conn.zmembers("classes")
+	for c in classes:
+		conn.zrem(c, name)
+    return res
+
+
+def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
+    res = db.professors.update_one(
+        {'Name': str(professor)},
+        {'$addToSet':{
+            'Classes:'
+            [
+                'Name': str(name),
+                'Number': str(number),
+                'Department': str(dept),
+                'Cross-list-Department': str(alt_dept),
+                'Generic': str(gen)
+            ]
+        }}
+    )
+	conn.zadd("classes", number)
+	conn.zadd(number, professor)
+    return res
+
+
+def edit_class_name(professor, number, new_name):
+    res = db.professors.update_one(
+        {
+            'Name': str(professor),
+            'Classes.Number': str(number)
+        },
+        {'$set': {
+            'Classes.$.Name': str(new_name)
+        }}
+    )
+    return res
+
+
+def edit_class_number(professor, number, new_number):
+    res = db.professors.update_one(
+        {
+            'Name': str(professor),
+            'Classes.Number': str(number)
+        },
+        {'$set': {
+            'Classes.$.Number': str(new_number)
+        }}
+    )
+    return res
+
+
+def edit_class_dept(professor, number, new_dept):
+    res = db.professors.update_one(
+        {
+            'Name': str(professor),
+            'Classes.Number': str(number)
+        },
+        {'$set': {
+            'Classes.$.Department': str(new_dept)
+        }}
+    )
+    return res
+
+
+def edit_class_alt_dept(professor, number, new_alt_dept):
+    res = db.professors.update_one(
+        {
+            'Name': str(professor),
+            'Classes.Number': str(number)
+        },
+        {'$set': {
+            'Classes.$.Cross-list-Department': str(new_alt_dept)
+        }}
+    )
+    return res
+
+
+def edit_class_gen(professor, number, new_gen):
+    res = db.professors.update_one(
+        {
+            'Name': str(professor),
+            'Classes.Number': str(number)
+        },
+        {'$set': {
+            'Classes.$.Generic': str(new_gen)
+        }}
+    )
+    return res
+
+
+def del_class_from_prof(professor, number):
+    res = db.professors.update_one(
+        {'Name': str(professor)},
+        {'$pull': {
+            'Classes': {
+                'Number': str(number)
+            }
+        }}
+    )
+	conn.zrem(number, professor)
+	if not conn.zmembers(number):
+		conn.zrem("classes", number)
+		conn.delete(number)
+    return res
+
+
+def add_student(username, password, year, major):
+    cursor = db.students.find({'Username': str(username)})
+    if cursor:
+        return 0
+    res = db.insert_one(
+        {
+            'Username': str(username),
+            'Password': str(password),
+            'Year': str(year),
+            'Major': str(major)
+        }
+    )
+    return res
+
+
+def edit_student_username(username, new_username):
+    res = db.students.update_one(
+        {'Username': str(username)},
+        {'$set': {'Username': str(new_username)}}
+    )
+    return res
+
+
+def edit_student_password(username, new_password):
+    res = db.students.update_one(
+        {'Username': str(username)},
+        {'$set': {'Password': str(new_password)}}
+    )
+    return res
+
+
+def edit_student_year(username, new_year):
+    res = db.students.update_one(
+        {'Username': str(username)},
+        {'$set': {'Year': str(new_year)}}
+    )
+    return res
+
+
+def edit_student_major(username, new_major):
+    res = db.students.update_one(
+        {'Username': str(username)},
+        {'$set': {'Major': str(new_major)}}
+    )
+    return res
+
+
+def del_student(username):
+    res = db.students.delete_one({'Username': str(username)})
+    return res
 
 print("WELCOME TO THE Rose Profs")
 print("\n")
-print("Please type your username to log in.\n")
+print("Please type your username to log in.\n  Or type new to make a new user")
 
 while (True):
 	username = raw_input(':')
-	if (students.count({"Username": username} != 0):
+	if (username = "new"):
+		print("What would you like your username to be?")
+		username = raw_input(':')
+		if (username == ""):
+			print ("Username cannot be empty")
+		else:
+			print("What would you like to be your password?")
+			pwd = raw_input(':')
+			print("What is your year?")
+			year = raw_input(':')
+			print("What is your primary major?")
+			major = raw_input(':')
+			add_student(username, pwd, year, major)
+			print("User added")
+			break		
+			
+			
+			
+	elif (students.count({"Username": username} != 0):
 		print("Welcome" + students.find({"Username": username}, {"Name" : True})
 		break
-	else
+	else:
 		print("Not a valid username. Please try again")
 
 while (True):
@@ -41,7 +256,9 @@ while (True):
 		if (cmd.lower() == "rate")
 			print("What professor would you like to rate?")
 			prof = raw_input(':')
-			if (str(conn.zrank(Professors, prof)) == "nil"):
+			try:
+				int(conn.zscore(Professors, prof))
+			catch:
 				print("That is not a prof")
 				break
 			points = 8;
@@ -97,25 +314,166 @@ while (True):
 			print("That leaves " + points + " points for the coolness rating!")
 			
 			
+			students.update({"Username": username}, {"$addToSet": {"ProfRatings": {'Professor': prof,'Communication':comm, "Grading": grade, "Helpfulness" : help, "Coolness" : cool}}})
+			
+			try:
+				edgeName = username + prof
+				client.command("INSERT INTO " + edgeName +" ( 'comm','grad','help','cool' ) VALUES(" + comm + ", " + grade + ", "+ help +", "+ cool +")");
+			except:
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		elif(cmd.lower() = "edit major" or cmd.lower() = "editmajor"):
+			print("What is your new major?")
+			maj = raw_input(':')
+			edit_student_major(username, maj)
+			print("Major changed!")
+	
+		elif(cmd.lower() = "edit year" or cmd.lower() = "edityear"):
+			print("What is your new year?")
+			year = raw_input(':')
+			edit_student_year(username, year)
+			print("Year changed!")
+		
+		elif(cmd.lower() = "edit password" or cmd.lower() = "editpassword"):
+			print("What is your new password?")
+			pwd = raw_input(':')
+			edit_student_password(username, pwd)
+			print("Password changed!")
+	
+		elif(cmd.lower() = "edit username" or cmd.lower() = "editusername"):
+			print("What is your new username?")
+			pwd = raw_input(':')
+			if students.count({"Username": username} == 0):
+				edit_student_password(username, pwd)
+				print("Username changed!")
+			else:
+				print("Username exists!")
+				break
+			
+		elif(cmd.lower() = "add prof" or cmd.lower() = "addprof" or cmd.lower() = "add professor" or cmd.lower() = "addprofessor"):
+			print("Who is the new Professor?")
+			name = raw_input(':')
+			print("What is his/her department")
+			dept = raw_input(':')
+			add_prof(name, dept):
+			print("Prof added!")
+			
+		
+		elif(cmd.lower() = "edit department" or cmd.lower() = "editdepartment"):
+			print("Who is the Professor?")
+			name = raw_input(':')
+			print("What is his/her new department")
+			dept = raw_input(':')
+			edit_prof_dept(name, dept):
+			print("Department changed!")
+			
+		
+		elif(cmd.lower() = "edit professor name" or cmd.lower() = "editprofessorname" or cmd.lower() = "edit prof name" or cmd.lower() = "editprofname"):
+			print("Who is the Professor?")
+			name = raw_input(':')
+			print("What is his/her new name?")
+			newname = raw_input(':')
+			
+			if profs.count({"Name": newname} == 0):
+				edit_prof_name(name, newname)
+				print("Professor name changed!")
+			else:
+				print("Professor name exists!")
+				break
+				
+		
+			
+		elif(cmd.lower() = "delete professor" or cmd.lower() = "deleteprofessor" or cmd.lower() = "delete prof" or cmd.lower() = "deleteprof"):
+			print("Who is the Professor to be deleted?")
+			name = raw_input(':')
+			
+			if profs.count({"Name": name} > 0):
+				del_prof(name)
+				print("Professor deleted")
+			else:
+				print("Professor does not exist!")
+				break
+	
+
+	
+		elif(cmd.lower() = "new class" or cmd.lower() = "new class"):
+			print("Who is the Professor who teaches the class?")
+			professor = raw_input(':')
+			if profs.count({"Name": professor} == 0):
+				print("Professor does not exist")
+				break
+			print("What is the name of the class?")
+			name = raw_input(':')
+			print("What is the number of the class?")
+			num = raw_input(':')
+			print("What is the department of the class?")
+			dept = raw_input(':')
+			print("What is the cross-list department of the class?")
+			alt_dept = raw_input(':')
+			print("Is this a general class? \"yes\" or \"no\"")
+			gen = raw_input(':')
+			if (gen.lower() == "yes" or gen.lower == "y"):
+				gen = "True"
+			if (gen.lower() == "no" or gen.lower == "n"):
+				gen = "False"
+			if (gen != "False" or gen != "True"):
+				print("Invalid input. Make sure it is yes or no")
+				break
+			add_class_to_prof(professor, name, num, dept, alt_dept, gen)
+
+			
+			
+			
 			
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		#elif(cmd.lower() = "edit class name" or cmd.lower() = "edit classname" or cmd.lower() = "editclassname" or cmd.lower() = "editclass name"):
+			#print("What is the professor of the class to be edited?")
+			#professor = raw_input(':')
+			#if profs.count({"Name": professor} == 0):
+				#print("Professor does not exist")
+				#break
+			#print("What is the number of the class to be edited?")
+			#num = raw_input(':')
+			#try:
+				#int(conn.zrank("classes", num))
+			#except:
+				#print("Not a valid class number")
+				#break
+				
+			#print("What is the new name?")
+			#new_name = raw_input(':')
+			
+			
+			#edit_class_name(professor, num, new_name)
+
+
+				
+
+
+		elif(cmd.lower() = "delete class" or cmd.lower() = "deleteclass"):
+			print("Who is the Professor who teaches the class?")
+			professor = raw_input(':')
+			if profs.count({"Name": professor} == 0):
+				print("Professor does not exist")
+				break
+			print("What is the number of the class?")
+			num = raw_input(':')
+			try:
+				int(conn.zrank("classes", num))
+			except:
+				print("Not a valid class number")
+				break
+			del_class_from_prof(professor, num)
+		
+
+
 	
 	
 
