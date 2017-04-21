@@ -53,6 +53,42 @@ def add_prof(name, dept):
         except:
                 print("Orient Failed line 54")
 	return res
+	
+def createForum(username):
+	subject = raw_input('what is your subject: ');
+
+	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ');
+
+	if(boolProffessor.lower() == 'yes'):
+		prof = raw_input('please input the proffessor\'s name: ');
+		
+	message = raw_input('please type your message for the forum: ');
+
+	#Now for the important part, the above may change when the application is actually in user
+
+	answer = raw_input('is the given information correct yes/no (no if yes is not input): ');
+
+	if(answer.lower() == 'yes'):
+		time = strftime('%Y-%j-%d %H:%M:%S', gmtime());
+
+		pointer = db.forums.insert(
+			{
+				'subject': subject,
+				'message':
+					{
+						'username': username,
+						'content': message,
+						'date': time
+					}
+			}
+		);
+		
+		if(boolProffessor.lower() == 'yes'):
+			print(pointer);
+			print('attempting');
+			db.forums.update({'_id': pointer}, {'$set': {'proffessor': prof}});
+		
+		print('forum created');
 
 def addStudent(username):
 
@@ -526,6 +562,9 @@ while (True):
                         print("Invalid command")
                         break
                 break
+				
+		elif(cmd.lower() == "create forum"):
+			createForum(username);
 
 		
 
