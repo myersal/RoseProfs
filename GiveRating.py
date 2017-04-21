@@ -312,8 +312,8 @@ while (True):
 	if username == "new":
 		print("What would you like your username to be?")
 		username = raw_input(':')
-		if (username == ""):
-			print ("Username cannot be empty")
+		if (username == "" or username.find("\"") != -1 or username.find("\'") != -1):
+			print ("Username cannot be empty or contain quotations")
                 elif students.count({"Username": username}) != 0:
                         print("Username is already taken")
 		else:
@@ -452,6 +452,9 @@ if True:
 			name = raw_input(':')
                         if professors.count({"Name": name}) != 0:
 				print("Professor exists already")
+                                continue
+                        if name.find("\'") != -1 or name.find("\"") != -1:
+				print("Name can't contain quotations!  You trying to sql inject me buddy????")
                                 continue
 			print("What is his/her department")
 			dept = raw_input(':')
