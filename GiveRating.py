@@ -330,11 +330,15 @@ while (True):
 			
 			
 	elif students.count({"Username": username}) != 0:
-                curs = students.find({"Username": username})
-                for c in curs:
-                        print("Welcome ")
-                        pprint(c)
-		break
+                curs = students.find_one({"Username": username})
+                print("What is your password?")
+                pwd =  raw_input(':')
+                if (pwd == curs["Password"]):
+                    print("Welcome " + username)
+                    break
+                else:
+                    print("Not a valid password. Please try again")
+                
 	else:
 		print("Not a valid username. Please try again")
 
