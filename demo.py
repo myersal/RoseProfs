@@ -10,14 +10,14 @@ client.db_open("roseprofs", "admin", "admin" );
 
 #find proffessor and student, then create edge
 
-proffessor = client.command("select * from prof where name = " + "'Goebel'");
-student = client.command("select * from stud where username = " + "'suckup'");
+proffessors = client.command("select * from prof where name = " + "'Goebel'");
+students = client.command("select * from stud where username = " + "'suckup'");
 
 print(proffessor);
 print(student);
 
 #insert edge
 
-new_edge = client.command("create edge prof_rate from " + student.rid + " to " + proffessor.rid + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
+new_edge = client.command("create edge prof_rate from " + student[0].rid + " to " + proffessor[0].rid + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
 
 print(client.command("select * from prof_rate")); 
