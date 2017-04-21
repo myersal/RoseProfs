@@ -41,7 +41,7 @@ while (True):
 		if (cmd.lower() == "rate")
 			print("What professor would you like to rate?")
 			prof = raw_input(':')
-			if (profs.count({"Name" : prof} == 0)
+			if (str(conn.zrank(Professors, prof)) == "nil"):
 				print("That is not a prof")
 				break
 			points = 8;
@@ -54,10 +54,10 @@ while (True):
 				print("That is not a integer between 0 and 4")
 				break
 			points = points - comm
-			if (points < 0)
+			if (points < 0):
 				print("You have distributed too many points!")
 				break
-			if (comm > 4)
+			if (comm > 4):
 				print("The max rating is 4")
 				break
 				
@@ -70,10 +70,10 @@ while (True):
 				print("That is not a integer between 0 and 4")
 				break
 			points = points - grade
-			if (points < 0)
+			if (points < 0):
 				print("You have distributed too many points!")
 				break
-			if (grade > 4)
+			if (grade > 4):
 				print("The max rating is 4")
 				break
 				
@@ -86,10 +86,10 @@ while (True):
 				print("That is not a integer between 0 and 4")
 				break
 			points = points - help
-			if (points < 0)
+			if (points < 0):
 				print("You have distributed too many points!")
 				break
-			if (help > 4)
+			if (help > 4):
 				print("The max rating is 4")
 				break
 			
