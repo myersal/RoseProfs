@@ -58,7 +58,7 @@ def createForum(user):
 	
 	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ');
 
-	if(boolProffessor == 'yes'):
+	if(boolProffessor.lower() == 'yes'):
 		prof = raw_input('please input the proffessor\'s name: ');
 		
 	message = raw_input('please type your message for the forum: ');
@@ -67,7 +67,7 @@ def createForum(user):
 
 	answer = raw_input('is the given information correct yes/no (no if yes is not input): ');
 
-	if(answer == 'yes'):
+	if(answer.lower() == 'yes'):
 		time = strftime('%Y-%j-%d %H:%M:%S', gmtime());
 
 		pointer = db.forums.insert(
@@ -75,16 +75,14 @@ def createForum(user):
 				'subject': subject,
 				'message':
 					{
-						'username': username,
+						'username': user,
 						'content': message,
 						'date': time
 					}
 			}
 		);
 		
-		if(boolProffessor == 'yes'):
-			print(pointer);
-			print('attempting');
+		if(boolProffessor.lower() == 'yes'):
 			db.forums.update({'_id': pointer}, {'$set': {'proffessor': prof}});
 		
 		print('forum created');
@@ -561,6 +559,9 @@ while (True):
                         print("Invalid command")
                         break
                 break
+				
+		elif(cmd.lower() == "create forum"):
+			createForum(username);
 		
 
 
