@@ -13,10 +13,10 @@ client.db_open("roseprofs", "admin", "admin" );
 
 username = raw_input("insert a student to add to the database: ");
 
-professors = client.command("select * from prof where name = '%s'" % username);
+professors = client.command("select * from prof where name = " + username);
 
 if(len(professors) == 0):
-	new_edge = client.command("create vertex stud set name = %s" % username);
+	new_edge = client.command("create vertex stud set name = " + username);
 	print(client.command("select * from prof_rate"));
 		
 else:
