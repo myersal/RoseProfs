@@ -244,7 +244,7 @@ while (True):
 			
 			
 	elif students.count({"Username": username} != 0):
-		print("Welcome" + students.find({"Username": username}, {"Name" : True})
+		print("Welcome" + students.find({"Username": username}, {"Name" : True}))
 		break
 	else:
 		print("Not a valid username. Please try again")
@@ -322,7 +322,7 @@ while (True):
 			except:
 				print("FAIL OF ORIENT")
 				break;
-		
+
 		
 		elif(cmd.lower() == "edit major" or cmd.lower() == "editmajor"):
 			print("What is your new major?")
