@@ -17,6 +17,6 @@ print(students[0]);
 
 #insert edge
 
-new_edge = client.command("create edge prof_rate from " + students[0]['rid'] + " to " + proffessors[0]['rid'] + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
+new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + proffessors[0]._rid + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
 
 print(client.command("select * from prof_rate")); 
