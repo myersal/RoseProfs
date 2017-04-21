@@ -10,7 +10,7 @@ client.db_open( roseprofs, "root", "wai3feex" );
 
 #create new proffessor and student, then edge
 
-proffessor = client.command("select * from prof where name = " + "Goebel";
+proffessor = client.command("select * from prof where name = " + "Goebel");
 student = client.command("select * from stud where username = " + "suckup");
 
 #insert edge
