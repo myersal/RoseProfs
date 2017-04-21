@@ -5,6 +5,7 @@ from pymongo import MongoClient
 import redis
 from pprint import pprint
 import sys
+from time import gmtime, strftime;
 
 try:
 	import pyorient
