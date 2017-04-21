@@ -338,7 +338,7 @@ while (True):
 	else:
 		print("Not a valid username. Please try again")
 
-while (True):
+if True:
 	while (True):
                 print("What would you like to do?")
                 cmd = raw_input(':')
@@ -349,7 +349,7 @@ while (True):
 				int(conn.zscore("professors", prof))
 			except:
 				print("That is not a prof")
-				break
+				continue
 			points = 8;
 			print("You have 8 points to distribute among these four catagories: Communication\nGrading\nHelpfulness\nCoolness")
 			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Communication?  \nYou have " + str(points) + " points left!")
@@ -358,14 +358,14 @@ while (True):
 				comm = int(comm)
 			except:
 				print("That is not a integer between 0 and 4")
-				break
+				continue
 			points = points - comm
 			if (points < 0):
 				print("You have distributed too many points!")
-				break
+				continue
 			if (comm > 4):
 				print("The max rating is 4")
-				break
+				continue
 				
 				
 			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Grading?  \nYou have " + str(points) + " points left!")
@@ -374,14 +374,14 @@ while (True):
 				grade = int(grade)
 			except:
 				print("That is not a integer between 0 and 4")
-				break
+				continue
 			points = points - grade
 			if (points < 0):
 				print("You have distributed too many points!")
-				break
+				continue
 			if (grade > 4):
 				print("The max rating is 4")
-				break
+				continue
 				
 				
 			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Helpfulness?  \nYou have " + str(points) + " points left!")
@@ -390,14 +390,14 @@ while (True):
 				help = int(help)
 			except:
 				print("That is not a integer between 0 and 4")
-				break
+				continue
 			points = points - help
 			if (points < 0):
 				print("You have distributed too many points!")
-				break
+				continue
 			if (help > 4):
 				print("The max rating is 4")
-				break
+				continue
 			
 			cool = points
 			print("That leaves " + str(points) + " points for the coolness rating!")
@@ -409,7 +409,7 @@ while (True):
 				rateProf(username, prof, comm, grade, help, cool)
 			except:
 				print("FAIL OF ORIENT line 374")
-				break;
+				continue
 
 		
 		elif(cmd.lower() == "edit major" or cmd.lower() == "editmajor"):
@@ -438,14 +438,14 @@ while (True):
 				print("Username changed!")
 			else:
 				print("Username exists!")
-				break
+				continue
 			
 		elif(cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor"):
 			print("Who is the new Professor?")
 			name = raw_input(':')
                         if professors.count({"Name": name}) != 0:
 				print("Professor exists already")
-                                break
+                                continue
 			print("What is his/her department")
 			dept = raw_input(':')
 			add_prof(name, dept)
@@ -472,7 +472,7 @@ while (True):
 				print("Professor name changed!")
 			else:
 				print("Professor name exists!")
-				break
+				continue
 				
 		
 			
@@ -485,7 +485,7 @@ while (True):
 				print("Professor deleted")
 			else:
 				print("Professor does not exist!")
-				break
+				continue
 	
                 elif(cmd.lower() == "end" or cmd.lower() == "End" or cmd.lower() == "END" or cmd.lower() == "quit"):
 			pizza = 8 / 0
@@ -495,7 +495,7 @@ while (True):
 			professor = raw_input(':')
 			if professors.count({"Name": professor}) == 0:
 				print("Professor does not exist")
-				break
+				continue
 			print("What is the name of the class?")
 			name = raw_input(':')
 			print("What is the number of the class?")
@@ -512,7 +512,7 @@ while (True):
 				gen = "False"
 			if (gen != "False" or gen != "True"):
 				print("Invalid input. Make sure it is yes or no")
-				break
+				continue
 			add_class_to_prof(professor, name, num, dept, alt_dept, gen)
 
 			
@@ -525,14 +525,14 @@ while (True):
 			#professor = raw_input(':')
 			#if profs.count({"Name": professor} == 0):
 				#print("Professor does not exist")
-				#break
+				#continue
 			#print("What is the number of the class to be edited?")
 			#num = raw_input(':')
 			#try:
 				#int(conn.zrank("classes", num))
 			#except:
 				#print("Not a valid class number")
-				#break
+				#continue
 				
 			#print("What is the new name?")
 			#new_name = raw_input(':')
@@ -549,14 +549,14 @@ while (True):
 			professor = raw_input(':')
 			if professors.count({"Name": professor}) == 0:
 				print("Professor does not exist")
-				break
+				continue
 			print("What is the number of the class?")
 			num = raw_input(':')
 			try:
 				int(conn.zrank("classes", num))
 			except:
 				print("Not a valid class number")
-				break
+				continue
 			del_class_from_prof(professor, num)
 
 				
