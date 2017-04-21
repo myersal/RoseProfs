@@ -26,8 +26,7 @@ print("GO")
 
 
 def add_prof(name, dept):
-	cursor = professors.find({'Name': str(name)})
-	if cursor:
+	if professors.count({'Name': str(name)}) != 0:
 		return 0
 	res = professors.insert_one(
 		{
@@ -171,7 +170,8 @@ def del_class_from_prof(professor, number):
 
 
 def add_student(username, password, year, major):
-	cursor = students.find({'Username': str(username)})
+    if students.count({'Username': str(username)}) != 0:
+        return 0
 	res = students.insert_one(
 		{
 			'Username': str(username),
