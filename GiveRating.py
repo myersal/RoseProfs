@@ -558,16 +558,13 @@ while (True):
 				break
 			del_class_from_prof(professor, num)
 
-                else:
-                        print("Invalid command")
-                        break
-                break
 				
 		elif(cmd.lower() == "create forum"):
-			createForum(username);
+			createForum(username)
 			
 		else:
-			print("invalid command");
+			print("invalid command")
+			break
 
 		
 
