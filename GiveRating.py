@@ -357,7 +357,7 @@ while (True):
 			name = raw_input(':')
 			print("What is his/her department")
 			dept = raw_input(':')
-			add_prof(name, dept):
+			add_prof(name, dept)
 			print("Prof added!")
 			
 		
@@ -366,7 +366,7 @@ while (True):
 			name = raw_input(':')
 			print("What is his/her new department")
 			dept = raw_input(':')
-			edit_prof_dept(name, dept):
+			edit_prof_dept(name, dept)
 			print("Department changed!")
 			
 		
