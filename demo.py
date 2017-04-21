@@ -15,6 +15,6 @@ students = client.command("select * from stud where username = " + "'suckup'");
 
 #insert edge
 
-new_edge = client.command("create edge prof_rate from " + students[0].rid + " to " + proffessors[0].rid + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
+new_edge = client.command("create edge prof_rate from " + students[0] + " to " + proffessors[0] + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
 
 print(client.command("select * from prof_rate")); 
