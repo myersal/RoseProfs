@@ -9,14 +9,14 @@ session_id = client.connect( "root", "wai3feex" );
 #open databse 
 client.db_open("roseprofs", "admin", "admin" );
 
-username = raw_input("insert a professor to add to the database: ");
+name = raw_input("insert a professor to add to the database: ");
 
-professors = client.command("select * from prof where name = '" + username + "'");
+professors = client.command("select * from prof where name = '" + name + "'");
 
 
 
 if(len(professors) == 0):
-	new_edge = client.command("create vertex prof set name = '" + username + "'");
+	new_edge = client.command("create vertex prof set name = '" + name + "'");
 	print(client.command("select * from prof"));
 		
 else:
