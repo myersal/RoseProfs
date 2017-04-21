@@ -3,6 +3,7 @@
 import pymongo
 from pymongo import MongoClient
 import redis
+from pprint import pprint
 import sys
 
 try:
@@ -16,18 +17,19 @@ except:
 	print("Orient DB not working")
 
 conn = redis.Redis()
-mongClient = MongoClient()
-db = mongClient['rose-profs']
+mongoClient = MongoClient()
+db = mongoClient['rose-profs']
 students = db.students
-profs = db.professors
+professors = db.professors
+print("GO")
 
 
 
 def add_prof(name, dept):
-	cursor = db.professors.find({'Name': str(name)})
+	cursor = professors.find({'Name': str(name)})
 	if cursor:
 		return 0
-	res = db.insert_one(
+	res = professors.insert_one(
 		{
 			'Name': str(name),
 			'Department': str(dept)
@@ -38,7 +40,7 @@ def add_prof(name, dept):
 
 
 def edit_prof_name(name, new_name):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{'Name': str(name)},
 		{'$set': {'Name': str(new_name)}}
 	)
@@ -52,7 +54,7 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{'Name': str(name)},
 		{'$set': {'Department': str(new_dept)}}
 	)
@@ -60,7 +62,7 @@ def edit_prof_dept(name, new_dept):
 
 
 def del_prof(name):
-	res = db.professors.delete_one({'Name': str(name)})
+	res = professors.delete_one({'Name': str(name)})
 	conn.zrem("professors", name)
 	classes = conn.zmembers("classes")
 	for c in classes:
@@ -69,7 +71,7 @@ def del_prof(name):
 
 
 def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$addToSet':{
 			'Classes:'
@@ -88,7 +90,7 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 
 
 def edit_class_name(professor, number, new_name):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{
 			'Name': str(professor),
 			'Classes.Number': str(number)
@@ -101,7 +103,7 @@ def edit_class_name(professor, number, new_name):
 
 
 def edit_class_number(professor, number, new_number):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{
 			'Name': str(professor),
 			'Classes.Number': str(number)
@@ -114,7 +116,7 @@ def edit_class_number(professor, number, new_number):
 
 
 def edit_class_dept(professor, number, new_dept):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{
 			'Name': str(professor),
 			'Classes.Number': str(number)
@@ -127,7 +129,7 @@ def edit_class_dept(professor, number, new_dept):
 
 
 def edit_class_alt_dept(professor, number, new_alt_dept):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{
 			'Name': str(professor),
 			'Classes.Number': str(number)
@@ -140,7 +142,7 @@ def edit_class_alt_dept(professor, number, new_alt_dept):
 
 
 def edit_class_gen(professor, number, new_gen):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{
 			'Name': str(professor),
 			'Classes.Number': str(number)
@@ -153,7 +155,7 @@ def edit_class_gen(professor, number, new_gen):
 
 
 def del_class_from_prof(professor, number):
-	res = db.professors.update_one(
+	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$pull': {
 			'Classes': {
@@ -169,10 +171,10 @@ def del_class_from_prof(professor, number):
 
 
 def add_student(username, password, year, major):
-	cursor = db.students.find({'Username': str(username)})
+	cursor = students.find({'Username': str(username)})
 	if cursor:
 		return 0
-	res = db.insert_one(
+	res = students.insert_one(
 		{
 			'Username': str(username),
 			'Password': str(password),
@@ -184,7 +186,7 @@ def add_student(username, password, year, major):
 
 
 def edit_student_username(username, new_username):
-	res = db.students.update_one(
+	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Username': str(new_username)}}
 	)
@@ -192,7 +194,7 @@ def edit_student_username(username, new_username):
 
 
 def edit_student_password(username, new_password):
-	res = db.students.update_one(
+	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Password': str(new_password)}}
 	)
@@ -200,7 +202,7 @@ def edit_student_password(username, new_password):
 
 
 def edit_student_year(username, new_year):
-	res = db.students.update_one(
+	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Year': str(new_year)}}
 	)
@@ -208,15 +210,14 @@ def edit_student_year(username, new_year):
 
 
 def edit_student_major(username, new_major):
-	res = db.students.update_one(
+	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Major': str(new_major)}}
 	)
 	return res
 
-
 def del_student(username):
-	res = db.students.delete_one({'Username': str(username)})
+	res = students.delete_one({'Username': str(username)})
 	return res
 
 print("WELCOME TO THE Rose Profs")
@@ -230,6 +231,8 @@ while (True):
 		username = raw_input(':')
 		if (username == ""):
 			print ("Username cannot be empty")
+                elif students.count({"Username": username} != 0):
+                        print("Username is already taken")
 		else:
 			print("What would you like to be your password?")
 			pwd = raw_input(':')
@@ -243,8 +246,11 @@ while (True):
 			
 			
 			
-	elif students.count({"Username": username} != 0):
-		print("Welcome" + students.find({"Username": username}, {"Name" : True}))
+	elif students.count({"Username": username}) != 0:
+                curs = students.find({"Username": username}, {"Name" : True})
+                for c in curs:
+                        print("Welcome ")
+                        pprint(c)
 		break
 	else:
 		print("Not a valid username. Please try again")
@@ -355,6 +361,9 @@ while (True):
 		elif(cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor"):
 			print("Who is the new Professor?")
 			name = raw_input(':')
+                        if professors.count({"Name": name} != 0):
+				print("Professor exists already")
+                                break
 			print("What is his/her department")
 			dept = raw_input(':')
 			add_prof(name, dept)
@@ -376,7 +385,7 @@ while (True):
 			print("What is his/her new name?")
 			newname = raw_input(':')
 			
-			if profs.count({"Name": newname} == 0):
+			if professors.count({"Name": newname} == 0):
 				edit_prof_name(name, newname)
 				print("Professor name changed!")
 			else:
@@ -389,19 +398,20 @@ while (True):
 			print("Who is the Professor to be deleted?")
 			name = raw_input(':')
 			
-			if profs.count({"Name": name} > 0):
+			if professors.count({"Name": name} > 0):
 				del_prof(name)
 				print("Professor deleted")
 			else:
 				print("Professor does not exist!")
 				break
 	
-
+                elif(cmd.lower() == "end" or cmd.lower() == "End" or cmd.lower() == "END" or cmd.lower() == "quit"):
+			pizza = 8 / 0
 	
 		elif(cmd.lower() == "new class" or cmd.lower() == "new class"):
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
-			if profs.count({"Name": professor} == 0):
+			if professors.count({"Name": professor} == 0):
 				print("Professor does not exist")
 				break
 			print("What is the name of the class?")
@@ -455,7 +465,7 @@ while (True):
 		elif(cmd.lower() == "delete class" or cmd.lower() == "deleteclass"):
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
-			if profs.count({"Name": professor} == 0):
+			if professors.count({"Name": professor} == 0):
 				print("Professor does not exist")
 				break
 			print("What is the number of the class?")
@@ -466,6 +476,11 @@ while (True):
 				print("Not a valid class number")
 				break
 			del_class_from_prof(professor, num)
+
+                else:
+                        print("Invalid command")
+                        break
+                break
 		
 
 
