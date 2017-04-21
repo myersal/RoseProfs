@@ -13,7 +13,7 @@ client.db_open("roseprofs", "admin", "admin" );
 professors = client.command("select * from prof where name = " + "'Goebel'");
 students = client.command("select * from stud where username = " + "'suckup'");
 
-if(len(professors) != 0 and len(students != 0)):
+if(len(professors) != 0 and len(students) != 0):
 	currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
 
 	if(len(currentEdges) == 0):
