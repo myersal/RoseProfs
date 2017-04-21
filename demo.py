@@ -13,7 +13,7 @@ client.db_open("roseprofs", "admin", "admin" );
 proffessors = client.command("select * from prof where name = " + "'Goebel'");
 students = client.command("select * from stud where username = " + "'suckup'");
 
-currentEdges = client.command("select * from prof_rate where out = " + proffessors[0]._rid + " and in = " + students[0]._rid);
+currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
 
 if(len(currentEdges) == 0):
 	#insert edge
