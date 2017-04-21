@@ -1,4 +1,4 @@
-#insert a new professor into the database and check for errors
+#insert a new student into the database and check for errors
 import pyorient
 import pyorient.ogm
 
