@@ -6,9 +6,9 @@ client = pyorient.OrientDB("localhost", 2424);
 session_id = client.connect( "root", "wai3feex" );
 
 #open databse 
-client.db_open( roseprofs, "root", "wai3feex" );
+client.db_open( roseprofs, "admin", "admin" );
 
-#create new proffessor and student, then edge
+#find proffessor and student, then create edge
 
 proffessor = client.command("select * from prof where name = " + "Goebel");
 student = client.command("select * from stud where username = " + "suckup");
