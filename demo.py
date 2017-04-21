@@ -13,14 +13,13 @@ client.db_open("roseprofs", "admin", "admin" );
 professors = client.command("select * from prof where name = " + "'Goebel'");
 students = client.command("select * from stud where username = " + "'suckup'");
 
-currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
+if(len(professors) != 0 and len(students != 0)):
+	currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
 
-if(len(currentEdges) == 0):
-	#insert edge
-
-	new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + professors[0]._rid + " set cool = " + "1" + ", help = " + "2" + ", comm = " + "3" + ", grad = " + "4");
-
-	print(client.command("select * from prof_rate"));
-	
-else:
-	print("the user has already rated the professor");
+	if(len(currentEdges) == 0):
+		#insert edge
+		new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + professors[0]._rid + " set cool = " + "1" + ", help = " + "2" + ", comm = " + "3" + ", grad = " + "4");
+		print(client.command("select * from prof_rate"));
+		
+	else:
+		print("the user has already rated the professor");
