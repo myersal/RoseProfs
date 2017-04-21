@@ -13,6 +13,9 @@ client.db_open("roseprofs", "admin", "admin" );
 proffessor = client.command("select * from prof where name = " + "'Goebel'");
 student = client.command("select * from stud where username = " + "'suckup'");
 
+print(proffessor);
+print(student);
+
 #insert edge
 
 new_edge = client.command("create edge prof_rate from " + student.rid + " to " + proffessor.rid + " set cool = " + 1 + ", help = " + 2 + ", comm = " + 3 + "grad = " + 4);
