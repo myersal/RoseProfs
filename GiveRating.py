@@ -172,8 +172,6 @@ def del_class_from_prof(professor, number):
 
 def add_student(username, password, year, major):
 	cursor = students.find({'Username': str(username)})
-	if cursor:
-		return 0
 	res = students.insert_one(
 		{
 			'Username': str(username),
