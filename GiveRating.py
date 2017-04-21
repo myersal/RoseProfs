@@ -450,7 +450,7 @@ if True:
 		elif(cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor"):
 			print("Who is the new Professor?")
 			name = raw_input(':')
-                        if professors.count({"Name": name}) != 0:
+                        if professors.count({"Name": name}) != 0: 
 				print("Professor exists already")
                                 continue
                         if name.find("\'") != -1 or name.find("\"") != -1:
