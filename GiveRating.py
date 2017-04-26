@@ -9,19 +9,16 @@ from time import gmtime, strftime;
 
 databaseOpen = True
 
-try:
-	import pyorient
-	import pyorient.ogm
+import pyorient
+import pyorient.ogm
 
-	client = pyorient.OrientDB("localhost", 2424);
-	session_id = client.connect( "root", "wai3feex" );
-	client.db_open( "roseprofs", "admin", "admin" );
-        
-except:
-	print("Orient DB not working on line 18")
+client = pyorient.OrientDB("137.112.104.108", 2424);
+session_id = client.connect( "root", "wai3feex" );
+client.db_open( "roseprofs", "admin", "admin" );
 
-conn = redis.Redis()
-mongoClient = MongoClient()
+POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0)
+conn = redis.Redis(connection_pool = POOL)
+mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109')
 db = mongoClient['rose-profs']
 students = db.students
 professors = db.professors
@@ -54,7 +51,7 @@ def add_prof(name, dept):
         try:
                 addProf(name)
         except:
-                print("Orient Failed line 54")
+                print("Orient Failed to add prof")
 	return res
 	
 def createForum(username):
@@ -417,7 +414,7 @@ if databaseOpen:
 			try:
 				rateProf(username, prof, comm, grade, help, cool)
 			except:
-				print("FAIL OF ORIENT line 374")
+				print("FAIL OF ORIENT to rate")
 				continue
 
 		
