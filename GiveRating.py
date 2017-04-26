@@ -24,6 +24,17 @@ students = db.students
 professors = db.professors
 print("GO")
 
+
+
+
+
+
+
+
+
+
+
+
 def rateProf(username, professor, comm, grade, help, cool):
         professors = client.command("select * from prof where name = '" + professor + "'");
         students = client.command("select * from stud where username = '" + username  + "'");
@@ -111,7 +122,7 @@ def addProf(name):
 
 
         if(len(professors) == 0):
-                new_edge = client.command("create vertex prof set name = '" + name + "'");
+                new_vertex = client.command("create vertex prof set name = '" + name + "'");
 		
         else:
                 print("the professor already exists");
