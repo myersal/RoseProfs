@@ -4,24 +4,42 @@ Created on Apr 26, 2017
 @author: goebel
 '''
 
-import pymongo
-from pymongo import MongoClient
-import redis
-
-
+redisDead = False
+orientDead = False
 databaseOpen = True
 
-import pyorient
-import pyorient.ogm
+#MongoDB
+try:
+	import pymongo
+	from pymongo import MongoClient
+	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109')
+	db = mongoClient['rose-profs']
+	students = db.students
+	professors = db.professors
+	logs = db.logs
+except:
+	print("Sorry, but Rose Profs is currently down.  Please try again later")
+	databaseOpen = False
+	exit()
 
-client = pyorient.OrientDB("137.112.104.108", 2424);
-session_id = client.connect( "root", "wai3feex" );
-client.db_open( "roseprofs", "admin", "admin" );
 
-POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0)
-conn = redis.Redis(connection_pool = POOL)
-mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109')
-db = mongoClient['rose-profs']
-students = db.students
-professors = db.professors
-print("GO")
+try:
+	import redis
+	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0)
+	conn = redis.Redis(connection_pool = POOL)
+except:
+	print("Some functionality may be slower and/or limited due to problems outside of your control")
+	redisDead = True
+
+try:
+	import pyorient
+	import pyorient.ogm
+	client = pyorient.OrientDB("137.112.104.108", 2424);
+	session_id = client.connect( "root", "wai3feex" );
+	client.db_open( "roseprofs", "admin", "admin" );
+except:
+	print("Some functionality may be slower and/or limited due to problems outside of your control")
+	orientDead = True
+
+
+print("CONNECTED TO ROSE PROFS!!!!")

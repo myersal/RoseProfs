@@ -8,6 +8,7 @@ import CommonFunctions
 from CommonFunctions import *
 from RoseProfConnections import *
 from time import gmtime, strftime;
+from datetime import datetime
 
 
 def rateProf(username, professor, comm, grade, helpp, cool):
@@ -31,37 +32,68 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 		print("Coolness score cannot contain special characters")
 		return
 	
-	profs = client.command("select * from prof where name = '" + professor + "'");
-	studs = client.command("select * from stud where username = '" + username  + "'");
-
-	if(len(profs) != 0 and len(studs) != 0):
-		currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
-
-		if(len(currentEdges) == 0):
-			#insert edge
-			new_edge = client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
+	try:
+		mongLog = logs.insert_one({'mongo': 0, 'redis':-1, 'orient':0, 'type': 'rateProf', 'Username': username, 'Name': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
+	except:
+		print("Sorry but Rose Profs is down.  Please try again later.")
+		exit()
+	
+	try:
+		res = students.update_one(
+			{'Username': username},
+			{'$addToSet': {
+				'ProfRating': 
+					{
+						'Name': professor,
+						'Communication': comm,
+						'Grading': grade,
+						'Helpfulness': helpp,
+						'Coolness': cool
+					}
+				
+			}}
+		)
+	except:
+		print("Sorry but Rose Profs is down.  Please try again later.")
+		exit()
 		
-		else:
-			print("the user has already rated the professor");
-			return 0;
-	else:
-		print("the professor does not exist")
-		return 0
+	#try:
+	logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'mongo': -1}})
+	#except:
+		#print("Sorry but Rose Profs is down.  Please try again later.")
+		#exit()
+		
+	profs = []
+	studs = []
+	if not RoseProfConnections.orientDead:
+		try:
+			profs = client.command("select * from prof where name = '" + professor + "'");
+			studs = client.command("select * from stud where username = '" + username  + "'");	
+	
+			if(len(profs) != 0 and len(studs) != 0):
+				currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
+		
+				if(len(currentEdges) == 0):
+					#insert edge
+					new_edge = client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
+				
+				else:
+					print("the user has already rated the professor");
+					return 0;
+			else:
+				print("the professor does not exist")
+				return 0
+		except:
+			print("Some functionality may be slower and/or limited due to problems outside of your control")
+			RoseProfConnections.orientDead = True
+		if not RoseProfConnections.orientDead:
+			try:
+				logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'mongo': -1}})
+			except:
+				print("Sorry but Rose Profs is down.  Please try again later.")
+				exit()
 
-	res = students.update_one(
-		{'Username': username},
-		{'$addToSet': {
-			'ProfRating': 
-				{
-					'Name': professor,
-					'Communication': comm,
-					'Grading': grade,
-					'Helpfulness': helpp,
-					'Coolness': cool
-				}
-			
-		}}
-	)
+	
 	return res
 
 

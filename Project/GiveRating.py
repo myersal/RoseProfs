@@ -12,6 +12,51 @@ import sys
 
 
 
+
+def updateDatabases(num):
+	print("Data is being brought up to date!")
+	try:
+		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
+		
+	except:
+		print("Sorry, but Rose Profs is currently down.  Please try again later")
+		exit()
+		
+	try:
+		mongoLogsTodo = logs.find({"mongo": 0}).sort("$natural", 1)
+		for record in mongoLogsTodo:
+			if (record["type"] == "rateProf"):
+				res = students.update_one(
+					{'Username': record["Username"]},
+					{'$addToSet': {
+						'ProfRating': 
+						{
+							'Name': record["Name"],
+							'Communication': record["Communication"],
+							'Grading': record["Grading"],
+							'Helpfulness': record["Helpfulness"],
+							'Coolness': record["Coolness"]
+							}
+				
+					}}
+				)
+				logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
+		
+				
+		
+	except Exception as e:
+		#print str(e)
+		print("Sorry, but Rose Profs is currently down.  Please try again later")
+		exit()
+		
+	print("Data is up to date in all running databases!!! Yay!!! Be Happy!!! This took a lot of work!!! You better be grateful!!!")
+
+
+
+
+
+updateDatabases(0)
+
 print("Welcome to Rose Profs!!!!\n")
 print("\n")
 print("Please type your username to log in.\n  Or type new to make a new user")
@@ -62,7 +107,19 @@ if databaseOpen:
 			print("What professor would you like to rate?")
 			prof = raw_input(':')
 			try:
-				int(conn.zscore("professors", prof))
+				if not redisDead:
+					try:
+						numOfProfs = conn.zscore("professors", prof)
+					except:
+						print("Some functionality may be slower and/or limited due to problems outside of your control")
+						redisDead = True
+				if redisDead:
+					try:
+						numOfProfs = professors.count({"Name": prof})
+					except:
+						print("Sorry, but Rose Profs is currently down.  Please try again later")
+						exit()
+				int(numOfProfs)
 			except:
 				print("That is not a prof")
 				continue
@@ -369,6 +426,8 @@ if databaseOpen:
 
 
 	
-	
+
+
+
 
 

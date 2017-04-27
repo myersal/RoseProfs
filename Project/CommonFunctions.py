@@ -14,3 +14,4 @@ def SQLInjectionCheck(word):
 		return True
 	else:
 		return False
+	
