@@ -129,6 +129,15 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 def add_prof(name, dept):
 	if professors.count({'Name': str(name)}) != 0:
 		return 0
+	
+	if (SQLInjectionCheck(name)):
+		print("Professor cannot contain special characters")
+		return
+		
+	if (SQLInjectionCheck(dept)):
+		print("Department cannot contain special characters")
+		return
+	
 	res = professors.insert_one(
 		{
 			'Name': str(name),
@@ -141,6 +150,13 @@ def add_prof(name, dept):
 	except:
 		print("Orient Failed to add prof")
 	return res
+	
+def addProf(name):
+	professors = client.command("select * from prof where name = '" + name + "'");
+	if(len(professors) == 0):
+		new_vertex = client.command("create vertex prof set name = '" + name + "'");
+	else:
+		print("the professor already exists");
 	
 def createForum(username):
 	if (SQLInjectionCheck(username)):
@@ -188,21 +204,6 @@ def createForum(username):
 		
 		print('forum created');
 
-def addStudent(username):
-	students = client.command("select * from stud where username = '" + username + "'");
-	if(len(students) == 0):
-		new_edge = client.command("create vertex stud set username = '" + username + "'");
-	else:
-		print("the user already exists");
-
-
-def addProf(name):
-	professors = client.command("select * from prof where name = '" + name + "'");
-	if(len(professors) == 0):
-		new_vertex = client.command("create vertex prof set name = '" + name + "'");
-	else:
-		print("the professor already exists");
-
 
 def edit_prof_name(name, new_name):
 	res = professors.update_one(
@@ -236,6 +237,26 @@ def del_prof(name):
 
 
 def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
+	
+	if (SQLInjectionCheck(professor)):
+		print("professor cannot contain special characters")
+		return
+	if (SQLInjectionCheck(name)):
+		print("Username cannot contain special characters")
+		return
+	if (SQLInjectionCheck(number)):
+		print("Number cannot contain special characters")
+		return
+	if (SQLInjectionCheck(dept)):
+		print("Dept cannot contain special characters")
+		return
+	if (SQLInjectionCheck(alt_dept)):
+		print("alt_dept cannot contain special characters")
+		return
+	if (SQLInjectionCheck(gen)):
+		print("gen cannot contain special characters")
+		return
+	
 	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$addToSet':{
@@ -257,6 +278,7 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if len(classes) == 0 and len(professors) > 0:
 		new_vertex = client.command("create vertex prof_class set number = '" + number + "', name = '" + professor + "'")
 		new_edge = client.command("create edge teaches from " + professors[0]._rid + " to " + new_vertex._rid)
+		new_edge2 = client.command("create edge class_of from " + new_vertex._rid + " to " + class[0]._rid)
 	else:
 		print("the class and/or professor already exists")
 		return 0
@@ -348,6 +370,11 @@ def del_class_from_prof(professor, number):
 def add_student(username, password, year, major):
 	if students.count({'Username': str(username)}) != 0:
 		return 0
+		
+	if (SQLInjectionCheck(username)):
+		print("usernames cannot contain special characters")
+		return
+	
 	res = students.insert_one(
 		{
 				'Username': str(username),
@@ -361,6 +388,13 @@ def add_student(username, password, year, major):
 	except:
 		print("Orient fail 230")
 	return res
+	
+def addStudent(username):
+	students = client.command("select * from stud where username = '" + username + "'");
+	if(len(students) == 0):
+		new_edge = client.command("create vertex stud set username = '" + username + "'");
+	else:
+		print("the user already exists");
 
 
 def edit_student_username(username, new_username):
