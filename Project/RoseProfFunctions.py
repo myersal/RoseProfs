@@ -12,22 +12,22 @@ from time import gmtime, strftime;
 
 def rateProf(username, professor, comm, grade, helpp, cool):
 	
-	if (SQLInjectionCheck(username)):
+	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
 		return
-	if (SQLInjectionCheck(professor)):
+	if SQLInjectionCheck(professor):
 		print("Professor cannot contain special characters")
 		return
-	if (SQLInjectionCheck(comm)):
+	if SQLInjectionCheck(comm):
 		print("Communication score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(grade)):
+	if SQLInjectionCheck(grade):
 		print("Grading score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(help)):
+	if SQLInjectionCheck(help):
 		print("Helpful score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(cool)):
+	if SQLInjectionCheck(cool):
 		print("Coolness score cannot contain special characters")
 		return
 	
@@ -37,12 +37,94 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	if(len(professors) != 0 and len(students) != 0):
 		currentEdges = client.command("select * from prof_rate where out = " + students[0]._rid + " and in = " + professors[0]._rid);
 
-	if(len(currentEdges) == 0):
-		#insert edge
-		new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + professors[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
+		if(len(currentEdges) == 0):
+			#insert edge
+			new_edge = client.command("create edge prof_rate from " + students[0]._rid + " to " + professors[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
 		
+		else:
+			print("the user has already rated the professor");
+			return 0;
 	else:
-		print("the user has already rated the professor");
+		print("the professor does not exist")
+		return 0
+
+	res = students.update_one(
+		{'Username': username},
+		{'$addToSet': {
+			'ProfRating': [
+				{
+					'Name': professor,
+					'Communication': comm,
+					'Grading': grade,
+					'Helpfulness': helpp,
+					'Coolness': cool
+				}
+			]
+		}}
+	)
+	return res
+
+
+def rateClass(username, professor, clas, work, diff, fun, know):
+	if (SQLInjectionCheck(username)):
+		print("Username cannot contain special characters")
+		return
+	if (SQLInjectionCheck(professor)):
+		print("Professor cannot contain special characters")
+		return
+	if (SQLInjectionCheck(clas)):
+		print("Class Number cannot contain special characters")
+		return
+	if (SQLInjectionCheck(work)):
+		print("Communication score cannot contain special characters")
+		return
+	if (SQLInjectionCheck(diff)):
+		print("Grading score cannot contain special characters")
+		return
+	if (SQLInjectionCheck(fun)):
+		print("Helpful score cannot contain special characters")
+		return
+	if (SQLInjectionCheck(know)):
+		print("Coolness score cannot contain special characters")
+		return
+
+	classes = client.command("select * from prof_class where name = '" + professor + "' and number = '" + clas + "'");
+	students = client.command("select * from stud where username = '" + username + "'");
+
+	if (len(classes) != 0 and len(students) != 0):
+		currentEdges = client.command(
+			"select * from class_rate where out = " + students[0]._rid + " and in = " + classes[0]._rid);
+
+		if (len(currentEdges) == 0):
+			# insert edge
+			new_edge = client.command(
+				"create edge class_rate from " + students[0]._rid + " to " + classes[0]._rid + " set work = " + str(
+					work) + ", diff = " + str(diff) + ", fun = " + str(fun) + ", know = " + str(know));
+
+		else:
+			print("the user has already rated the professor")
+			return 0
+	else:
+		print("class does not exist")
+		return 0
+
+	res = students.update_one(
+		{'Username': username},
+		{'$addToSet': {
+			'ClassRating': [
+				{
+					'Professor': professor,
+					'Class_Number': clas,
+					'Workload': work,
+					'Difficulty': diff,
+					'Fun': fun,
+					'Professor_Knowledge': know
+				}
+			]
+		}}
+	)
+	return res
+
 
 def add_prof(name, dept):
 	if professors.count({'Name': str(name)}) != 0:
@@ -64,21 +146,21 @@ def createForum(username):
 	if (SQLInjectionCheck(username)):
 		print("Username cannot contain special characters")
 		return
-	subject = raw_input('what is your subject: ');
+	subject = raw_input('what is your subject: ')
 	if (SQLInjectionCheck(subject)):
 		print("Subject cannot contain special characters")
 		return
 
-	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ');
+	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 
 
 	if(boolProffessor.lower() == 'yes'):
-		prof = raw_input('please input the professor\'s name: ');
+		prof = raw_input('please input the professor\'s name: ')
 		if (SQLInjectionCheck(prof)):
 			print("Professor name cannot contain special characters")
 			return
 		
-	message = raw_input('please type your message for the forum: ');
+	message = raw_input('please type your message for the forum: ')
 
 	#Now for the important part, the above may change when the application is actually in user
 
@@ -107,31 +189,19 @@ def createForum(username):
 		print('forum created');
 
 def addStudent(username):
-
 	students = client.command("select * from stud where username = '" + username + "'");
-
-
-
 	if(len(students) == 0):
 		new_edge = client.command("create vertex stud set username = '" + username + "'");
-		
 	else:
 		print("the user already exists");
 
 
-
 def addProf(name):
-
 	professors = client.command("select * from prof where name = '" + name + "'");
-
-
-
 	if(len(professors) == 0):
 		new_vertex = client.command("create vertex prof set name = '" + name + "'");
-		
 	else:
 		print("the professor already exists");
-
 
 
 def edit_prof_name(name, new_name):
@@ -181,6 +251,16 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	)
 	conn.zadd("classes", number, "0")
 	conn.zadd(number, professor, "0")
+
+	classes = client.command("select * from class where number = '" + number + "'")
+	professors = client.command("select * from prof where name = '" + professor + "'")
+	if len(classes) == 0 and len(professors) > 0:
+		new_vertex = client.command("create vertex prof_class set number = '" + number + "', name = '" + professor + "'")
+		new_edge = client.command("create edge teaches from " + professors[0]._rid + " to " + new_vertex._rid)
+	else:
+		print("the class and/or professor already exists")
+		return 0
+
 	return res
 
 
