@@ -24,7 +24,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	if SQLInjectionCheck(grade):
 		print("Grading score cannot contain special characters")
 		return
-	if SQLInjectionCheck(help):
+	if SQLInjectionCheck(helpp):
 		print("Helpful score cannot contain special characters")
 		return
 	if SQLInjectionCheck(cool):
@@ -51,7 +51,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	res = students.update_one(
 		{'Username': username},
 		{'$addToSet': {
-			'ProfRating': {
+			'ProfRating': 
 				{
 					'Name': professor,
 					'Communication': comm,
@@ -59,7 +59,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 					'Helpfulness': helpp,
 					'Coolness': cool
 				}
-			}
+			
 		}}
 	)
 	return res
@@ -111,7 +111,7 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 	res = students.update_one(
 		{'Username': username},
 		{'$addToSet': {
-			'ClassRating': {
+			'ClassRating': 
 				{
 					'Professor': professor,
 					'Class_Number': clas,
@@ -120,7 +120,6 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 					'Fun': fun,
 					'Professor_Knowledge': know
 				}
-			}
 		}}
 	)
 	return res
