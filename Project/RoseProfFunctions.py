@@ -158,6 +158,11 @@ def addProf(name):
 	else:
 		print("the professor already exists");
 	
+def addClass(class):
+	if (SQLInjectionCheck(number)):
+		print("Number cannot contain special characters")
+		return
+	
 def createForum(username):
 	if (SQLInjectionCheck(username)):
 		print("Username cannot contain special characters")
@@ -204,7 +209,7 @@ def createForum(username):
 		
 		print('forum created');
 
-
+#never called
 def edit_prof_name(name, new_name):
 	res = professors.update_one(
 		{'Name': str(name)},
@@ -228,11 +233,19 @@ def edit_prof_dept(name, new_dept):
 
 
 def del_prof(name):
+
+	if (SQLInjectionCheck(name)):
+		print("professor cannot contain special characters")
+		return
+
 	res = professors.delete_one({'Name': str(name)})
 	conn.zrem("professors", name)
 	classes = conn.zrangebyscore("classes", 0, -1)
 	for c in classes:
 		conn.zrem(c, name)
+		
+	client.command("delete vertex prof where name = '" + name + "'")
+	
 	return res
 
 
@@ -256,6 +269,10 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if (SQLInjectionCheck(gen)):
 		print("gen cannot contain special characters")
 		return
+
+	if 1 == professors.count({'Name': professor}, {'Classes': {'Number' : number}}):
+		print("class pair already exists");
+		return 0
 	
 	res = professors.update_one(
 		{'Name': str(professor)},
@@ -270,10 +287,17 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 			]
 		}}
 	)
+	
 	conn.zadd("classes", number, "0")
 	conn.zadd(number, professor, "0")
 
-	classes = client.command("select * from class where number = '" + number + "'")
+	checkClass = client.command("select * from class where number = '" + number"'");
+	classes = [];
+	if len checkClass == 0:
+		classes = client.command("create vertex class set number = '" number"'")
+	else:
+		classes = client.command("select * from class where number = '" + number + "'")
+	
 	professors = client.command("select * from prof where name = '" + professor + "'")
 	if len(classes) == 0 and len(professors) > 0:
 		new_vertex = client.command("create vertex prof_class set number = '" + number + "', name = '" + professor + "'")
@@ -352,6 +376,13 @@ def edit_class_gen(professor, number, new_gen):
 
 
 def del_class_from_prof(professor, number):
+	if (SQLInjectionCheck(professor)):
+		print("Professor cannot contain special characters")
+		return
+	if (SQLInjectionCheck(number)):
+		print("Number cannot contain special characters")
+		return
+		
 	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$pull': {
@@ -360,6 +391,9 @@ def del_class_from_prof(professor, number):
 			}
 		}}
 	)
+	
+	client.command("delete vertex prof_class where name = '" + professor + "' and number = '" + number + "'");
+	
 	conn.zrem(number, professor)
 	if not conn.zrangebyscore(number, 0, -1):
 		conn.zrem("classes", number)
@@ -396,7 +430,7 @@ def addStudent(username):
 	else:
 		print("the user already exists");
 
-
+# is never called, don't worry about it
 def edit_student_username(username, new_username):
 	res = students.update_one(
 		{'Username': str(username)},
@@ -429,5 +463,12 @@ def edit_student_major(username, new_major):
 	return res
 
 def del_student(username):
+
+	if (SQLInjectionCheck(number)):
+		print("Number cannot contain special characters")
+		return 
+	#not sure if this delete is correct, but it is what I'm using
+	client.command("delete vertex stud where name = '" + username"'");
+		
 	res = students.delete_one({'Username': str(username)})
 	return res
