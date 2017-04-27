@@ -58,7 +58,7 @@ if databaseOpen:
 		while cmd == "":
 			cmd = raw_input(':')
 
-		if cmd.lower() == "rate":
+		if cmd.lower() == "rate prof":
 			print("What professor would you like to rate?")
 			prof = raw_input(':')
 			try:
@@ -119,13 +119,83 @@ if databaseOpen:
 			print("That leaves " + str(points) + " points for the coolness rating!")
 			
 			
-			students.update({"Username": username}, {"$addToSet": {"ProfRatings": {'Professor': prof,'Communication':comm, "Grading": grade, "Helpfulness" : helpp, "Coolness" : cool}}})
+			#students.update({"Username": username}, {"$addToSet": {"ProfRatings": {'Professor': prof,'Communication':comm, "Grading": grade, "Helpfulness" : helpp, "Coolness" : cool}}})
 			
+			
+			rateProf(username, prof, comm, grade, helpp, cool)
+
+			
+			
+		elif cmd.lower() == "rate class":
+			print("What professor teaches this class?")
+			prof = raw_input(':')
 			try:
-				rateProf(username, prof, comm, grade, helpp, cool)
+				int(conn.zscore("professors", prof))
 			except:
-				print("FAIL OF ORIENT to rate")
+				print("That is not a prof")
 				continue
+			print("What is the class number?")
+			classToRate = raw_input(':')
+			try:
+				int(conn.zscore("classes", classToRate))
+			except:
+				print("That is not a class")
+				continue
+			points = 8;
+			print("You have 8 points to distribute among these four catagories: Amount of Work\nDifficulty\nFunness\nKnowledge of Prof")
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this class's amount of work?  \nYou have " + str(points) + " points left!")
+			work = raw_input(':')
+			try:
+				work = int(work)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - work
+			if (points < 0):
+				print("You have distributed too many points!")
+				continue
+			if (work > 4):
+				print("The max rating is 4")
+				continue
+				
+				
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this classes technical difficulty?  \nYou have " + str(points) + " points left!")
+			diff = raw_input(':')
+			try:
+				diff = int(diff)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - diff
+			if (points < 0):
+				print("You have distributed too many points!")
+				continue
+			if (diff > 4):
+				print("The max rating is 4")
+				continue
+				
+				
+			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank how much fun this class is?  \nYou have " + str(points) + " points left!")
+			fun = raw_input(':')
+			try:
+				fun = int(fun)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - fun
+			if (points < 0):
+				print("You have distributed too many points!")
+				continue
+			if (fun > 4):
+				print("The max rating is 4")
+				continue
+			
+			know = points
+			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
+			
+			
+			
+			rateClass(username, prof, classToRate, work, diff, fun, know)
 
 		
 		elif(cmd.lower() == "edit major" or cmd.lower() == "editmajor"):
@@ -229,7 +299,7 @@ if databaseOpen:
 				gen = "True"
 			if (gen.lower() == "no" or gen.lower == "n"):
 				gen = "False"
-			if (gen != "False" or gen != "True"):
+			if (gen != "False" and gen != "True"):
 				print("Invalid input. Make sure it is yes or no")
 				continue
 			add_class_to_prof(professor, name, num, dept, alt_dept, gen)
@@ -284,6 +354,14 @@ if databaseOpen:
 		elif(cmd.lower() == "log out" or cmd.lower() == "logout"):
 			print("You just logged out!!!!! Bye!")	
 			break
+		
+		elif(cmd.lower() == "delete profile" or cmd.lower() == "deleteprofile"):
+			print("Are you sure you want to PERMANTLY delete your profile? Type yes if you do.")
+			ans = raw_input(":")
+			if (ans.lower() == "yes"):
+				del_student(username)
+				break
+			
 		else:
 			print("invalid command")
 
