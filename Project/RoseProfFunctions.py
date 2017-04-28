@@ -88,7 +88,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 			RoseProfConnections.orientDead = True
 		if not RoseProfConnections.orientDead:
 			try:
-				logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'mongo': -1}})
+				logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'orient': -1}})
 			except:
 				print("Sorry but Rose Profs is down.  Please try again later.")
 				exit()
@@ -192,22 +192,37 @@ def addProf(name):
 
 	
 def createForum(username):
-	if (SQLInjectionCheck(username)):
-		print("Username cannot contain special characters")
-		return
+
 	subject = raw_input('what is your subject: ')
-	if (SQLInjectionCheck(subject)):
-		print("Subject cannot contain special characters")
-		return
+
 
 	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 
 
 	if(boolProffessor.lower() == 'yes'):
 		prof = raw_input('please input the professor\'s name: ')
-		if (SQLInjectionCheck(prof)):
-			print("Professor name cannot contain special characters")
+		numOfProfs = -1
+		if not RoseProfConnections.redisDead:
+			try:
+				numOfProfs = conn.zscore("professors", prof)
+			except:
+				print("Some functionality may be slower and/or limited due to problems outside of your control")
+				RoseProfConnections.redisDead = True
+		if RoseProfConnections.redisDead:
+			try:
+				numOfProfs = professors.count({"Name": prof})
+				if numOfProfs == 0:
+					print("That is not a prof")
+					return
+			except:
+				print("Sorry, but Rose Profs is currently down.  Please try again later")
+				exit()
+		try:
+			int(numOfProfs)
+		except:
+			print("That is not a prof")
 			return
+			
 		
 	message = raw_input('please type your message for the forum: ')
 

@@ -5,57 +5,10 @@ import RoseProfFunctions
 from RoseProfFunctions import *
 from pprint import pprint
 import sys
+import re
 
 
 
-
-
-
-
-
-def updateDatabases(num):
-	print("Data is being brought up to date!")
-	try:
-		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
-		
-	except:
-		print("Sorry, but Rose Profs is currently down.  Please try again later")
-		exit()
-		
-	try:
-		mongoLogsTodo = logs.find({"mongo": 0}).sort("$natural", 1)
-		for record in mongoLogsTodo:
-			if (record["type"] == "rateProf"):
-				res = students.update_one(
-					{'Username': record["Username"]},
-					{'$addToSet': {
-						'ProfRating': 
-						{
-							'Name': record["Name"],
-							'Communication': record["Communication"],
-							'Grading': record["Grading"],
-							'Helpfulness': record["Helpfulness"],
-							'Coolness': record["Coolness"]
-							}
-				
-					}}
-				)
-				logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
-		
-				
-		
-	except Exception as e:
-		#print str(e)
-		print("Sorry, but Rose Profs is currently down.  Please try again later")
-		exit()
-		
-	print("Data is up to date in all running databases!!! Yay!!! Be Happy!!! This took a lot of work!!! You better be grateful!!!")
-
-
-
-
-
-updateDatabases(0)
 
 print("Welcome to Rose Profs!!!!\n")
 print("\n")
@@ -66,9 +19,14 @@ while (True):
 	if username == "new":
 		print("What would you like your username to be?")
 		username = raw_input(':')
+		try:
+			alreadyTaken = students.count({"Username": username})
+		except:
+			print("Rose Profs is currently unavailable")
+			exit()
 		if username == "" or username.find("\"") != -1 or username.find("\'") != -1:
 			print ("Username cannot be empty or contain quotations")
-		elif students.count({"Username": username}) != 0:
+		elif alreadyTaken != 0:
 			print("Username is already taken")
 		else:
 			print("What would you like to be your password?")
@@ -77,27 +35,42 @@ while (True):
 			year = raw_input(':')
 			print("What is your primary major?")
 			major = raw_input(':')
-			add_student(username, pwd, year, major)
+			try:
+				add_student(username, pwd, year, major)
+			except:
+				print("Rose Profs is currently unavailable")
+				exit()
 			print("User added")
 			break		
 			
 			
 			
-	elif students.count({"Username": username}) != 0:
-		curs = students.find_one({"Username": username})
-		print("What is your password?")
-		pwd =  raw_input(':')
-		if (pwd == curs["Password"]):
-			print("Welcome " + username)
-			break
-		else:
-			print("Not a valid password. Please try again")
+	else: 
+		try:
+			curs = students.find_one({"Username": username})
+		except:
+			print("Rose Profs is currently unavailable")
+			exit()
+		if curs != None:
+			print("What is your password?")
+			pwd =  raw_input(':')
+			if (pwd == curs["Password"]):
+				print("Welcome " + username)
+				break
+			else:
+				print("Not a valid password. Please try again")
 
-	else:
-		print("Not a valid username. Please try again")
+		else:
+			print("Not a valid username. Please try again")
 
 if databaseOpen:
 	while (True):
+		if (logs.count({'redis': 0}) == 0):
+			redisDead = False
+			print("Quick Search Online")
+		if (logs.count({'orient': 0}) == 0):
+			orientDead = False
+			print("Recommendations Online")
 		print("What would you like to do?")
 		cmd = ""
 		while cmd == "":
@@ -116,6 +89,9 @@ if databaseOpen:
 				if redisDead:
 					try:
 						numOfProfs = professors.count({"Name": prof})
+						if numOfProfs == 0:
+							print("That is not a prof")
+							continue
 					except:
 						print("Sorry, but Rose Profs is currently down.  Please try again later")
 						exit()

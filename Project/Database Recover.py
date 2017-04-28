@@ -1,3 +1,5 @@
+
+
 def bringOrientUp():
 	uporient = logs.find({'orient': {'$not': -1}})
 	
@@ -7,7 +9,11 @@ def bringOrientUp():
 			#need to now update orient to be -1
 			if ret == 1:
 				#update here
-			
+
+
+
+
+
 def orientRateProf(record):
 	professor = record['Name']
 	student = record['Username']
