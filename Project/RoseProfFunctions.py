@@ -429,7 +429,7 @@ def del_class_from_prof(professor, number):
 	if (SQLInjectionCheck(number)):
 		print("Number cannot contain special characters")
 		return
-		
+
 	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$pull': {
