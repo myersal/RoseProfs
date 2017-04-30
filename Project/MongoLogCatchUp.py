@@ -16,7 +16,8 @@ try:
 	logs = db.logs
 except:
 	print("Could not connect to Mongo")
-	
+
+
 def mongoRateProf(record):
 	if students.count({"Username": record["Username"]} == 0):
 		return
@@ -49,7 +50,7 @@ while True:
 	try:
 		mongoLogsTodo = logs.find({"mongo": 0}).sort("$natural", 1)
 		for record in mongoLogsTodo:
-			if (record["type"] == "rateProf"):
+			if record["type"] == "rateProf":
 				mongoRateProf(record)
 				logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
 			

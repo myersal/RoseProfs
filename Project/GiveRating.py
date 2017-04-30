@@ -1,6 +1,3 @@
-#Give profs a rating
-
-
 import RoseProfFunctions
 from RoseProfFunctions import *
 from pprint import pprint
@@ -8,13 +5,12 @@ import sys
 import re
 
 
-
-
 print("Welcome to Rose Profs!!!!\n")
 print("\n")
 print("Please type your username to log in.\n  Or type new to make a new user")
 
-while (True):
+
+while True:
 	username = raw_input(':')
 	if username == "new":
 		print("What would you like your username to be?")
@@ -42,9 +38,7 @@ while (True):
 				exit()
 			print("User added")
 			break		
-			
-			
-			
+
 	else: 
 		try:
 			curs = students.find_one({"Username": username})
@@ -53,8 +47,8 @@ while (True):
 			exit()
 		if curs != None:
 			print("What is your password?")
-			pwd =  raw_input(':')
-			if (pwd == curs["Password"]):
+			pwd = raw_input(':')
+			if pwd == curs["Password"]:
 				print("Welcome " + username)
 				break
 			else:
@@ -64,11 +58,11 @@ while (True):
 			print("Not a valid username. Please try again")
 
 if databaseOpen:
-	while (True):
-		if (logs.count({'redis': 0}) == 0):
+	while True:
+		if logs.count({'redis': 0}) == 0:
 			redisDead = False
 			print("Quick Search Online")
-		if (logs.count({'orient': 0}) == 0):
+		if logs.count({'orient': 0}) == 0:
 			orientDead = False
 			print("Recommendations Online")
 		print("What would you like to do?")
@@ -100,8 +94,15 @@ if databaseOpen:
 				print("That is not a prof")
 				continue
 			points = 8;
-			print("You have 8 points to distribute among these four catagories: Communication\nGrading\nHelpfulness\nCoolness")
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Communication?  \nYou have " + str(points) + " points left!")
+			print(
+				"You have 8 points to distribute among these four categories: "
+				"Communication\nGrading\nHelpfulness\nCoolness"
+			)
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank this professors Communication?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			comm = raw_input(':')
 			try:
 				comm = int(comm)
@@ -109,15 +110,17 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - comm
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (comm > 4):
+			if comm > 4:
 				print("The max rating is 4")
 				continue
-				
-				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Grading?  \nYou have " + str(points) + " points left!")
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank this professors Grading?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			grade = raw_input(':')
 			try:
 				grade = int(grade)
@@ -125,15 +128,17 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - grade
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (grade > 4):
+			if grade > 4:
 				print("The max rating is 4")
 				continue
-				
-				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this professors Helpfulness?  \nYou have " + str(points) + " points left!")
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank this professors Helpfulness?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			helpp = raw_input(':')
 			try:
 				helpp = int(helpp)
@@ -141,24 +146,16 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - helpp
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (helpp > 4):
+			if helpp > 4:
 				print("The max rating is 4")
 				continue
-			
 			cool = points
 			print("That leaves " + str(points) + " points for the coolness rating!")
-			
-			
-			#students.update({"Username": username}, {"$addToSet": {"ProfRatings": {'Professor': prof,'Communication':comm, "Grading": grade, "Helpfulness" : helpp, "Coolness" : cool}}})
-			
-			
 			rateProf(username, prof, comm, grade, helpp, cool)
 
-			
-			
 		elif cmd.lower() == "rate class":
 			print("What professor teaches this class?")
 			prof = raw_input(':')
@@ -175,8 +172,15 @@ if databaseOpen:
 				print("That is not a class")
 				continue
 			points = 8;
-			print("You have 8 points to distribute among these four catagories: Amount of Work\nDifficulty\nFunness\nKnowledge of Prof")
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this class's amount of work?  \nYou have " + str(points) + " points left!")
+			print(
+				"You have 8 points to distribute among these four catagories: "
+				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
+			)
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank this class's amount of work?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			work = raw_input(':')
 			try:
 				work = int(work)
@@ -184,15 +188,17 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - work
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (work > 4):
+			if work > 4:
 				print("The max rating is 4")
 				continue
-				
-				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank this classes technical difficulty?  \nYou have " + str(points) + " points left!")
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank this classes technical difficulty?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			diff = raw_input(':')
 			try:
 				diff = int(diff)
@@ -200,15 +206,17 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - diff
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (diff > 4):
+			if diff > 4:
 				print("The max rating is 4")
 				continue
-				
-				
-			print("On a scale from 0-4 with 4 being the most positive, \nhow do you rank how much fun this class is?  \nYou have " + str(points) + " points left!")
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank how much fun this class is?  \n"
+				"You have " + str(points) + " points left!"
+			)
 			fun = raw_input(':')
 			try:
 				fun = int(fun)
@@ -216,40 +224,35 @@ if databaseOpen:
 				print("That is not a integer between 0 and 4")
 				continue
 			points = points - fun
-			if (points < 0):
+			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if (fun > 4):
+			if fun > 4:
 				print("The max rating is 4")
 				continue
-			
 			know = points
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
-			
-			
-			
 			rateClass(username, prof, classToRate, work, diff, fun, know)
 
-		
-		elif(cmd.lower() == "edit major" or cmd.lower() == "editmajor"):
+		elif cmd.lower() == "edit major" or cmd.lower() == "editmajor":
 			print("What is your new major?")
 			maj = raw_input(':')
 			edit_student_major(username, maj)
 			print("Major changed!")
 	
-		elif(cmd.lower() == "edit year" or cmd.lower() == "edityear"):
+		elif cmd.lower() == "edit year" or cmd.lower() == "edityear":
 			print("What is your new year?")
 			year = raw_input(':')
 			edit_student_year(username, year)
 			print("Year changed!")
 		
-		elif(cmd.lower() == "edit password" or cmd.lower() == "editpassword"):
+		elif cmd.lower() == "edit password" or cmd.lower() == "editpassword":
 			print("What is your new password?")
 			pwd = raw_input(':')
 			edit_student_password(username, pwd)
 			print("Password changed!")
 	
-		elif(cmd.lower() == "edit username" or cmd.lower() == "editusername"):
+		elif cmd.lower() == "edit username" or cmd.lower() == "editusername":
 			print("What is your new username?")
 			pwd = raw_input(':')
 			if students.count({"Username": username}) == 0:
@@ -259,7 +262,7 @@ if databaseOpen:
 				print("Username exists!")
 				continue
 			
-		elif(cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor"):
+		elif cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor":
 			print("Who is the new Professor?")
 			name = raw_input(':')
 			if professors.count({"Name": name}) != 0: 
@@ -272,18 +275,16 @@ if databaseOpen:
 			dept = raw_input(':')
 			add_prof(name, dept)
 			print("Prof added!")
-			
-		
-		elif(cmd.lower() == "edit department" or cmd.lower() == "editdepartment"):
+
+		elif cmd.lower() == "edit department" or cmd.lower() == "editdepartment":
 			print("Who is the Professor?")
 			name = raw_input(':')
 			print("What is his/her new department")
 			dept = raw_input(':')
 			edit_prof_dept(name, dept)
 			print("Department changed!")
-			
-		
-		elif(cmd.lower() == "edit professor name" or cmd.lower() == "editprofessorname" or cmd.lower() == "edit prof name" or cmd.lower() == "editprofname"):
+
+		elif cmd.lower() == "edit professor name" or cmd.lower() == "editprofessorname" or cmd.lower() == "edit prof name" or cmd.lower() == "editprofname":
 			print("Who is the Professor?")
 			name = raw_input(':')
 			print("What is his/her new name?")
@@ -295,24 +296,20 @@ if databaseOpen:
 			else:
 				print("Professor name exists!")
 				continue
-				
-		
-			
-		elif(cmd.lower() == "delete professor" or cmd.lower() == "deleteprofessor" or cmd.lower() == "delete prof" or cmd.lower() == "deleteprof"):
+
+		elif cmd.lower() == "delete professor" or cmd.lower() == "deleteprofessor" or cmd.lower() == "delete prof" or cmd.lower() == "deleteprof":
 			print("Who is the Professor to be deleted?")
 			name = raw_input(':')
-			
 			if professors.count({"Name": name}) > 0:
 				del_prof(name)
 				print("Professor deleted")
 			else:
 				print("Professor does not exist!")
 				continue
-	
-		elif(cmd.lower() == "end" or cmd.lower() == "End" or cmd.lower() == "END" or cmd.lower() == "quit"):
-				pizza = 8 / 0
-	
-		elif(cmd.lower() == "new class" or cmd.lower() == "new class"):
+		elif cmd.lower() == "end" or cmd.lower() == "End" or cmd.lower() == "END" or cmd.lower() == "quit":
+				break
+
+		elif cmd.lower() == "new class" or cmd.lower() == "new class":
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
 			if professors.count({"Name": professor}) == 0:
@@ -328,45 +325,16 @@ if databaseOpen:
 			alt_dept = raw_input(':')
 			print("Is this a general class? \"yes\" or \"no\"")
 			gen = raw_input(':')
-			if (gen.lower() == "yes" or gen.lower == "y"):
+			if gen.lower() == "yes" or gen.lower == "y":
 				gen = "True"
-			if (gen.lower() == "no" or gen.lower == "n"):
+			if gen.lower() == "no" or gen.lower == "n":
 				gen = "False"
-			if (gen != "False" and gen != "True"):
+			if gen != "False" and gen != "True":
 				print("Invalid input. Make sure it is yes or no")
 				continue
 			add_class_to_prof(professor, name, num, dept, alt_dept, gen)
 
-			
-			
-			
-			
-	
-		#elif(cmd.lower() = "edit class name" or cmd.lower() = "edit classname" or cmd.lower() = "editclassname" or cmd.lower() = "editclass name"):
-			#print("What is the professor of the class to be edited?")
-			#professor = raw_input(':')
-			#if profs.count({"Name": professor} == 0):
-				#print("Professor does not exist")
-				#continue
-			#print("What is the number of the class to be edited?")
-			#num = raw_input(':')
-			#try:
-				#int(conn.zrank("classes", num))
-			#except:
-				#print("Not a valid class number")
-				#continue
-				
-			#print("What is the new name?")
-			#new_name = raw_input(':')
-			
-			
-			#edit_class_name(professor, num, new_name)
-
-
-				
-
-
-		elif(cmd.lower() == "delete class" or cmd.lower() == "deleteclass"):
+		elif cmd.lower() == "delete class" or cmd.lower() == "deleteclass":
 			print("Who is the Professor who teaches the class?")
 			professor = raw_input(':')
 			if professors.count({"Name": professor}) == 0:
@@ -381,29 +349,21 @@ if databaseOpen:
 				continue
 			del_class_from_prof(professor, num)
 
-				
-		elif(cmd.lower() == "create forum" or cmd.lower() == "createforum"):
+		elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
 			createForum(username)
-		elif(cmd.lower() == "log out" or cmd.lower() == "logout"):
+
+		elif cmd.lower() == "log out" or cmd.lower() == "logout":
 			print("You just logged out!!!!! Bye!")	
 			break
-		
-		elif(cmd.lower() == "delete profile" or cmd.lower() == "deleteprofile"):
-			print("Are you sure you want to PERMANTLY delete your profile? Type yes if you do.")
+
+		elif cmd.lower() == "delete profile" or cmd.lower() == "deleteprofile":
+			print("Are you sure you want to PERMANENTLY delete your profile? Type yes if you do.")
 			ans = raw_input(":")
-			if (ans.lower() == "yes"):
+			if ans.lower() == "yes":
 				del_student(username)
 				break
-			
+
 		else:
 			print("invalid command")
 
-		
-
-
-	
-
-
-
-
-
+print("Exiting Rose Profs...")

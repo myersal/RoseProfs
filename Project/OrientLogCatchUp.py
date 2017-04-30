@@ -9,9 +9,9 @@ import re
 try:
 	import pyorient
 	import pyorient.ogm
-	client = pyorient.OrientDB("137.112.104.108", 2424);
-	session_id = client.connect( "root", "wai3feex" );
-	client.db_open( "roseprofs", "admin", "admin" );
+	client = pyorient.OrientDB("137.112.104.108", 2424)
+	session_id = client.connect( "root", "wai3feex" )
+	client.db_open("roseprofs", "admin", "admin")
 except:
 	print("Could Not Connect to Orient")
 
@@ -32,8 +32,8 @@ def orientRateProf(record):
 	helpp = record['Helpfulness']
 	cool = record['Coolness']
 	
-	profs = client.command("select * from prof where name = '" + professor + "'");
-	studs = client.command("select * from stud where username = '" + student  + "'");	
+	profs = client.command("select * from prof where name = '" + professor + "'")
+	studs = client.command("select * from stud where username = '" + student + "'")
 	
 	#findUp = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid + " and cool = " + str(cool) + " and help = " + str(helpp) + "and comm = " + str(comm) + " and grad = " + str(grade))
 	
@@ -41,8 +41,7 @@ def orientRateProf(record):
 		currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
 		if(len(currentEdges) == 0):
 			client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
-			
-			
+
 	return 1;	
 	
 print("Data is being brought up to date!")

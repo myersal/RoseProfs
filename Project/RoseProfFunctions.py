@@ -12,7 +12,6 @@ from datetime import datetime
 
 
 def rateProf(username, professor, comm, grade, helpp, cool):
-	
 	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
 		return
@@ -33,7 +32,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 		return
 	
 	try:
-		mongLog = logs.insert_one({'mongo': 0, 'redis':-1, 'orient':0, 'type': 'rateProf', 'Username': username, 'Name': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
+		mongLog = logs.insert_one({'mongo': 0, 'redis': -1, 'orient': 0, 'type': 'rateProf', 'Username': username, 'Name': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
 	except:
 		print("Sorry but Rose Profs is down.  Please try again later.")
 		exit()
@@ -42,7 +41,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 		res = students.update_one(
 			{'Username': username},
 			{'$addToSet': {
-				'ProfRating': 
+				'ProfRating':
 					{
 						'Name': professor,
 						'Communication': comm,
@@ -50,7 +49,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 						'Helpfulness': helpp,
 						'Coolness': cool
 					}
-				
+
 			}}
 		)
 	except:
@@ -68,12 +67,12 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	if not RoseProfConnections.orientDead:
 		try:
 			profs = client.command("select * from prof where name = '" + professor + "'");
-			studs = client.command("select * from stud where username = '" + username  + "'");	
+			studs = client.command("select * from stud where username = '" + username + "'");
 	
-			if(len(profs) != 0 and len(studs) != 0):
+			if len(profs) != 0 and len(studs) != 0:
 				currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
 		
-				if(len(currentEdges) == 0):
+				if len(currentEdges) == 0:
 					#insert edge
 					new_edge = client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
 				
@@ -160,35 +159,40 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 def add_prof(name, dept):
 	if professors.count({'Name': str(name)}) != 0:
 		return 0
-	
-	if (SQLInjectionCheck(name)):
+	if SQLInjectionCheck(name):
 		print("Professor cannot contain special characters")
 		return
-		
-	if (SQLInjectionCheck(dept)):
+	if SQLInjectionCheck(dept):
 		print("Department cannot contain special characters")
 		return
-	
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_prof', 'Name': name, 'Department': dept})
+
 	res = professors.insert_one(
 		{
 			'Name': str(name),
 			'Department': str(dept)
 		}
 	)
+
+	logs.update_one({'_id': log.inserted_id}, {'$set': {'mongo': -1}})
 	conn.zadd("professors", name, "0")
+	logs.update_one({'_id': log.inserted_id}, {'$set': {'redis': -1}})
 	try:
 		addProf(name)
+		logs.update_one({'_id': log.inserted_id}, {'$set': {'orient': -1}})
 	except:
 		print("Orient Failed to add prof")
 	return res
-	
+
+
 def addProf(name):
 	profs = client.command("select * from prof where name = '" + name + "'")
 	if(len(profs) == 0):
 		new_vertex = client.command("create vertex prof set name = '" + name + "'")
 	else:
 		print("the professor already exists")
-	
 
 	
 def createForum(username):
