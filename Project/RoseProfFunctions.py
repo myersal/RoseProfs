@@ -32,7 +32,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 		return
 	
 	try:
-		mongLog = logs.insert_one({'mongo': 0, 'redis': -1, 'orient': 0, 'type': 'rateProf', 'Username': username, 'Name': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
+		mongLog = logs.insert_one({'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_prof', 'Username': username, 'Professor': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
 	except:
 		print("Sorry but Rose Profs is down.  Please try again later.")
 		exit()
@@ -122,6 +122,10 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 	classes = client.command("select * from prof_class where name = '" + professor + "' and number = '" + clas + "'");
 	studs = client.command("select * from stud where username = '" + username + "'");
 
+	mongLog = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_class', 'Username': username, 'Professor': professor,
+		'Class_Number': clas, 'Workload': grade, 'Difficulty': diff, 'Fun': fun, 'Knowledge': know})
+
 	if (len(classes) != 0 and len(studs) != 0):
 		currentEdges = client.command(
 			"select * from class_rate where out = " + studs[0]._rid + " and in = " + classes[0]._rid);
@@ -203,7 +207,7 @@ def createForum(username):
 	boolProffessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 
 
-	if(boolProffessor.lower() == 'yes'):
+	if boolProffessor.lower() == 'yes':
 		prof = raw_input('please input the professor\'s name: ')
 		numOfProfs = -1
 		if not RoseProfConnections.redisDead:
@@ -232,32 +236,42 @@ def createForum(username):
 
 	#Now for the important part, the above may change when the application is actually in user
 
-	answer = raw_input('is the given information correct yes/no (no if yes is not input): ');
+	answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
 
 	if(answer.lower() == 'yes'):
-		time = strftime('%Y-%j-%d %H:%M:%S', gmtime());
+		time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
+
+		mongLog = logs.insert_one({
+			'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'create_forum', 'Subject': subject,
+			'Username': username, 'Content': message, 'Date': time})
 
 		pointer = db.forums.insert(
 			{
-				'subject': subject,
-				'message':
-					{
-						'username': username,
-						'content': message,
-						'date': time
-					}
+				'Subject': subject,
+				'Message':
+					[
+						{
+							'Username': username,
+							'Content': message,
+							'Date': time
+						}
+					]
 			}
-		);
+		)
 		
 		if(boolProffessor.lower() == 'yes'):
-			print(pointer);
-			print('attempting');
-			db.forums.update({'_id': pointer}, {'$set': {'proffessor': prof}});
+			print(pointer)
+			print('attempting')
+			db.forums.update({'_id': pointer}, {'$set': {'proffessor': prof}})
 		
-		print('forum created');
+		print('forum created')
+
 
 #never called
 def edit_prof_name(name, new_name):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_name', 'Name': name, 'New_Name': new_name})
+
 	res = professors.update_one(
 		{'Name': str(name)},
 		{'$set': {'Name': str(new_name)}}
@@ -272,6 +286,9 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': -1, 'orient': -1, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
+
 	res = professors.update_one(
 		{'Name': str(name)},
 		{'$set': {'Department': str(new_dept)}}
@@ -284,6 +301,9 @@ def del_prof(name):
 	if (SQLInjectionCheck(name)):
 		print("professor cannot contain special characters")
 		return
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_prof', 'Name': name})
 
 	res = professors.delete_one({'Name': str(name)})
 	conn.zrem("professors", name)
@@ -320,7 +340,11 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		print("class pair already exists");
 		return 0
-	
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_class_to_prof', 'Professor':professor, 'Name': name,
+		'Number': str(number), 'Department': str(dept), 'Cross-list-Department': str(alt_dept), 'Generic': str(gen)})
+
 	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$addToSet':{
@@ -362,6 +386,11 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 
 
 def edit_class_name(professor, number, new_name):
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': -1, 'orient': -1, 'type': 'edit_class_name', 'Professor': professor, 'Number': number,
+		'Name': new_name})
+
 	res = professors.update_one(
 		{
 			'Name': str(professor),
@@ -375,6 +404,10 @@ def edit_class_name(professor, number, new_name):
 
 
 def edit_class_number(professor, number, new_number):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_number', 'Professor': professor, 'Number': number,
+		'New_Number': new_number})
+
 	res = professors.update_one(
 		{
 			'Name': str(professor),
@@ -388,6 +421,9 @@ def edit_class_number(professor, number, new_number):
 
 
 def edit_class_dept(professor, number, new_dept):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_dept', 'Professor': professor,
+		'Number': number, 'Department': new_dept})
 	res = professors.update_one(
 		{
 			'Name': str(professor),
@@ -401,6 +437,9 @@ def edit_class_dept(professor, number, new_dept):
 
 
 def edit_class_alt_dept(professor, number, new_alt_dept):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_alt_dept', 'Professor': professor,
+		'Number': number, 'Alt_Department': new_alt_dept})
 	res = professors.update_one(
 		{
 			'Name': str(professor),
@@ -414,6 +453,9 @@ def edit_class_alt_dept(professor, number, new_alt_dept):
 
 
 def edit_class_gen(professor, number, new_gen):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_gen', 'Professor': professor,
+		'Number': number, 'Generic': gen})
 	res = professors.update_one(
 		{
 			'Name': str(professor),
@@ -434,6 +476,9 @@ def del_class_from_prof(professor, number):
 		print("Number cannot contain special characters")
 		return
 
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_class_from_prof', 'Professor': professor,
+		'Number': number})
 	res = professors.update_one(
 		{'Name': str(professor)},
 		{'$pull': {
@@ -459,7 +504,11 @@ def add_student(username, password, year, major):
 	if (SQLInjectionCheck(username)):
 		print("usernames cannot contain special characters")
 		return
-	
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_student', 'Username': str(username),
+		'Password': str(password), 'Year': str(year), 'Major': str(major)})
+
 	res = students.insert_one(
 		{
 				'Username': str(username),
@@ -473,7 +522,8 @@ def add_student(username, password, year, major):
 	except:
 		print("Orient fail 230")
 	return res
-	
+
+
 def addStudent(username):
 	studs = client.command("select * from stud where username = '" + username + "'")
 	if(len(studs) == 0):
@@ -481,8 +531,13 @@ def addStudent(username):
 	else:
 		print("the user already exists")
 
+
 # is never called, don't worry about it
 def edit_student_username(username, new_username):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_username', 'Username': username,
+		'New_Username': new_username})
+
 	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Username': str(new_username)}}
@@ -491,6 +546,10 @@ def edit_student_username(username, new_username):
 
 
 def edit_student_password(username, new_password):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_password', 'Username': username,
+		'Password': str(new_password)})
+
 	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Password': str(new_password)}}
@@ -499,6 +558,10 @@ def edit_student_password(username, new_password):
 
 
 def edit_student_year(username, new_year):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_year', 'Username': username,
+		'Year': str(new_year)})
+
 	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Year': str(new_year)}}
@@ -507,17 +570,25 @@ def edit_student_year(username, new_year):
 
 
 def edit_student_major(username, new_major):
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_major', 'Username': username,
+		'Major': str(new_major)})
+
 	res = students.update_one(
 		{'Username': str(username)},
 		{'$set': {'Major': str(new_major)}}
 	)
 	return res
 
+
 def del_student(username):
 
 	if (SQLInjectionCheck(username)):
 		print("Number cannot contain special characters")
-		return 
+		return
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_student', 'Username': username})
+
 	#not sure if this delete is correct, but it is what I'm using
 	client.command("delete vertex stud where username = '" + username + "'")
 		
