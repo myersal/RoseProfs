@@ -124,7 +124,7 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 
 	mongLog = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_class', 'Username': username, 'Professor': professor,
-		'Class_Number': clas, 'Workload': grade, 'Difficulty': diff, 'Fun': fun, 'Knowledge': know})
+		'Class_Number': clas, 'Workload': work, 'Difficulty': diff, 'Fun': fun, 'Knowledge': know})
 
 	if (len(classes) != 0 and len(studs) != 0):
 		currentEdges = client.command(

@@ -26,7 +26,7 @@ except:
 
 def orientRateProf(record):
 	#TODO check to ensure the variables are the same
-	professor = record['Name']
+	professor = record['Professor']
 	student = record['Username']
 	comm = record['Communication']
 	grade = record['Grading']
@@ -47,12 +47,13 @@ def orientRateProf(record):
 
 def orientRateClass(record):
 
-	professor = record['Name']
+	professor = record['Professor']
 	username = record['Username']
-	clas = record['Class']
+	clas = record['Class_Number']
 	diff = record['Difficulty']
-	
-	#TODO need to finish variables and check to see if above are correct
+	fun = record['Fun']
+	know = record['Knowledge']
+	work = record['Workload']
 	
 	classes = client.command("select * from prof_class where name = '" + professor + "' and number = '" + clas + "'");
 	studs = client.command("select * from stud where username = '" + username + "'");
@@ -73,8 +74,8 @@ def orientRateClass(record):
 		return 0
 		
 def orientAddProf(record):
-	#TODO need to add variables in
 	
+	name = record['Name']
 	
 	profs = client.command("select * from prof where name = '" + name + "'")
 	if(len(profs) == 0):
@@ -83,7 +84,7 @@ def orientAddProf(record):
 		print("the professor already exists")
 
 def orientDelProf(record):
-	#TODO need to add variables in
+	name = record['Name']
 	
 	#don't need to check inputs since the sql check has already been done an if it doesn't exist then nothing occurs
 	
@@ -91,7 +92,8 @@ def orientDelProf(record):
 
 def orientAddClassToProf(record):
 
-	#TODO need to add variables in
+	number = record['Number']
+	professor = record['Professor']
 
 	checkClass = client.command("select * from class where number = '" + number +"'");
 	classes = [];
@@ -115,7 +117,8 @@ def orientAddClassToProf(record):
 	
 def orientDelClassFromProf(record):
 
-	#TODO need to add variables in
+	professor = record['Professor']
+	number = record['Number']
 	
 	#don't need to check inputs since the sql check has already been done an if it doesn't exist then nothing occurs
 
@@ -123,14 +126,14 @@ def orientDelClassFromProf(record):
 	
 
 def orientAddStudent(record):
-	#TODO need to add variables in
+	username = record['Username']
 
 	studs = client.command("select * from stud where username = '" + username + "'")
 	if(len(studs) == 0):
 		new_edge = client.command("create vertex stud set username = '" + username + "'")
 	
 def orientDeleteStudent(record):
-	#TODO need to add variables in
+	username = record['Username']
 	
 	#if the student doesn't exist then nothing occurs
 
@@ -152,21 +155,77 @@ while True:
 		
 	try:
 		orientLogsTodo = logs.find({"orient": 0}).sort("$natural", 1)
+		#found one huge error in current logs!!! if it doesnt go through the first time then we need to continue the while loop, not continue the for loop
 		for record in orientLogsTodo:
-			if (record["type"] == "rateProf"):
+			if (record["type"] == "rate_prof"):
 				try:
 					orientRateProf(record)
 				except:
 					print("Orient Down")
 					continue
-				logs.update_one({'_id': record["_id"]}, {'$set' : {'orient': -1}})
+				updateLog(record)
 				
-			elif:
+			elif (record["type"] == "rate_class"):
+				try:
+					orientRateClass(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
 				
+			elif (record["type"] == "add_prof"):
+				try:
+					orientAddProf(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
 				
+			elif (record["type"] == "del_prof"):
+				try:
+					orientDelProf(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
+			
+			elif (record["type"] == "add_class_to_prof"):
+				try:
+					orientAddClassToProf(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
+				
+			elif (record["type"] == "del_class_from_prof"):
+				try:
+					orientDelClassFromProf(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
+			
+			elif (record["type"] == "add_student"):
+				try:
+					orientAddStudent(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
+			
+			elif (record["type"] == "del_student"):
+				try:
+					orientDeleteStudent(record)
+				except:
+					print("Orient Down")
+					continue
+				updateLog(record)
+			
 			else:
 				try:
 					updateLog(record)
+				except:
+					print("Mongo Down")
 					
 			
 	except Exception as e:
