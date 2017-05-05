@@ -30,170 +30,74 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	if SQLInjectionCheck(cool):
 		print("Coolness score cannot contain special characters")
 		return
-	
+	if students.count({"Username": username} == 0):
+		return
+	if not conn.zscore('professors', professor) > 0:
+		return
+
 	try:
-		mongLog = logs.insert_one({'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_prof', 'Username': username, 'Professor': professor, 'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
+		log = logs.insert_one({
+			'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_prof', 'Username': username, 'Professor': professor,
+			'Communication': comm, 'Grading': grade, 'Helpfulness': helpp, 'Coolness': cool})
 	except:
 		print("Sorry but Rose Profs is down.  Please try again later.")
 		exit()
-	
-	try:
-		res = students.update_one(
-			{'Username': username},
-			{'$addToSet': {
-				'ProfRating':
-					{
-						'Name': professor,
-						'Communication': comm,
-						'Grading': grade,
-						'Helpfulness': helpp,
-						'Coolness': cool
-					}
-
-			}}
-		)
-	except:
-		print("Sorry but Rose Profs is down.  Please try again later.")
-		exit()
-		
-	#try:
-	logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'mongo': -1}})
-	#except:
-		#print("Sorry but Rose Profs is down.  Please try again later.")
-		#exit()
-		
-	profs = []
-	studs = []
-	if not RoseProfConnections.orientDead:
-		try:
-			profs = client.command("select * from prof where name = '" + professor + "'");
-			studs = client.command("select * from stud where username = '" + username + "'");
-	
-			if len(profs) != 0 and len(studs) != 0:
-				currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
-		
-				if len(currentEdges) == 0:
-					#insert edge
-					new_edge = client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
-				
-				else:
-					print("the user has already rated the professor");
-					return 0;
-			else:
-				print("the professor does not exist")
-				return 0
-		except:
-			print("Some functionality may be slower and/or limited due to problems outside of your control")
-			RoseProfConnections.orientDead = True
-		if not RoseProfConnections.orientDead:
-			try:
-				logs.update_one({'_id': mongLog.inserted_id}, {'$set' : {'orient': -1}})
-			except:
-				print("Sorry but Rose Profs is down.  Please try again later.")
-				exit()
-
-	
-	return res
+	return log
 
 
 def rateClass(username, professor, clas, work, diff, fun, know):
-	if (SQLInjectionCheck(username)):
+	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
 		return
-	if (SQLInjectionCheck(professor)):
+	if SQLInjectionCheck(professor):
 		print("Professor cannot contain special characters")
 		return
-	if (SQLInjectionCheck(clas)):
+	if SQLInjectionCheck(clas):
 		print("Class Number cannot contain special characters")
 		return
-	if (SQLInjectionCheck(work)):
+	if SQLInjectionCheck(work):
 		print("Workload score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(diff)):
+	if SQLInjectionCheck(diff):
 		print("Difficulty score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(fun)):
+	if SQLInjectionCheck(fun):
 		print("Fun score cannot contain special characters")
 		return
-	if (SQLInjectionCheck(know)):
+	if SQLInjectionCheck(know):
 		print("Knowledge score cannot contain special characters")
 		return
+	if students.count({"Username": username} == 0):
+		return
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(clas, professor) > 0:
+		return
 
-	classes = client.command("select * from prof_class where name = '" + professor + "' and number = '" + clas + "'");
-	studs = client.command("select * from stud where username = '" + username + "'");
-
-	mongLog = logs.insert_one({
+	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_class', 'Username': username, 'Professor': professor,
 		'Class_Number': clas, 'Workload': work, 'Difficulty': diff, 'Fun': fun, 'Knowledge': know})
-
-	if (len(classes) != 0 and len(studs) != 0):
-		currentEdges = client.command(
-			"select * from class_rate where out = " + studs[0]._rid + " and in = " + classes[0]._rid);
-
-		if (len(currentEdges) == 0):
-			# insert edge
-			new_edge = client.command(
-				"create edge class_rate from " + studs[0]._rid + " to " + classes[0]._rid + " set work = " + str(
-					work) + ", diff = " + str(diff) + ", fun = " + str(fun) + ", know = " + str(know));
-
-		else:
-			print("the user has already rated the professor")
-			return 0
-	else:
-		print("class does not exist")
-		return 0
-
-	res = students.update_one(
-		{'Username': username},
-		{'$addToSet': {
-			'ClassRating': 
-				{
-					'Professor': professor,
-					'Class_Number': clas,
-					'Workload': work,
-					'Difficulty': diff,
-					'Fun': fun,
-					'Professor_Knowledge': know
-				}
-		}}
-	)
-	return res
+	return log
 
 
 def add_prof(name, dept):
-	if professors.count({'Name': str(name)}) != 0:
-		return 0
 	if SQLInjectionCheck(name):
 		print("Professor cannot contain special characters")
 		return
 	if SQLInjectionCheck(dept):
 		print("Department cannot contain special characters")
 		return
+	if conn.zscore('professors', professor) > 0:
+		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_prof', 'Name': name, 'Department': dept})
 
-	res = professors.insert_one(
-		{
-			'Name': str(name),
-			'Department': str(dept)
-		}
-	)
-
-	logs.update_one({'_id': log.inserted_id}, {'$set': {'mongo': -1}})
-	conn.zadd("professors", name, "0")
-	logs.update_one({'_id': log.inserted_id}, {'$set': {'redis': -1}})
-	try:
-		addProf(name)
-		logs.update_one({'_id': log.inserted_id}, {'$set': {'orient': -1}})
-	except:
-		print("Orient Failed to add prof")
-	return res
-
+	return log
 
 def addProf(name):
 	profs = client.command("select * from prof where name = '" + name + "'")
-	if(len(profs) == 0):
+	if len(profs) == 0:
 		new_vertex = client.command("create vertex prof set name = '" + name + "'")
 	else:
 		print("the professor already exists")
@@ -269,6 +173,8 @@ def createForum(username):
 
 #never called
 def edit_prof_name(name, new_name):
+	if not conn.zscore('professors', professor) > 0:
+		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_name', 'Name': name, 'New_Name': new_name})
 
@@ -286,242 +192,152 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
+	if not conn.zscore('professors', professor) > 0:
+		return
 	log = logs.insert_one({
-		'mongo': 0, 'redis': -1, 'orient': -1, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
-
-	res = professors.update_one(
-		{'Name': str(name)},
-		{'$set': {'Department': str(new_dept)}}
-	)
-	return res
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
+	return log
 
 
 def del_prof(name):
-
 	if (SQLInjectionCheck(name)):
 		print("professor cannot contain special characters")
+		return
+	if not conn.zscore('professors', professor) > 0:
 		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_prof', 'Name': name})
 
-	res = professors.delete_one({'Name': str(name)})
-	conn.zrem("professors", name)
-	classes = conn.zrangebyscore("classes", 0, -1)
-	for c in classes:
-		conn.zrem(c, name)
-		
-	client.command("delete vertex prof where name = '" + name + "'")
-	
-	return res
+	return log
 
 
 def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	
-	if (SQLInjectionCheck(professor)):
+	if SQLInjectionCheck(professor):
 		print("professor cannot contain special characters")
 		return
-	if (SQLInjectionCheck(name)):
+	if SQLInjectionCheck(name):
 		print("Username cannot contain special characters")
 		return
-	if (SQLInjectionCheck(number)):
+	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
 		return
-	if (SQLInjectionCheck(dept)):
+	if SQLInjectionCheck(dept):
 		print("Dept cannot contain special characters")
 		return
-	if (SQLInjectionCheck(alt_dept)):
+	if SQLInjectionCheck(alt_dept):
 		print("alt_dept cannot contain special characters")
 		return
-	if (SQLInjectionCheck(gen)):
+	if SQLInjectionCheck(gen):
 		print("gen cannot contain special characters")
 		return
-
-	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
-		print("class pair already exists");
-		return 0
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if conn.zscore(number, professor) > 0:
+		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_class_to_prof', 'Professor':professor, 'Name': name,
 		'Number': str(number), 'Department': str(dept), 'Cross-list-Department': str(alt_dept), 'Generic': str(gen)})
 
-	res = professors.update_one(
-		{'Name': str(professor)},
-		{'$addToSet':{
-			'Classes':
-			{
-				'Name': str(name),
-				'Number': str(number),
-				'Department': str(dept),
-				'Cross-list-Department': str(alt_dept),
-				'Generic': str(gen)
-			}
-		}}
-	)
-	
-	conn.zadd("classes", number, "0")
-	conn.zadd(number, professor, "0")
-
-	checkClass = client.command("select * from class where number = '" + number +"'");
-	classes = [];
-	if len(checkClass) == 0:
-		classes = client.command("create vertex class set number = '" + number + "'")
-	else:
-		classes = client.command("select * from class where number = '" + number + "'")
-	
-	profs = client.command("select * from prof where name = '" + professor + "'")
-	if len(classes) > 0 and len(profs) > 0:
-		newVars = client.command("SELECT * FROM prof_class WHERE number = '" + number + "' AND name = '" + professor + "'")
-		if (len(newVars) > 0):
-			print("Professor already has the class")
-			return 0
-		new_vertex = client.command("create vertex prof_class set number = '" + number + "', name = '" + professor + "'")
-		new_edge = client.command("create edge teaches from " + profs[0]._rid + " to " + new_vertex[0]._rid)
-		new_edge2 = client.command("create edge class_of from " + new_vertex[0]._rid + " to " + classes[0]._rid)
-	else:
-		print("the class and/or the professor does not exist")
-		return 0
-
-	return res
+	return log
 
 
 def edit_class_name(professor, number, new_name):
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(number, professor) > 0:
+		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': -1, 'orient': -1, 'type': 'edit_class_name', 'Professor': professor, 'Number': number,
 		'Name': new_name})
 
-	res = professors.update_one(
-		{
-			'Name': str(professor),
-			'Classes.Number': str(number)
-		},
-		{'$set': {
-			'Classes.$.Name': str(new_name)
-		}}
-	)
-	return res
+	return log
 
 
 def edit_class_number(professor, number, new_number):
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(number, professor) > 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_number', 'Professor': professor, 'Number': number,
 		'New_Number': new_number})
 
-	res = professors.update_one(
-		{
-			'Name': str(professor),
-			'Classes.Number': str(number)
-		},
-		{'$set': {
-			'Classes.$.Number': str(new_number)
-		}}
-	)
-	return res
+	return log
 
 
 def edit_class_dept(professor, number, new_dept):
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(number, professor) > 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_dept', 'Professor': professor,
 		'Number': number, 'Department': new_dept})
-	res = professors.update_one(
-		{
-			'Name': str(professor),
-			'Classes.Number': str(number)
-		},
-		{'$set': {
-			'Classes.$.Department': str(new_dept)
-		}}
-	)
-	return res
+
+	return log
 
 
 def edit_class_alt_dept(professor, number, new_alt_dept):
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(number, professor) > 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_alt_dept', 'Professor': professor,
 		'Number': number, 'Alt_Department': new_alt_dept})
-	res = professors.update_one(
-		{
-			'Name': str(professor),
-			'Classes.Number': str(number)
-		},
-		{'$set': {
-			'Classes.$.Cross-list-Department': str(new_alt_dept)
-		}}
-	)
-	return res
+
+	return log
 
 
 def edit_class_gen(professor, number, new_gen):
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if not conn.zscore(number, professor) > 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_gen', 'Professor': professor,
 		'Number': number, 'Generic': gen})
-	res = professors.update_one(
-		{
-			'Name': str(professor),
-			'Classes.Number': str(number)
-		},
-		{'$set': {
-			'Classes.$.Generic': str(new_gen)
-		}}
-	)
-	return res
+	return log
 
 
 def del_class_from_prof(professor, number):
-	if (SQLInjectionCheck(professor)):
+	if SQLInjectionCheck(professor):
 		print("Professor cannot contain special characters")
 		return
-	if (SQLInjectionCheck(number)):
+	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
+		return
+	if not conn.zscore('professors', professor) > 0:
+		return
+	if conn.zscore(number, professor) > 0:
 		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_class_from_prof', 'Professor': professor,
 		'Number': number})
-	res = professors.update_one(
-		{'Name': str(professor)},
-		{'$pull': {
-			'Classes': {
-				'Number': str(number)
-			}
-		}}
-	)
-	
-	client.command("delete vertex prof_class where name = '" + professor + "' and number = '" + number + "'")
-	
-	conn.zrem(number, professor)
-	if not conn.zrangebyscore(number, 0, -1):
-		conn.zrem("classes", number)
-		conn.delete(number)
-	return res
+	return log
 
 
 def add_student(username, password, year, major):
-	if students.count({'Username': str(username)}) != 0:
-		return 0
-		
-	if (SQLInjectionCheck(username)):
+	if SQLInjectionCheck(username):
 		print("usernames cannot contain special characters")
+		return
+	if students.count({'Username': username}) != 0:
 		return
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_student', 'Username': str(username),
 		'Password': str(password), 'Year': str(year), 'Major': str(major)})
 
-	res = students.insert_one(
-		{
-				'Username': str(username),
-				'Password': str(password),
-				'Year': str(year),
-				'Major': str(major)
-		}
-	)
-	try:
-		addStudent(username)
-	except:
-		print("Orient fail 230")
-	return res
+	return log
 
 
 def addStudent(username):
@@ -534,63 +350,58 @@ def addStudent(username):
 
 # is never called, don't worry about it
 def edit_student_username(username, new_username):
+	if students.count({'Username': username}) <= 0:
+		return
+	if students.count({'Username': new_username}) != 0:
+		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_username', 'Username': username,
 		'New_Username': new_username})
 
-	res = students.update_one(
-		{'Username': str(username)},
-		{'$set': {'Username': str(new_username)}}
-	)
-	return res
+	return log
 
 
 def edit_student_password(username, new_password):
+	if students.count({'Username': username}) <= 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_password', 'Username': username,
 		'Password': str(new_password)})
 
-	res = students.update_one(
-		{'Username': str(username)},
-		{'$set': {'Password': str(new_password)}}
-	)
-	return res
+	return log
 
 
 def edit_student_year(username, new_year):
+	if students.count({'Username': username}) <= 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_year', 'Username': username,
 		'Year': str(new_year)})
 
-	res = students.update_one(
-		{'Username': str(username)},
-		{'$set': {'Year': str(new_year)}}
-	)
-	return res
+	return log
 
 
 def edit_student_major(username, new_major):
+	if students.count({'Username': username}) <= 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_major', 'Username': username,
 		'Major': str(new_major)})
 
-	res = students.update_one(
-		{'Username': str(username)},
-		{'$set': {'Major': str(new_major)}}
-	)
-	return res
+	return log
 
 
 def del_student(username):
-
-	if (SQLInjectionCheck(username)):
+	if SQLInjectionCheck(username):
 		print("Number cannot contain special characters")
 		return
+	if students.count({'Username': username}) != 0:
+		return
+
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_student', 'Username': username})
 
-	#not sure if this delete is correct, but it is what I'm using
-	client.command("delete vertex stud where username = '" + username + "'")
-		
-	res = students.delete_one({'Username': str(username)})
-	return res
+	return log

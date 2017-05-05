@@ -70,19 +70,19 @@ while True:
 				except:
 					print("Redis down")
 					continue
-			if record["type"] == "del_prof":
+			elif record["type"] == "del_prof":
 				try:
 					del_prof(record)
 				except:
 					print("Redis down")
 					continue
-			if record["type"] == "add_class_to_prof":
+			elif record["type"] == "add_class_to_prof":
 				try:
 					add_class_to_prof(record)
 				except:
 					print("Redis down")
 					continue
-			if record["type"] == "del_class_from_prof":
+			elif record["type"] == "del_class_from_prof":
 				try:
 					del_class_from_prof(record)
 				except:
