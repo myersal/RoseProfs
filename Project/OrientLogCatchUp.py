@@ -192,8 +192,6 @@ while True:
 						orientAddClassToProf(record)
 					except:
 						print("Orient Down")
-				elif (record["type"] == "del_class_from_prof"):
-						continue
 					
 				elif (record["type"] == "del_class_from_prof"):
 					try:
