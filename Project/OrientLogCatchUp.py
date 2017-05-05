@@ -216,11 +216,8 @@ while True:
 						print("Orient Down")
 						continue
 				
-				try:
-					updateLog(record)
-					finishBool = True
-				except:
-					print("Mongo Down")
+				updateLog(record)
+				finishBool = True
 					
 			
 	except Exception as e:
