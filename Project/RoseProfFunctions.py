@@ -346,7 +346,7 @@ def del_student(username):
 	if SQLInjectionCheck(username):
 		print("Number cannot contain special characters")
 		return
-	if students.count({'Username': username}) != 0:
+	if students.count({'Username': username}) == 0:
 		return
 
 	log = logs.insert_one({
