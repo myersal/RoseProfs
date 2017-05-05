@@ -105,7 +105,7 @@ def add_prof(name, dept):
 	if SQLInjectionCheck(dept):
 		print("Department cannot contain special characters")
 		return
-	if checkIfProfessorExists(ProfName):
+	if checkIfProfessorExists(name):
 		return
 
 	log = logs.insert_one({
