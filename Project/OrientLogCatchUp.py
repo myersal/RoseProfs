@@ -4,7 +4,6 @@ Created on Apr 27, 2017
 @author: goebel
 '''
 import time
-import re
 
 try:
 	import pyorient
@@ -193,6 +192,7 @@ while True:
 						orientAddClassToProf(record)
 					except:
 						print("Orient Down")
+				elif (record["type"] == "del_class_from_prof"):
 						continue
 					
 				elif (record["type"] == "del_class_from_prof"):
