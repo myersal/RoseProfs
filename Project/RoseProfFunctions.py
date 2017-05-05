@@ -12,7 +12,6 @@ from datetime import datetime
 
 
 def rateProf(username, professor, comm, grade, helpp, cool):
-	print("A")
 	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
 		return
@@ -34,10 +33,8 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	
 	if students.count({"Username": username}) == 0:
 		return
-	print("b")
 	if conn.zscore('professors', professor) is None:
 		return
-	print("c")
 	try:
 		log = logs.insert_one({
 			'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_prof', 'Username': username, 'Professor': professor,
@@ -182,8 +179,10 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 		print("gen cannot contain special characters")
 		return
 	if conn.zscore('professors', name) is None:
+		print("professor does not exist")
 		return
 	if not conn.zscore(number, professor) is None:
+		print("professor already teaches class")
 		return
 
 	log = logs.insert_one({
