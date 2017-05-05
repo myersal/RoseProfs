@@ -69,7 +69,7 @@ def rate_class(r):
 	work = r["Workload"]
 	diff = r["Difficulty"]
 	fun = r["Fun"]
-	know = r["Professor_Knowledge"]
+	know = r["Knowledge"]
 
 	print("RATING CLASS")
 	if students.count({"Username": username}) == 0:
@@ -87,7 +87,7 @@ def rate_class(r):
 					'Workload': work,
 					'Difficulty': diff,
 					'Fun': fun,
-					'Professor_Knowledge': know
+					'Knowledge': know
 				}
 		}}
 	)
