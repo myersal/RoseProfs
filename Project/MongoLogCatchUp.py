@@ -4,7 +4,6 @@ Created on Apr 27, 2017
 @author: goebel
 '''
 import time
-import re
 
 try:
 	import pymongo
@@ -511,11 +510,14 @@ while True:
 	try:
 		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
 	except:
-		print("Mongo Down 1")
+		print("Mongo Down to remove logs")
 		continue
 		
 	try:
 		mongoLogsTodo = logs.find({"mongo": 0}).sort("$natural", 1)
+	except: 
+		print("Mongo Down to get logs")
+	try:
 		for record in mongoLogsTodo:
 			if record["type"] == "rate_prof":
 				rate_prof(record)
@@ -558,11 +560,12 @@ while True:
 			elif record["type"] == "del_student":
 				del_student(record)
 			logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
+			print(record("type") + "was executed!")
 			
 			
 	except Exception as e:
 		print str(e)
-		print("Mongo Down 2")
+		print("Mongo Down to execute logs")
 		continue
 	
 	
