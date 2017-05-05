@@ -156,74 +156,69 @@ while True:
 	try:
 		orientLogsTodo = logs.find({"orient": 0}).sort("$natural", 1)
 		#found one huge error in current logs!!! if it doesnt go through the first time then we need to continue the while loop, not continue the for loop
+		finishBool = False
 		for record in orientLogsTodo:
-			if (record["type"] == "rate_prof"):
-				try:
-					orientRateProf(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
+			finishBool = False
+			while(!finishBool):
+				if (record["type"] == "rate_prof"):
+					try:
+						orientRateProf(record)
+					except:
+						print("Orient Down")
+						continue
+					
+				elif (record["type"] == "rate_class"):
+					try:
+						orientRateClass(record)
+					except:
+						print("Orient Down")
+						continue
+					
+				elif (record["type"] == "add_prof"):
+					try:
+						orientAddProf(record)
+					except:
+						print("Orient Down")
+						continue
+					
+				elif (record["type"] == "del_prof"):
+					try:
+						orientDelProf(record)
+					except:
+						print("Orient Down")
+						continue
 				
-			elif (record["type"] == "rate_class"):
-				try:
-					orientRateClass(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
+				elif (record["type"] == "add_class_to_prof"):
+					try:
+						orientAddClassToProf(record)
+					except:
+						print("Orient Down")
+						continue
+					
+				elif (record["type"] == "del_class_from_prof"):
+					try:
+						orientDelClassFromProf(record)
+					except:
+						print("Orient Down")
+						continue
 				
-			elif (record["type"] == "add_prof"):
-				try:
-					orientAddProf(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
+				elif (record["type"] == "add_student"):
+					try:
+						orientAddStudent(record)
+					except:
+						print("Orient Down")
+						continue
 				
-			elif (record["type"] == "del_prof"):
-				try:
-					orientDelProf(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
-			
-			elif (record["type"] == "add_class_to_prof"):
-				try:
-					orientAddClassToProf(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
+				elif (record["type"] == "del_student"):
+					try:
+						orientDeleteStudent(record)
+					except:
+						print("Orient Down")
+						continue
 				
-			elif (record["type"] == "del_class_from_prof"):
-				try:
-					orientDelClassFromProf(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
-			
-			elif (record["type"] == "add_student"):
-				try:
-					orientAddStudent(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
-			
-			elif (record["type"] == "del_student"):
-				try:
-					orientDeleteStudent(record)
-				except:
-					print("Orient Down")
-					continue
-				updateLog(record)
-			
-			else:
 				try:
 					updateLog(record)
+					finishBool = True
 				except:
 					print("Mongo Down")
 					
