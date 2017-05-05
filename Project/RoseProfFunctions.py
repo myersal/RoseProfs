@@ -178,7 +178,7 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if SQLInjectionCheck(gen):
 		print("gen cannot contain special characters")
 		return
-	if conn.zscore('professors', name) is None:
+	if conn.zscore('professors', professor) is None:
 		print("professor does not exist")
 		return
 	if not conn.zscore(number, professor) is None:
