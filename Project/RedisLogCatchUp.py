@@ -29,32 +29,36 @@ except:
 
 
 def add_prof(record):
-	if conn.zscore('professors', record['Name']) > 0:
+	if not (conn.zscore('professors', record['Name']) is None):
 		return
-	conn.zadd('professors', 1, record['Name'])
+	conn.zadd('professors', record['Name'], 0)
 
 
 def del_prof(record):
-	if conn.zscore('professors', record['Name']) > 0:
-		conn.zrem('professors', record['Name'])
+	if conn.zscore('professors', record['Name']) is None:
+		return
+	conn.zrem('professors', record['Name'])
 
 
 def add_class_to_prof(record):
-	if conn.zscore('professors', record['Name']) > 0 and not conn.zscore(record['Number'], record['Professor']) > 0:
-		conn.zadd('classes', 1, record['Number'])
-		conn.zadd(record['Number'], 1, record['Professor'])
+	if (conn.zscore('professors', record['Name']) is None) or (not conn.zscore(record['Number'], record['Professor']) is None):
+		return
+	
+	conn.zadd('classes', record['Number'], 0)
+	conn.zadd(record['Number'], record['Professor'], 0)
 
 
 def del_class_from_prof(record):
-	if conn.zscore('professors', record['Name']) > 0 and conn.zscore(record['Number'], record['Professor']) > 0:
-		conn.zrem(record['Number'], record['Professor'])
-		if conn.zcount(record['Number'], 0, -1) < 0:
-			conn.zrem('classes', record['Number'])
+	if conn.zscore('professors', record['Name']) is None or (conn.zscore(record['Number'], record['Professor']) is None):
+		return
+	conn.zrem(record['Number'], record['Professor'])
+	if conn.zcount(record['Number'], 0, -1) == 0:
+		conn.zrem('classes', record['Number'])
 
 	
 print("Data is being brought up to date!")
 while True:
-	time.sleep(5)
+	time.sleep(1)
 	try:
 		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
 	except:
@@ -68,27 +72,28 @@ while True:
 				try:
 					add_prof(record)
 				except:
-					print("Redis down")
+					print("Redis down 1")
 					continue
 			elif record["type"] == "del_prof":
 				try:
 					del_prof(record)
 				except:
-					print("Redis down")
+					print("Redis down 2")
 					continue
 			elif record["type"] == "add_class_to_prof":
 				try:
 					add_class_to_prof(record)
 				except:
-					print("Redis down")
+					print("Redis down 3")
 					continue
 			elif record["type"] == "del_class_from_prof":
 				try:
 					del_class_from_prof(record)
 				except:
-					print("Redis down")
+					print("Redis down 4")
 					continue
 			logs.update_one({'_id': record["_id"]}, {'$set': {'redis': -1}})
+			print(record["type"] + " was executed!")
 
 	except Exception as e:
 		#print str(e)
