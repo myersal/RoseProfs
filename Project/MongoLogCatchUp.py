@@ -95,7 +95,7 @@ def rate_class(r):
 
 def add_prof(r):
 	
-	name = r["Professor"]
+	name = r["Name"]
 	dept = r["Department"]
 
 	if professors.count({"Name": name} != 0):
@@ -103,8 +103,8 @@ def add_prof(r):
 
 	professors.insert_one(
 		{
-			'Name': str(name),
-			'Department': str(dept)
+			'Name': name,
+			'Department': dept
 		}
 	)
 
@@ -117,12 +117,14 @@ def create_forum(r):
 	message = r["Content"]
 	time = r["Date"]
 	subject = r["Subject"]
+	boolProfessor = r["bool"]
+	prof = r["Name"]
 	
 	if students.count({"Username": username} == 0):
 		return
 
 
-	db.forums.insert(
+	pointer = db.forums.insert(
 			{
 				'Subject': subject,
 				'Message':
@@ -135,6 +137,9 @@ def create_forum(r):
 					]
 			}
 		)
+	
+	if(boolProfessor.lower() == 'yes'):
+			db.forums.update({'_id': pointer}, {'$set': {'professor': prof}})
 
 
 
@@ -560,7 +565,7 @@ while True:
 			elif record["type"] == "del_student":
 				del_student(record)
 			logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
-			print(record["type"] + "was executed!")
+			print(record["type"] + " was executed!")
 			
 			
 	except Exception as e:

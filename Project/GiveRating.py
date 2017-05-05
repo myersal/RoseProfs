@@ -392,7 +392,7 @@ if databaseOpen:
 		
 			if(answer.lower() == 'yes'):
 				time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
-				createForum(username, boolProfessor, prof, message, time)
+				createForum(username, subject, boolProfessor, prof, message, time)
 
 
 
