@@ -349,8 +349,56 @@ if databaseOpen:
 				continue
 			del_class_from_prof(professor, num)
 
+
+
+
+
+
 		elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
-			createForum(username)
+			
+			prof = ""
+			subject = raw_input('what is your subject: ')
+			boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
+			if boolProfessor.lower() == 'yes':
+				prof = raw_input('please input the professor\'s name: ')
+				numOfProfs = -1
+				if not RoseProfConnections.redisDead:
+					try:
+						numOfProfs = conn.zscore("professors", prof)
+					except:
+						print("Some functionality may be slower and/or limited due to problems outside of your control")
+						RoseProfConnections.redisDead = True
+				if RoseProfConnections.redisDead:
+					try:
+						numOfProfs = professors.count({"Name": prof})
+						if numOfProfs == 0:
+							print("That is not a prof")
+							return
+					except:
+						print("Sorry, but Rose Profs is currently down.  Please try again later")
+						exit()
+				try:
+					int(numOfProfs)
+				except:
+					print("That is not a prof")
+					return
+					
+				
+			message = raw_input('please type your message for the forum: ')
+		
+			#Now for the important part, the above may change when the application is actually in user
+		
+			answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
+		
+			if(answer.lower() == 'yes'):
+				time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
+				createForum(username, boolProfessor, prof, message, time)
+
+
+
+
+
+
 
 		elif cmd.lower() == "log out" or cmd.lower() == "logout":
 			print("You just logged out!!!!! Bye!")	
