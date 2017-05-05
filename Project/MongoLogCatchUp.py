@@ -99,7 +99,7 @@ def add_prof(r):
 	name = r["Name"]
 	dept = r["Department"]
 
-	if professors.count({"Name": name} != 0):
+	if professors.count({"Name": name}) != 0:
 		return
 
 	professors.insert_one(
@@ -121,7 +121,7 @@ def create_forum(r):
 	boolProfessor = r["bool"]
 	prof = r["Name"]
 	
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 
 
@@ -151,7 +151,7 @@ def edit_prof_name(r):
 	name = r["Name"]
 	new_name = r["New_Name"]
 
-	if professors.count({"Name": name} == 0):
+	if professors.count({"Name": name}) == 0:
 		return
 
 	professors.update_one(
@@ -165,7 +165,7 @@ def edit_prof_dept(r):
 	name = r["Name"]
 	new_dept = r["Department"]
 	
-	if professors.count({"Name": name} == 0):
+	if professors.count({"Name": name}) == 0:
 		return
 
 	professors.update_one(
@@ -178,7 +178,7 @@ def del_prof(r):
 	
 	name = r["Name"]
 
-	if professors.count({"Name": name} == 0):
+	if professors.count({"Name": name}) == 0:
 		return
 
 	professors.delete_one({'Name': str(name)})
@@ -194,7 +194,7 @@ def add_class_to_prof(r):
 	alt_dept = r["Cross-list-Department"]
 	gen = r["Generic"]
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -226,7 +226,7 @@ def edit_class_name(r):
 	number = r["Number"]
 
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
@@ -251,7 +251,7 @@ def edit_class_number(r):
 	new_number = r["New_Number"]
 
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -276,7 +276,7 @@ def edit_class_dept(r):
 	new_dept = r["Department"]
 
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -302,7 +302,7 @@ def edit_class_alt_dept(r):
 	new_alt_dept = r["Alt_Department"]
 
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -327,7 +327,7 @@ def edit_class_gen(r):
 	new_gen = r["Generic"]
 
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -351,7 +351,7 @@ def del_class_from_prof(r):
 	number = r["Number"]
 	
 
-	if professors.count({"Name": professor} == 0):
+	if professors.count({"Name": professor}) == 0:
 		return
 	
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
@@ -400,7 +400,7 @@ def edit_student_username(r):
 	username = r["Username"]
 	new_username = r["New_Username"]
 	
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 
 
@@ -416,7 +416,7 @@ def edit_student_password(r):
 	username = r["Username"]
 	new_password = r["New_Password"]
 	
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 
 	students.update_one(
@@ -433,7 +433,7 @@ def edit_student_year(r):
 	username = r["Username"]
 	new_year = r["New_Year"]
 	
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 
 	students.update_one(
@@ -449,7 +449,7 @@ def edit_student_major(r):
 
 	new_major = r["New_Major"]
 	
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 
 	students.update_one(
@@ -461,7 +461,7 @@ def edit_student_major(r):
 def del_student(r):
 	
 	username = r["Username"]
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
 	students.delete_one({'Username': str(username)})
 
