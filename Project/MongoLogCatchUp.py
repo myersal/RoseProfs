@@ -38,7 +38,7 @@ def rate_prof(r):
 	helpp = r["Helpfulness"]
 	cool = r["Coolness"]
 	
-	
+	print("RATING PROF")
 	if students.count({"Username": username} == 0):
 		return
 	if professors.count({"Name": professor} == 0):
@@ -71,6 +71,7 @@ def rate_class(r):
 	fun = r["Fun"]
 	know = r["Professor_Knowledge"]
 
+	print("RATING CLASS")
 	if students.count({"Username": username} == 0):
 		return
 	if professors.count({"Name": professor} == 0):

@@ -145,7 +145,7 @@ def updateLog(record):
 	
 print("Data is being brought up to date!")
 while True:
-	time.sleep(5)
+	time.sleep(1)
 	try:
 		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
 	except:
@@ -216,7 +216,7 @@ while True:
 						print("Orient Down")
 						continue
 				
-				print(record['type'])
+				print(record['type'] + " was executed!")
 				updateLog(record)
 				finishBool = True
 					

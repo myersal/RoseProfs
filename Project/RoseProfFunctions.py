@@ -32,7 +32,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 		return
 	if students.count({"Username": username} == 0):
 		return
-	if not conn.zscore('professors', professor) > 0:
+	if not conn.zscore('professors', professor) is None:
 		return
 
 	try:
