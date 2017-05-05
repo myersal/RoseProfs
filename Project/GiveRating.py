@@ -376,14 +376,10 @@ try:
 				if boolProfessor.lower() == 'yes':
 					prof = raw_input('please input the professor\'s name: ')
 					numOfProfs = -1
-					boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
-					if boolProfessor.lower() == 'yes':
-						prof = raw_input('please input the professor\'s name: ')
-						numOfProfs = -1
-						boolP = checkIfProfessorExists(name)
-						if(not boolP):
-							print('The professor does not exist')
-							continue
+					boolP = checkIfProfessorExists(name)
+					if(not boolP):
+						print('The professor does not exist')
+						continue
 						
 					
 				message = raw_input('please type your message for the forum: ')
