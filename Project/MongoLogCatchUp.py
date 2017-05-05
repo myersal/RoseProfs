@@ -31,12 +31,12 @@ except:
 
 def rate_prof(r):
 	
-	username = r("Username")
-	professor = r("Professor")
-	comm = r("Communication")
-	grade = r("Grading")
-	helpp = r("Helpfulness")
-	cool = r("Coolness")
+	username = r["Username"]
+	professor = r["Professor"]
+	comm = r["Communication"]
+	grade = r["Grading"]
+	helpp = r["Helpfulness"]
+	cool = r["Coolness"]
 	
 	
 	if students.count({"Username": username} == 0):
@@ -63,13 +63,13 @@ def rate_prof(r):
 
 def rate_class(r):
 
-	username = r("Username")
-	professor = r("Professor")
-	clas = r("Class_Number")
-	work = r("Workload")
-	diff = r("Difficulty")
-	fun = r("Fun")
-	know = r("Professor_Knowledge")
+	username = r["Username"]
+	professor = r["Professor"]
+	clas = r["Class_Number"]
+	work = r["Workload"]
+	diff = r["Difficulty"]
+	fun = r["Fun"]
+	know = r["Professor_Knowledge"]
 
 	if students.count({"Username": username} == 0):
 		return
@@ -95,8 +95,8 @@ def rate_class(r):
 
 def add_prof(r):
 	
-	name = r("Professor")
-	dept = r("department")
+	name = r["Professor"]
+	dept = r["department"]
 
 	if professors.count({"Name": name} != 0):
 		return
@@ -113,10 +113,10 @@ def create_forum(r):
 
 
 	
-	username = r("Username")	
-	message = r("Content")
-	time = r("Date")
-	subject = r("Subject")
+	username = r["Username"]	
+	message = r["Content"]
+	time = r["Date"]
+	subject = r["Subject"]
 	
 	if students.count({"Username": username} == 0):
 		return
@@ -142,8 +142,8 @@ def create_forum(r):
 #never called
 def edit_prof_name(r):
 
-	name = r("Name")
-	new_name = r("New_Name")
+	name = r["Name"]
+	new_name = r["New_Name"]
 
 	if professors.count({"Name": name} == 0):
 		return
@@ -156,8 +156,8 @@ def edit_prof_name(r):
 
 def edit_prof_dept(r):
 	
-	name = r("Name")
-	new_dept = r("Department")
+	name = r["Name"]
+	new_dept = r["Department"]
 	
 	if professors.count({"Name": name} == 0):
 		return
@@ -170,7 +170,7 @@ def edit_prof_dept(r):
 
 def del_prof(r):
 	
-	name = r("Name")
+	name = r["Name"]
 
 	if professors.count({"Name": name} == 0):
 		return
@@ -181,12 +181,12 @@ def del_prof(r):
 
 def add_class_to_prof(r):
 	
-	professor = r("Name")
-	name = r("Name")
-	number = r("Number")
-	dept = r("Department")
-	alt_dept = r("Cross-list-Department")
-	gen = r("Generic")
+	professor = r["Name"]
+	name = r["Name"]
+	number = r["Number"]
+	dept = r["Department"]
+	alt_dept = r["Cross-list-Department"]
+	gen = r["Generic"]
 
 	if professors.count({"Name": professor} == 0):
 		return
@@ -215,9 +215,9 @@ def add_class_to_prof(r):
 def edit_class_name(r):
 
 
-	professor = r("Professor")
-	new_name = r("Name")
-	number = r("Number")
+	professor = r["Professor"]
+	new_name = r["Name"]
+	number = r["Number"]
 
 
 	if professors.count({"Name": professor} == 0):
@@ -240,9 +240,9 @@ def edit_class_number(r):
 	
 	
 	
-	professor = r("Professor")
-	number = r("Number")
-	new_number = r("New_Number")
+	professor = r["Professor"]
+	number = r["Number"]
+	new_number = r["New_Number"]
 
 
 	if professors.count({"Name": professor} == 0):
@@ -265,9 +265,9 @@ def edit_class_number(r):
 
 def edit_class_dept(r):
 
-	professor = r("Professor")
-	number = r("Number")
-	new_dept = r("Department")
+	professor = r["Professor"]
+	number = r["Number"]
+	new_dept = r["Department"]
 
 
 	if professors.count({"Name": professor} == 0):
@@ -289,11 +289,11 @@ def edit_class_dept(r):
 
 def edit_class_alt_dept(r):
 	
-	professor = r("Professor")
+	professor = r["Professor"]
 
-	number = r("Number")
+	number = r["Number"]
 
-	new_alt_dept = r("Alt_Department")
+	new_alt_dept = r["Alt_Department"]
 
 
 	if professors.count({"Name": professor} == 0):
@@ -316,9 +316,9 @@ def edit_class_alt_dept(r):
 def edit_class_gen(r):
 	
 
-	professor = r("Professor")
-	number = r("Number")
-	new_gen = r("Generic")
+	professor = r["Professor"]
+	number = r["Number"]
+	new_gen = r["Generic"]
 
 
 	if professors.count({"Name": professor} == 0):
@@ -341,8 +341,8 @@ def edit_class_gen(r):
 
 def del_class_from_prof(r):
 	
-	professor = r("Professor")
-	number = r("Number")
+	professor = r["Professor"]
+	number = r["Number"]
 	
 
 	if professors.count({"Name": professor} == 0):
@@ -366,10 +366,10 @@ def del_class_from_prof(r):
 def add_student(r):
 	
 	
-	username = r("Username")
-	password = r("Password")
-	year = r("Year")
-	major = r("Major")
+	username = r["Username"]
+	password = r["Password"]
+	year = r["Year"]
+	major = r["Major"]
 
 	if students.count({'Username': username}) != 0:
 		return
@@ -391,8 +391,8 @@ def add_student(r):
 # is never called, don't worry about it
 def edit_student_username(r):
 	
-	username = r("Username")
-	new_username = r("New_Username")
+	username = r["Username"]
+	new_username = r["New_Username"]
 	
 	if students.count({"Username": username} == 0):
 		return
@@ -407,8 +407,8 @@ def edit_student_username(r):
 
 def edit_student_password(r):
 	
-	username = r("Username")
-	new_password = r("New_Password")
+	username = r["Username"]
+	new_password = r["New_Password"]
 	
 	if students.count({"Username": username} == 0):
 		return
@@ -424,8 +424,8 @@ def edit_student_year(r):
 	
 	
 	
-	username = r("Username")
-	new_year = r("New_Year")
+	username = r["Username"]
+	new_year = r["New_Year"]
 	
 	if students.count({"Username": username} == 0):
 		return
@@ -439,9 +439,9 @@ def edit_student_year(r):
 
 def edit_student_major(r):
 	
-	username = r("Username")
+	username = r["Username"]
 
-	new_major = r("New_Major")
+	new_major = r["New_Major"]
 	
 	if students.count({"Username": username} == 0):
 		return
@@ -454,7 +454,7 @@ def edit_student_major(r):
 
 def del_student(r):
 	
-	username = r("Username")
+	username = r["Username"]
 	if students.count({"Username": username} == 0):
 		return
 	students.delete_one({'Username': str(username)})
@@ -560,7 +560,7 @@ while True:
 			elif record["type"] == "del_student":
 				del_student(record)
 			logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
-			print(record("type") + "was executed!")
+			print(record["type"] + "was executed!")
 			
 			
 	except Exception as e:
