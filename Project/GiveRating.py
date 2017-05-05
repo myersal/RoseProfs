@@ -9,25 +9,6 @@ print("Welcome to Rose Profs!!!!\n")
 print("\n")
 print("Please type your username to log in.\n  Or type new to make a new user")
 
-
-def checkIfProfessorExists(ProfName):
-	if not RoseProfConnections.redisDead:
-		try:
-			numOfProfs = conn.zscore("professors", ProfName)
-			if numOfProfs is None:
-				print("That is not a prof")
-				return False
-			return True
-		except Exception as e:
-			print("Some functionality may be slower and/or limited due to problems outside of your control")
-			RoseProfConnections.redisDead = True
-	if RoseProfConnections.redisDead:
-		numOfProfs = professors.count({"Name": ProfName})
-	if numOfProfs == 0:
-		print("That is not a prof")
-		return False
-	return True
-
 while True:
 	username = raw_input(':')
 	if username == "new":
