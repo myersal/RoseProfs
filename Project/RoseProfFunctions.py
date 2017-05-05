@@ -87,7 +87,7 @@ def add_prof(name, dept):
 	if SQLInjectionCheck(dept):
 		print("Department cannot contain special characters")
 		return
-	if conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', name) > 0:
 		return
 
 	log = logs.insert_one({
@@ -166,14 +166,14 @@ def createForum(username):
 		if(boolProffessor.lower() == 'yes'):
 			print(pointer)
 			print('attempting')
-			db.forums.update({'_id': pointer}, {'$set': {'proffessor': prof}})
+			db.forums.update({'_id': pointer}, {'$set': {'professor': prof}})
 		
 		print('forum created')
 
 
 #never called
 def edit_prof_name(name, new_name):
-	if not conn.zscore('professors', professor) > 0:
+	if not conn.zscore('professors', name) > 0:
 		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_name', 'Name': name, 'New_Name': new_name})
@@ -192,7 +192,7 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
-	if not conn.zscore('professors', professor) > 0:
+	if not conn.zscore('professors', name) > 0:
 		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
@@ -203,7 +203,7 @@ def del_prof(name):
 	if (SQLInjectionCheck(name)):
 		print("professor cannot contain special characters")
 		return
-	if not conn.zscore('professors', professor) > 0:
+	if not conn.zscore('professors', name) > 0:
 		return
 
 	log = logs.insert_one({
@@ -304,7 +304,7 @@ def edit_class_gen(professor, number, new_gen):
 
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_gen', 'Professor': professor,
-		'Number': number, 'Generic': gen})
+		'Number': number, 'Generic': new_gen})
 	return log
 
 
