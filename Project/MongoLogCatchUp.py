@@ -96,7 +96,7 @@ def rate_class(r):
 def add_prof(r):
 	
 	name = r["Professor"]
-	dept = r["department"]
+	dept = r["Department"]
 
 	if professors.count({"Name": name} != 0):
 		return
