@@ -13,24 +13,20 @@ print("Please type your username to log in.\n  Or type new to make a new user")
 def checkIfProfessorExists(ProfName):
 	if not RoseProfConnections.redisDead:
 		try:
-			numOfProfs = conn.zscore("professors", prof)
-		except:
+			numOfProfs = conn.zscore("professors", ProfName)
+			if numOfProfs is None:
+				print("That is not a prof")
+				return False
+			return True
+		except Exception as e:
 			print("Some functionality may be slower and/or limited due to problems outside of your control")
 			RoseProfConnections.redisDead = True
 	if RoseProfConnections.redisDead:
-		try:
-			numOfProfs = professors.count({"Name": prof})
-			if numOfProfs == 0:
-				print("That is not a prof")
-				return False
-		except:
-			print("Sorry, but Rose Profs is currently down.  Please try again later")
-			exit()
-	try:
-		int(numOfProfs)
-		return True
-	except:
+		numOfProfs = professors.count({"Name": ProfName})
+	if numOfProfs == 0:
+		print("That is not a prof")
 		return False
+	return True
 
 while True:
 	username = raw_input(':')
