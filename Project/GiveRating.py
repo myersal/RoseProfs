@@ -373,7 +373,7 @@ if databaseOpen:
 						numOfProfs = professors.count({"Name": prof})
 						if numOfProfs == 0:
 							print("That is not a prof")
-							return
+							break
 					except:
 						print("Sorry, but Rose Profs is currently down.  Please try again later")
 						exit()
@@ -381,7 +381,7 @@ if databaseOpen:
 					int(numOfProfs)
 				except:
 					print("That is not a prof")
-					return
+					break
 					
 				
 			message = raw_input('please type your message for the forum: ')
