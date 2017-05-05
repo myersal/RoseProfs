@@ -372,15 +372,14 @@ try:
 					continue
 				del_class_from_prof(professor, num)
 
-
-
-
-
-
-			elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
-				
-				prof = ""
-				subject = raw_input('what is your subject: ')
+		elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
+			
+			prof = ""
+			subject = raw_input('what is your subject: ')
+			boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
+			if boolProfessor.lower() == 'yes':
+				prof = raw_input('please input the professor\'s name: ')
+				numOfProfs = -1
 				boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 				if boolProfessor.lower() == 'yes':
 					prof = raw_input('please input the professor\'s name: ')
@@ -389,21 +388,17 @@ try:
 					if(not boolP):
 						print('The professor does not exist')
 						continue
-						
 					
-				message = raw_input('please type your message for the forum: ')
-			
-				#Now for the important part, the above may change when the application is actually in user
-			
-				answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
-			
-				if(answer.lower() == 'yes'):
-					time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
-					createForum(username, boolProfessor, prof, message, time)
-
-
-
-
+				
+			message = raw_input('please type your message for the forum: ')
+		
+			#Now for the important part, the above may change when the application is actually in user
+		
+			answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
+		
+			if(answer.lower() == 'yes'):
+				time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
+				createForum(username, subject, boolProfessor, prof, message, time)
 
 
 
