@@ -216,6 +216,7 @@ while True:
 						print("Orient Down")
 						continue
 				
+				print(record['type'])
 				updateLog(record)
 				finishBool = True
 					
