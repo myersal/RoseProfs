@@ -29,7 +29,7 @@ except:
 
 
 def add_prof(record):
-	if not (conn.zscore('professors', record['Name']) is None):
+	if not conn.zscore('professors', record['Name']) is None:
 		return
 	conn.zadd('professors', record['Name'], 0)
 
@@ -41,7 +41,9 @@ def del_prof(record):
 
 
 def add_class_to_prof(record):
-	if (conn.zscore('professors', record['Name']) is None) or (not conn.zscore(record['Number'], record['Professor']) is None):
+	if conn.zscore('professors', record['Professor']) is None:
+		return
+	if not conn.zscore(record['Number'], record['Professor']) is None:
 		return
 	
 	conn.zadd('classes', record['Number'], 0)
@@ -49,7 +51,9 @@ def add_class_to_prof(record):
 
 
 def del_class_from_prof(record):
-	if conn.zscore('professors', record['Name']) is None or (conn.zscore(record['Number'], record['Professor']) is None):
+	if conn.zscore('professors', record['Professor']) is None:
+		return
+	if conn.zscore(record['Number'], record['Professor']) is None:
 		return
 	conn.zrem(record['Number'], record['Professor'])
 	if conn.zcount(record['Number'], 0, -1) == 0:
