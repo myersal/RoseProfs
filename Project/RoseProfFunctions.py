@@ -12,6 +12,7 @@ from datetime import datetime
 
 
 def rateProf(username, professor, comm, grade, helpp, cool):
+	print("A")
 	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
 		return
@@ -30,11 +31,13 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	if SQLInjectionCheck(cool):
 		print("Coolness score cannot contain special characters")
 		return
-	if students.count({"Username": username} == 0):
+	
+	if students.count({"Username": username}) == 0:
 		return
-	if not conn.zscore('professors', professor) is None:
+	print("b")
+	if conn.zscore('professors', professor) is None:
 		return
-
+	print("c")
 	try:
 		log = logs.insert_one({
 			'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'rate_prof', 'Username': username, 'Professor': professor,
@@ -67,11 +70,11 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 	if SQLInjectionCheck(know):
 		print("Knowledge score cannot contain special characters")
 		return
-	if students.count({"Username": username} == 0):
+	if students.count({"Username": username}) == 0:
 		return
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(clas, professor) > 0:
+	if conn.zscore(clas, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -87,7 +90,7 @@ def add_prof(name, dept):
 	if SQLInjectionCheck(dept):
 		print("Department cannot contain special characters")
 		return
-	if conn.zscore('professors', name) > 0:
+	if not conn.zscore('professors', name) is None:
 		return
 
 	log = logs.insert_one({
@@ -119,7 +122,7 @@ def createForum(username, subject, boolProfessor, prof, message, time):
 
 #never called
 def edit_prof_name(name, new_name):
-	if not conn.zscore('professors', name) > 0:
+	if conn.zscore('professors', name) is None:
 		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_name', 'Name': name, 'New_Name': new_name})
@@ -138,7 +141,7 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
-	if not conn.zscore('professors', name) > 0:
+	if conn.zscore('professors', name) is None:
 		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
@@ -149,7 +152,7 @@ def del_prof(name):
 	if (SQLInjectionCheck(name)):
 		print("professor cannot contain special characters")
 		return
-	if not conn.zscore('professors', name) > 0:
+	if conn.zscore('professors', name) is None:
 		return
 
 	log = logs.insert_one({
@@ -178,9 +181,9 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if SQLInjectionCheck(gen):
 		print("gen cannot contain special characters")
 		return
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', name) is None:
 		return
-	if conn.zscore(number, professor) > 0:
+	if not conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -191,9 +194,9 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 
 
 def edit_class_name(professor, number, new_name):
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -204,9 +207,9 @@ def edit_class_name(professor, number, new_name):
 
 
 def edit_class_number(professor, number, new_number):
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -217,9 +220,9 @@ def edit_class_number(professor, number, new_number):
 
 
 def edit_class_dept(professor, number, new_dept):
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -230,9 +233,9 @@ def edit_class_dept(professor, number, new_dept):
 
 
 def edit_class_alt_dept(professor, number, new_alt_dept):
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -243,9 +246,9 @@ def edit_class_alt_dept(professor, number, new_alt_dept):
 
 
 def edit_class_gen(professor, number, new_gen):
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if not conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({
@@ -261,9 +264,9 @@ def del_class_from_prof(professor, number):
 	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
 		return
-	if not conn.zscore('professors', professor) > 0:
+	if conn.zscore('professors', professor) is None:
 		return
-	if conn.zscore(number, professor) > 0:
+	if conn.zscore(number, professor) is None:
 		return
 
 	log = logs.insert_one({

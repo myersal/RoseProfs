@@ -22,7 +22,7 @@ def checkIfProfessorExists(ProfName):
 			numOfProfs = professors.count({"Name": prof})
 			if numOfProfs == 0:
 				print("That is not a prof")
-				break
+				return False
 		except:
 			print("Sorry, but Rose Profs is currently down.  Please try again later")
 			exit()
@@ -303,7 +303,7 @@ try:
 					print('The professor does not exist')
 					continue
 				
-				boolP = checkIfProfessorExists(newName)
+				boolP = checkIfProfessorExists(newname)
 				if(boolP):
 					print('The new name already exists')
 					continue
@@ -372,40 +372,40 @@ try:
 					continue
 				del_class_from_prof(professor, num)
 
-		elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
-			
-			prof = ""
-			subject = raw_input('what is your subject: ')
-			boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
-			if boolProfessor.lower() == 'yes':
-				prof = raw_input('please input the professor\'s name: ')
-				numOfProfs = -1
+			elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
+				
+				prof = ""
+				subject = raw_input('what is your subject: ')
 				boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 				if boolProfessor.lower() == 'yes':
 					prof = raw_input('please input the professor\'s name: ')
 					numOfProfs = -1
-					boolP = checkIfProfessorExists(name)
-					if(not boolP):
-						print('The professor does not exist')
-						continue
+					boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
+					if boolProfessor.lower() == 'yes':
+						prof = raw_input('please input the professor\'s name: ')
+						numOfProfs = -1
+						boolP = checkIfProfessorExists(name)
+						if(not boolP):
+							print('The professor does not exist')
+							continue
+						
 					
-				
-			message = raw_input('please type your message for the forum: ')
-		
-			#Now for the important part, the above may change when the application is actually in user
-		
-			answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
-		
-			if(answer.lower() == 'yes'):
-				time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
-				createForum(username, subject, boolProfessor, prof, message, time)
-
-
-
+				message = raw_input('please type your message for the forum: ')
+			
+				#Now for the important part, the above may change when the application is actually in user
+			
+				answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
+			
+				if(answer.lower() == 'yes'):
+					time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
+					createForum(username, subject, boolProfessor, prof, message, time)
+	
+	
+	
 			elif cmd.lower() == "log out" or cmd.lower() == "logout":
 				print("You just logged out!!!!! Bye!")	
 				break
-
+	
 			elif cmd.lower() == "delete profile" or cmd.lower() == "deleteprofile":
 				print("Are you sure you want to PERMANENTLY delete your profile? Type yes if you do.")
 				ans = raw_input(":")
