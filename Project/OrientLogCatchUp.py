@@ -159,7 +159,7 @@ while True:
 		finishBool = False
 		for record in orientLogsTodo:
 			finishBool = False
-			while(!finishBool):
+			while not finishBool:
 				if (record["type"] == "rate_prof"):
 					try:
 						orientRateProf(record)
