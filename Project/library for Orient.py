@@ -23,10 +23,10 @@ def addBook(title, author, isbn, pages):
 		books = client.command("CREATE Vertex book SET isbn = " + str(isbn))
 		
 		if(title != ""):
-				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'")
+				client.command("UPDATE book SET title = '" + title + "'where isbn = " + str(isbn))
 		
 		if(pages != -1):
-				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(pages))
+				client.command("UPDATE book SET pages = " + str(pages) + "where isbn = " + str(isbn))
 			
 		if(author != ''):
 				#check to see if author exists, if not create the author
@@ -105,142 +105,142 @@ def editBookPages(isbn, newPages):
 		books = client.command("select * from book where isbn = " + str(isbn));
 		
 		for data in books:
-				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(newPages));
-				print('the book has been edited');
-				return 1;
+				client.command("UPDATE book SET pages = " + str(newPages) + "where isbn = " + str(isbn))
+				print('the book has been edited')
+				return 1
 			
-		print('the book does not exist');				
+		print('the book does not exist')			
 		
 
 def editBookTitle(isbn, newTitle):
-		books = client.command("select * from book where isbn = " + str(isbn));
+		books = client.command("select * from book where isbn = " + str(isbn))
 		
 		for data in books:
-				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'");
-				print('the book has been updated');
-				return 1;
+				client.command("UPDATE book SET title = '" + newTitle + "'where isbn = " + str(isbn))
+				print('the book has been updated')
+				return 1
 
-		print('the book does not exist');
+		print('the book does not exist')
 		
 def sortByTitle():
-		print('all books sorted by title');
-		result = client.command("select * from book ORDER BY title");
+		print('all books sorted by title')
+		result = client.command("select * from book ORDER BY title")
 		for data in result:
-				print(data);
+				print(data)
 
 def sortByAuthor():
 		#####TODODODODODODODOD
 
-		print('all books sorted by author');
-		result = client.command("select * from book ORDER BY title");
+		print('all books sorted by author')
+		result = client.command("select * from book ORDER BY title")
 		
 		for data in result:
-				print(data);
+				print(data)
 
 def sortByISBN():
-		print('all books sorted by isbn');
-		result = client.command("select * from book ORDER BY isbn");
+		print('all books sorted by isbn')
+		result = client.command("select * from book ORDER BY isbn")
 		
 		for data in result:
-				print(data);
+				print(data)
 
 def sortByPages():
-		print('all books sorted by number of pages');
-		result = client.command("select * from book ORDER BY pages");
+		print('all books sorted by number of pages')
+		result = client.command("select * from book ORDER BY pages")
 		
 		for data in result:
-				print(data);
+				print(data)
 
 def addBorrower(name, username, phone):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				print('the username already exists');
+				print('the username already exists')
 				return 0;
 				
-		user = client.command("CREATE Vertex user Set username = '" + username + "'");
+		user = client.command("CREATE Vertex user Set username = '" + username + "'")
 		
 		if(name != ""):
-				client.command("Select * from user where username = '" + username + "' SET name = '" + name + "'");
+				client.command("UPDATE user SET name = '" + name + "' where username = '" + username + "'")
 		if(phone != ""):
-				client.command("Select * from user where username = '" + username + "' SET phone = '" + phone + "'");
+				client.command("UPDATE user SET phone = '" + phone + "' where username = '" + username + "'")
 
 def editBorrowerName(username, newName):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				client.command("Select * from user where username = '" + username + "' SET name = '" + name + "'");
-				print('the borrower has been updated');
+				client.command("UPDATE user SET name = '" + name + "' where username = '" + username + "'")
+				print('the borrower has been updated')
 				return 1;
 				
-		print('the user does not exist');
+		print('the user does not exist')
 
 def editBorrowerPhone(username, phone):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				client.command("Select * from user where username = '" + username + "' SET phone = '" + phone + "'");
-				print('the borrower has been updated');
+				client.command("UPDATE user SET phone = '" + phone + "' where username = '" + username + "'")
+				print('the borrower has been updated')
 				return 1;
 				
-		print('the user does not exist');
+		print('the user does not exist')
 		
 def deleteUser(username):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				client.command("DELETE VERTEX user where username = '" + username + "'");
-				print('the borrower has been deleted');
+				client.command("DELETE VERTEX user where username = '" + username + "'")
+				print('the borrower has been deleted')
 				return 1;
 				
-		print('the user does not exist');
+		print('the user does not exist')
 
 def checkoutBook(username, isbn):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				books = client.command("select * from book where isbn = " + str(isbn));
+				books = client.command("select * from book where isbn = " + str(isbn))
 		
 				for data2 in books:
-						result3 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid); 
+						result3 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
 				
 						for data3 in result3:
-								print("The book is already checked out");
+								print("The book is already checked out")
 								return 0;
 								
-						client.command("CREATE EDGE checked_out from = " + books[0]._rid + " to =" + borrowers[0]._rid);
+						client.command("CREATE EDGE checked_out from = " + books[0]._rid + " to =" + borrowers[0]._rid)
 						return 1;
 						
-				print('the book does not exist');
+				print('the book does not exist')
 				return 0;
 				
-		print('the user does not exist');
+		print('the user does not exist')
 
 def returnBook(username, isbn):
-		borrowers = client.command("select * from user where username = '" + username + "'");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				books = client.command("select * from book where isbn = " + str(isbn));
+				books = client.command("select * from book where isbn = " + str(isbn))
 		
 				for data2 in books:
-						result3 = client.command("Select * from checked_out where from = " + books[0]._rid);
+						result3 = client.command("Select * from checked_out where from = " + books[0]._rid)
 				
 						for data3 in result3:
-								result4 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid);
+								result4 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
 								for data4 in result4:
-										client.command("DELETE EDGE checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid);
-										print("the book has been returned");
+										client.command("DELETE EDGE checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
+										print("the book has been returned")
 										return 1;
-								print('the book is not checked out by that user');
+								print('the book is not checked out by that user')
 								return 0;
 								
-						print("The book is not checked out");
+						print("The book is not checked out")
 						return 0;
 				
-				print('the book does not exist');
+				print('the book does not exist')
 				return 0;
 				
-		print('the user does not exist');	
+		print('the user does not exist')
 
 def numberBooksChecked(username):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -279,7 +279,7 @@ def getUsers():
 def getAuthors():
 		result = client.command("select * from author")
 		for data in result:
-				print(data);
+				print(data)
 
 def searchByTitle(title):
 		result = client.command("select * from book where title = '" + title + "'")
@@ -289,9 +289,9 @@ def searchByTitle(title):
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
- 		result = client.command("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data);
+ 		result = client.command("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data)
 		for data in result:
-				print(data);
+				print(data)
 
 def searchByIsbn(isbn):
 		result = client.command("select * from book where title = '" + str(isbn))
@@ -310,54 +310,54 @@ def searchByName(name):
 
 # not needed for neo4j I believe				
 def removeAttribute(db, isbn, attribute):
-		db.books.update({'isbn': isbn}, {'$unset': {attribute: ''}});
-		print('attribute was removed');
+		db.books.update({'isbn': isbn}, {'$unset': {attribute: ''}})
+		print('attribute was removed')
 		
 def deleteAuthor(name):
 		client.command("delete vertex author where name = '" + name + "'")
 		
 def rateBook(username, isbn, number, review):
-		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user");
+		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user")
 		
 		for data in result:
-				result2 = session.run("Match (book:Book {isbn:" + str(isbn) + "}) RETURN book");
+				result2 = session.run("Match (book:Book {isbn:" + str(isbn) + "}) RETURN book")
 				for data2 in result2:
-						result3 = session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[:Rated]->(book:Book {isbn:" + str(isbn) + "}) RETURN user");
+						result3 = session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[:Rated]->(book:Book {isbn:" + str(isbn) + "}) RETURN user")
 						for data3 in result3:
-								session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number));
+								session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number))
 								print("the rating has been updated");
 								return 1;
-						session.run("MATCH (user:Borrower {username:\"" + username + "\"}), (book:Book {isbn:" + str(isbn) + "}) CREATE (user)-[rel:Rated]->(book)");
-						session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number));
-						print('the rating has been created');
-						return 1;
+						session.run("MATCH (user:Borrower {username:\"" + username + "\"}), (book:Book {isbn:" + str(isbn) + "}) CREATE (user)-[rel:Rated]->(book)")
+						session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number))
+						print('the rating has been created')
+						return 1
 				
-				print('the book does not exist');
+				print('the book does not exist')
 				return 0;
 				
-		print('user does not exist');
-		return 0;
+		print('user does not exist')
+		return 0
 		
 def recommendation(username):
-		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user");
-		print('test data');
+		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user")
+		print('test data')
 		
-		result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book) RETURN rel1");
+		result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book) RETURN rel1")
 				
 		for data2 in result2:
-			print(data2);
-			print('recommendation complete');
+			print(data2)
+			print('recommendation complete')
 		
-		print('real thing');
+		print('real thing')
 		
 		for data in result:
-				result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book)<-[rel2:Rated]-(user2:Borrower)-[rel3:Rated]->(book2:Book) WHERE rel1.rate = rel2.rate AND rel3.rate >= 3 RETURN book2");
+				result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book)<-[rel2:Rated]-(user2:Borrower)-[rel3:Rated]->(book2:Book) WHERE rel1.rate = rel2.rate AND rel3.rate >= 3 RETURN book2")
 				for data2 in result2:
-						print(data2);
-				print('recommendation complete');
+						print(data2)
+				print('recommendation complete')
 				return 0;
 						
-		print('the user does not exist');
+		print('the user does not exist')
 		return 0;
 
 while 1 > 0:
