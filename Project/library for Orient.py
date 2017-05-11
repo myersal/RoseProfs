@@ -140,7 +140,8 @@ def sortByISBN():
 		result = client.command("select IN() from book ORDER BY isbn")
 		
 		for data in result:
-				print(data)
+			for d in data:
+				print(d)
 
 def sortByPages():
 		print('all books sorted by number of pages')
