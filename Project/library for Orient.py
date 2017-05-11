@@ -140,7 +140,7 @@ def sortByISBN():
 		result = client.command("select book, EXPAND(both('auth_of')) from book ORDER BY isbn")
 		
 		for data in result:
-			print(data.oRecordData)
+			print(data)
 
 def sortByPages():
 		print('all books sorted by number of pages')
