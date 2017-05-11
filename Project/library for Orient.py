@@ -124,7 +124,7 @@ def editBookTitle(isbn, newTitle):
 		
 def sortByTitle():
 		print('all books sorted by title')
-		result = client.command("select * from book ORDER BY title")
+		result = client.command("select IN() from book ORDER BY title")
 		for data in result:
 				print(data)
 
@@ -132,21 +132,21 @@ def sortByAuthor():
 		#####TODODODODODODODOD
 
 		print('all books sorted by author')
-		result = client.command("select * from book ORDER BY title")
+		result = client.command("select from book ORDER BY title")
 		
 		for data in result:
 				print(data)
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("select * from book ORDER BY isbn")
+		result = client.command("select IN() from book ORDER BY isbn")
 		
 		for data in result:
 				print(data)
 
 def sortByPages():
 		print('all books sorted by number of pages')
-		result = client.command("select * from book ORDER BY pages")
+		result = client.command("select IN() from book ORDER BY pages")
 		
 		for data in result:
 				print(data)
@@ -253,9 +253,7 @@ def numberBooksChecked(username):
 				print(count)
 				return 1
 				
-		print('the user does not exist')
-	
-#FINISHED MAJORITY OF ORIENT STUFF TO HERE	
+		print('the user does not exist')	
 	
 def borrowerOfBook(isbn):
 		books = client.command("select * from book where isbn = " + str(isbn))
@@ -294,7 +292,7 @@ def searchByAuthor(author):
 				print(data)
 
 def searchByIsbn(isbn):
-		result = client.command("select * from book where title = '" + str(isbn))
+		result = client.command("select * from book where isbn = '" + str(isbn))
 		for data in result:
 				print(result)
 				
@@ -317,18 +315,19 @@ def deleteAuthor(name):
 		client.command("delete vertex author where name = '" + name + "'")
 		
 def rateBook(username, isbn, number, review):
-		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user")
+		result = client.command("select * from user where name = '" + name + "'")
 		
 		for data in result:
-				result2 = session.run("Match (book:Book {isbn:" + str(isbn) + "}) RETURN book")
+				result2 = client.command("select * from book where isbn = '" + str(isbn))
 				for data2 in result2:
-						result3 = session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[:Rated]->(book:Book {isbn:" + str(isbn) + "}) RETURN user")
+						result3 = client.command("select * from rate_book where from = " + result[0]._rid + " and to = " result2[0]._rid)
+						#if there is already a rating then update, else create the rating then update
 						for data3 in result3:
-								session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number))
+								client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
 								print("the rating has been updated");
 								return 1;
-						session.run("MATCH (user:Borrower {username:\"" + username + "\"}), (book:Book {isbn:" + str(isbn) + "}) CREATE (user)-[rel:Rated]->(book)")
-						session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number))
+						client.command("CREATE EDGE rate_book from " + result[0]._rid + " to " + result2[0]._rid)
+						client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
 						print('the rating has been created')
 						return 1
 				
