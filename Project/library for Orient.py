@@ -33,10 +33,10 @@ def addBook(title, author, isbn, pages):
 				result = client.command("select * from author where name = '" + author + "'")
 				
 				for data in result:
-					author = client.command("CREATE Vertex author SET name = '" + author + "'")
-					#break out of the for loop after creating one
-					break
-				
+					author = client.command("select * from author where name = '" + author + "'")
+					client.command("CREATE Edge auth_of from " + author[0]._rid + " to " + books[0]._rid)
+					return 1
+				author = client.command("CREATE Vertex author SET name = '" + author + "'")
 				#must search the same author again and use the RID to create edge
 				author = client.command("select * from author where name = '" + author + "'")
 				
