@@ -35,7 +35,7 @@ def addBook(title, author, isbn, pages):
 				for data in result:
 					author = client.command("CREATE Vertex author SET name = '" + author + "'")
 					#break out of the for loop after creating one
-					break;
+					break
 				
 				#must search the same author again and use the RID to create edge
 				author = client.command("select * from author where name = '" + author + "'")
@@ -44,58 +44,58 @@ def addBook(title, author, isbn, pages):
 
 def deleteBook(isbn):
 		
-		result = client.command("select * from book where isbn = " + str(isbn));
+		result = client.command("select * from book where isbn = " + str(isbn))
 		
 		for data in result:
-				client.command("DELETE VERTEX book where isbn = " + str(isbn));
-				print("book was deleted");
-				return 1;
+				client.command("DELETE VERTEX book where isbn = " + str(isbn))
+				print("book was deleted")
+				return 1
 		
-		print("book does not exist");
+		print("book does not exist")
 
 def getBook(isbn):
 		
-		result = client.command("select * from book where isbn = " + str(isbn));
+		result = client.command("select * from book where isbn = " + str(isbn))
 		for data in result:
-				print(data);
+				print(data)
 
 def editBookAuthor(isbn):
 		
-		givenAnswer = raw_input('Do you want to add or remove an author (add/remove) : ');
-		givenAuthor = raw_input('Input the author you want to add/remove: ');
+		givenAnswer = raw_input('Do you want to add or remove an author (add/remove) : ')
+		givenAuthor = raw_input('Input the author you want to add/remove: ')
 		
-		books = client.command("select * from book where isbn = " + str(isbn));
+		books = client.command("select * from book where isbn = " + str(isbn))
 		
 		for data in books:
 			
 			#check if an author exists
 			
 			if(givenAnswer == "add"):
-				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				#create author if auth does not exist
 				for data in auth:
-					client.command("Create Vertex author SET name = '" + givenAuthor + "'");
-				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+					client.command("Create Vertex author SET name = '" + givenAuthor + "'")
+				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				
-				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid);
+				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
 			
 			elif(givenAnswer == 'remove'):
-				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				
 				for data in auth:
-					edges = client.command("SELECT * from auth_of where from = " + auth[0]._rid + "and to =" + books[0]._rid);
+					edges = client.command("SELECT * from auth_of where from = " + auth[0]._rid + "and to =" + books[0]._rid)
 					for data in edges:
-						client.command("DELETE Edge auth_of where from = " + auth[0]._rid + " and to = " + books[0]._rid);
-						print("the edge has been deleted");
+						client.command("DELETE Edge auth_of where from = " + auth[0]._rid + " and to = " + books[0]._rid)
+						print("the edge has been deleted")
 						return 1;
-					print("the author is not currently an author of that book");
+					print("the author is not currently an author of that book")
 					
-				print("author does not exist so cannot delete");
+				print("author does not exist so cannot delete")
 			else:
-				print('answer not recognized');
+				print('answer not recognized')
 				return 0;
 			
-			print('author was edited');
+			print('author was edited')
 			return 1;
 			
 			
@@ -361,27 +361,26 @@ def recommendation(username):
 		return 0;
 
 while 1 > 0:
-		session.sync();
-		givenInput = raw_input("$>:");
+		givenInput = raw_input("$>:")
 
 		if(givenInput == "help"):
-				print("exit - to exit the prompt");
-				print('editBook - to edit a book given an isbn');
-				print('deleteBook - to delete a book given an isbn');
-				print('addBook - to add a book');
-				print('sort - to get a sorted list of books based on further input');
-				print('checkout - to checkout a book');
-				print('return - to return a book');
-				print('addBorrower - to create a new user');
-				print('deleteBorrower - to delete a user');
-				print('editBorrower - to edit user information');
-				print('checkBorrower - to find out what user has borrowed your book');
-				print('checkBooksByUser - to check how many books a user currently has checked');
-				print('searchBook - search for book stuff');
-				print('searchUsers - search for user stuff');
-				print('removeAttrBook - removes a specified attribute for a book');
-				print('rateBook - rate a given book');
-				print('recom - find recommendations for a user');
+				print("exit - to exit the prompt")
+				print('editBook - to edit a book given an isbn')
+				print('deleteBook - to delete a book given an isbn')
+				print('addBook - to add a book')
+				print('sort - to get a sorted list of books based on further input')
+				print('checkout - to checkout a book')
+				print('return - to return a book')
+				print('addBorrower - to create a new user')
+				print('deleteBorrower - to delete a user')
+				print('editBorrower - to edit user information')
+				print('checkBorrower - to find out what user has borrowed your book')
+				print('checkBooksByUser - to check how many books a user currently has checked')
+				print('searchBook - search for book stuff')
+				print('searchUsers - search for user stuff')
+				print('removeAttrBook - removes a specified attribute for a book')
+				print('rateBook - rate a given book')
+				print('recom - find recommendations for a user')
 
 		elif(givenInput == 'getBook'):
 				try:
