@@ -124,7 +124,7 @@ def sortByTitle():
 		print('all books sorted by title')
 		result = client.command("select IN() from book ORDER BY title")
 		for data in result:
-				print(data)
+			print(data)
 
 def sortByAuthor():
 		#####TODODODODODODODOD
@@ -133,15 +133,14 @@ def sortByAuthor():
 		result = client.command("select from book ORDER BY title")
 		
 		for data in result:
-				print(data)
+			print(data)
 
 def sortByISBN():
 		print('all books sorted by isbn')
 		result = client.command("select IN() from book ORDER BY isbn")
 		
 		for data in result:
-			for d in data:
-				print(d.oRecordData)
+			print(data.oRecordData)
 
 def sortByPages():
 		print('all books sorted by number of pages')
