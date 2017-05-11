@@ -261,7 +261,7 @@ def borrowerOfBook(isbn):
 		for data in books:
 			edge = client.command("select * from checked_out where to = " + books[0]._rid)
 			for d in edge:
-				borrower = client.command("select * from user where _rid = " + edge[0].from)
+				borrower = client.command("select * from user where _rid = " + edge[0]._from)
 				print(borrower[0])
 				return 1
 			print("no one currently has the book")
@@ -280,9 +280,9 @@ def getAuthors():
 				print(data);
 
 def searchByTitle(title):
-		result = client.command("select * from book where title = '" + title + "'");
+		result = client.command("select * from book where title = '" + title + "'")
 		for data in result:
-				print(data);
+				print(data)
 		
 #TODODODODODOD
 def searchByAuthor(author):
@@ -292,18 +292,17 @@ def searchByAuthor(author):
 				print(data);
 
 def searchByIsbn(isbn):
-		result = client.command("select * from book where title = '" + str(isbn);
+		result = client.command("select * from book where title = '" + str(isbn));
 		for data in result:
-				print(result);
+				print(result)
 				
 def searchByUser(user):
-		result = client.command("select * from book where username = '" + user + "'");
+		result = client.command("select * from user where username = '" + user + "'")
 		for data in result:
-				print(data);
+				print(data)
 
 def searchByName(name):
-		data = {'name':name};
-		result = session.run("Match (user:Borrower {name:{name}}) Return user", data);
+		result = client.command("select * from user where name = '" + name + "'");
 		for data in result:
 				print(data);
 
