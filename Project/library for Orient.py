@@ -137,7 +137,7 @@ def sortByAuthor():
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("select EXPAND(IN()) from book ORDER BY isbn")
+		result = client.command("select EXPAND(both('auth_of')) from book ORDER BY isbn")
 		
 		for data in result:
 			print(data.oRecordData)
