@@ -1,0 +1,615 @@
+from neo4j.v1 import GraphDatabase, basic_auth
+
+try:
+	import pyorient
+	import pyorient.ogm
+	client = pyorient.OrientDB("137.112.104.108", 2424);
+	session_id = client.connect( "root", "wai3feex" );
+	client.db_open( "library", "admin", "admin" );
+except:
+	print("Orient could not connect")
+	return
+
+def addBook(title, author, isbn, pages):
+        
+		books = client.command("select * from book where isbn = '" + str(isbn) + "'")
+		
+		for record in books:
+				print('the book already exists');
+				return 0;
+		
+		books = session.run("CREATE Vertex book SET isbn = " + str(isbn));
+		
+		if(title != ""):
+				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'");
+		
+		if(pages != -1):
+				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(pages));
+			
+		if(author != ''):
+				#check to see if author exists, if not create the author
+				result = client.command("select * from author where name = '" + author + "'");
+				
+				for data in result:
+					author = client.command("CREATE Vertex author SET name = '" + author + "'");
+					#break out of the for loop after creating one
+					break;
+				
+				#must search the same author again and use the RID to create edge
+				author = client.command("select * from author where name = '" + author + "'");
+				
+				client.command("CREATE Edge auth_of from " + author[0]._rid + " to " + books[0]._rid);
+
+def deleteBook(isbn):
+		
+		result = client.command("select * from book where isbn = " + str(isbn));
+		
+		for data in result:
+				client.command("DELETE VERTEX book where isbn = " + str(isbn));
+				print("book was deleted");
+				return 1;
+		
+		print("book does not exist");
+
+def getBook(isbn):
+		
+		result = client.command("select * from book where isbn = " + str(isbn));
+		for data in result:
+				print(data);
+
+def editBookAuthor(isbn):
+		
+		givenAnswer = raw_input('Do you want to add or remove an author (add/remove) : ');
+		givenAuthor = raw_input('Input the author you want to add/remove: ');
+		
+		books = client.command("select * from book where isbn = " + str(isbn));
+		
+		for data in books:
+			
+			#check if an author exists
+			
+			if(givenAnswer == "add"):
+					auth = client.command("select * from author where name = '" + givenAuthor + "'");
+					#create author if auth does not exist
+					for data in auth:
+						client.command("Create Vertex author SET name = '" + givenAuthor + "'");
+					auth = client.command("select * from author where name = '" + givenAuthor + "'");
+					
+					client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid);
+			
+			elif(givenAnswer == 'remove'):
+					auth = client.command("select * from author where name = '" + givenAuthor + "'");
+					
+					for data in auth:
+						edges = client.command("SELECT * from auth_of where from = " + auth[0]._rid + "and to =" + books[0]._rid);
+							for data in edges:
+								client.command("DELETE Edge auth_of where from = " + auth[0]._rid + " and to = " + books[0]._rid);
+								print("the edge has been deleted");
+								return 1;
+						print("the author is not currently an author of that book");
+						
+					print("author does not exist so cannot delete");
+			else:
+					print('answer not recognized');
+					return 0;
+			
+			print('author was edited');
+			return 1;
+			
+			
+		print('book does not exist');
+		
+def editBookPages(isbn, newPages):
+		books = client.command("select * from book where isbn = " + str(isbn));
+		
+		for data in books:
+				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(newPages));
+				print('the book has been edited');
+				return 1;
+			
+		print('the book does not exist');				
+		
+
+def editBookTitle(isbn, newTitle):
+		books = client.command("select * from book where isbn = " + str(isbn));
+		
+		for data in books:
+				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'");
+				print('the book has been updated');
+				return 1;
+
+		print('the book does not exist');
+		
+def sortByTitle():
+		print('all books sorted by title');
+		result = client.command("select * from book ORDER BY title");
+		for data in result:
+				print(data);
+
+def sortByAuthor():
+		#####TODODODODODODODOD
+
+		print('all books sorted by author');
+		result = client.command("select * from book ORDER BY title");
+		
+		for data in result:
+				print(data);
+
+def sortByISBN():
+		print('all books sorted by isbn');
+		result = client.command("select * from book ORDER BY isbn");
+		
+		for data in result:
+				print(data);
+
+def sortByPages():
+		print('all books sorted by number of pages');
+		result = client.command("select * from book ORDER BY pages");
+		
+		for data in result:
+				print(data);
+
+def addBorrower(name, username, phone):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				print('the username already exists');
+				return 0;
+				
+		user = client.command("CREATE Vertex user Set username = '" + username + "'");
+		
+		if(name != ""):
+				client.command("Select * from user where username = '" + username + "' SET name = '" + name + "'");
+		if(phone != ""):
+				client.command("Select * from user where username = '" + username + "' SET phone = '" + phone + "'");
+
+def editBorrowerName(username, newName):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				client.command("Select * from user where username = '" + username + "' SET name = '" + name + "'");
+				print('the borrower has been updated');
+				return 1;
+				
+		print('the user does not exist');
+
+def editBorrowerPhone(username, phone):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				client.command("Select * from user where username = '" + username + "' SET phone = '" + phone + "'");
+				print('the borrower has been updated');
+				return 1;
+				
+		print('the user does not exist');
+		
+def deleteUser(username):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				client.command("DELETE VERTEX user where username = '" + username + "'");
+				print('the borrower has been deleted');
+				return 1;
+				
+		print('the user does not exist');
+
+def checkoutBook(username, isbn):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				books = client.command("select * from book where isbn = " + str(isbn));
+		
+				for data2 in books:
+						result3 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid); 
+				
+						for data3 in result3:
+								print("The book is already checked out");
+								return 0;
+								
+						client.command("CREATE EDGE checked_out from = " + books[0]._rid + " to =" + borrowers[0]._rid);
+						return 1;
+						
+				print('the book does not exist');
+				return 0;
+				
+		print('the user does not exist');
+
+def returnBook(username, isbn):
+		borrowers = client.command("select * from user where username = '" + username + "'");
+		
+		for data in borrowers:
+				books = client.command("select * from book where isbn = " + str(isbn));
+		
+				for data2 in books:
+						result3 = client.command("Select * from checked_out where from = " + books[0]._rid);
+				
+						for data3 in result3:
+								result4 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid);
+								for data4 in result4:
+										client.command("DELETE EDGE checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid);
+										print("the book has been returned");
+										return 1;
+								print('the book is not checked out by that user');
+								return 0;
+								
+						print("The book is not checked out");
+						return 0;
+				
+				print('the book does not exist');
+				return 0;
+				
+		print('the user does not exist');
+
+#FINISHED MAJORITY OF ORIENT STUFF TO HERE		
+
+def numberBooksChecked(username):
+		data = {'username':username};
+		result = session.run("Match (user:Borrower {username: \"" + username + "\"}) RETURN user");
+		
+		for data in result:
+				result2 = session.run("Match (book)-[rel:Borrowed_By]->(user:Borrower {username: \"" + username + "\"}) Return COUNT(rel) as num");
+				for d in result2:
+					print(d['num']);
+				return 1;
+				
+		print('the user does not exist');
+		
+def borrowerOfBook(isbn):
+		data = {'isbn':isbn};
+		result = session.run("Match (book:Book) WHERE book.isbn = {isbn} RETURN book", data);
+		
+		for data in result:
+				borrower = session.run("Match (book:Book {isbn: " + str(isbn) + "})-[rel:Borrowed_By]->(user) Return user")
+				for d in borrower:
+					print(d);
+					return 1;
+				print("no one currently has the book");
+				return 1;
+				
+		print("the book does not exist");
+
+def getUsers():
+		result = session.run("Match (user:Borrower) Return user");
+		for data in result:
+				print(data);
+				
+def getAuthors():
+		result = session.run("Match (auth:Author) return auth");
+		for data in result:
+				print(data);
+				
+		print('and now to get relationships');
+		
+		result = session.run("Match (auth:Author)-[rel:Author_Of]->(book:Book) return rel");
+		
+		for data in result:
+				print('new');
+				print(data);
+				
+		print('and now to get ratings');
+		
+		result = session.run("MATCH (user:Borrower)-[rel:Rated]->(book:Book) RETURN rel");
+		
+		for data in result:
+				print(data);
+
+def searchByTitle(title):
+		data = {'title':title};
+		result = session.run("Match (book:Book {title:{title}}) OPTIONAL MATCH (auth:author)-[Author_Of]->(book) Return book, auth", data);
+		for data in result:
+				print(data);
+		
+		
+def searchByAuthor(author):
+		data = {'author':author};
+		#find all results with an author
+ 		result = session.run("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data);
+		for data in result:
+				print(data);
+
+def searchByIsbn(isbn):
+		data = {'isbn':isbn};
+		result = session.run("Match (book:Book {isbn: {isbn}}) OPTIONAL MATCH (auth:Author)-[Author_Of]->(book) Return book, auth", data);
+		for data in result:
+				print(data);
+				
+def searchByUser(user):
+		data = {'username':user};
+		result = session.run("Match (user:Borrower {username:{username}}) Return user", data);
+		for data in result:
+				print(data);
+
+def searchByName(name):
+		data = {'name':name};
+		result = session.run("Match (user:Borrower {name:{name}}) Return user", data);
+		for data in result:
+				print(data);
+
+# not needed for neo4j I believe				
+def removeAttribute(db, isbn, attribute):
+		db.books.update({'isbn': isbn}, {'$unset': {attribute: ''}});
+		print('attribute was removed');
+		
+def deleteAuthor(name):
+		session.run("MATCH (author:Author {name: \"" + name + "\"}) DETACH DELETE author");
+		
+def rateBook(username, isbn, number, review):
+		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user");
+		
+		for data in result:
+				result2 = session.run("Match (book:Book {isbn:" + str(isbn) + "}) RETURN book");
+				for data2 in result2:
+						result3 = session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[:Rated]->(book:Book {isbn:" + str(isbn) + "}) RETURN user");
+						for data3 in result3:
+								session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number));
+								print("the rating has been updated");
+								return 1;
+						session.run("MATCH (user:Borrower {username:\"" + username + "\"}), (book:Book {isbn:" + str(isbn) + "}) CREATE (user)-[rel:Rated]->(book)");
+						session.run("MATCH (user:Borrower {username:\"" + username + "\"})-[rel:Rated]->(book:Book {isbn:" + str(isbn) + "}) SET rel.review = \"" + review + "\", rel.rate = " + str(number));
+						print('the rating has been created');
+						return 1;
+				
+				print('the book does not exist');
+				return 0;
+				
+		print('user does not exist');
+		return 0;
+		
+def recommendation(username):
+		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user");
+		print('test data');
+		
+		result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book) RETURN rel1");
+				
+		for data2 in result2:
+			print(data2);
+			print('recommendation complete');
+		
+		print('real thing');
+		
+		for data in result:
+				result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book)<-[rel2:Rated]-(user2:Borrower)-[rel3:Rated]->(book2:Book) WHERE rel1.rate = rel2.rate AND rel3.rate >= 3 RETURN book2");
+				for data2 in result2:
+						print(data2);
+				print('recommendation complete');
+				return 0;
+						
+		print('the user does not exist');
+		return 0;
+
+while 1 > 0:
+		session.sync();
+		givenInput = raw_input("$>:");
+
+		if(givenInput == "help"):
+				print("exit - to exit the prompt");
+				print('editBook - to edit a book given an isbn');
+				print('deleteBook - to delete a book given an isbn');
+				print('addBook - to add a book');
+				print('sort - to get a sorted list of books based on further input');
+				print('checkout - to checkout a book');
+				print('return - to return a book');
+				print('addBorrower - to create a new user');
+				print('deleteBorrower - to delete a user');
+				print('editBorrower - to edit user information');
+				print('checkBorrower - to find out what user has borrowed your book');
+				print('checkBooksByUser - to check how many books a user currently has checked');
+				print('searchBook - search for book stuff');
+				print('searchUsers - search for user stuff');
+				print('removeAttrBook - removes a specified attribute for a book');
+				print('rateBook - rate a given book');
+				print('recom - find recommendations for a user');
+
+		elif(givenInput == 'getBook'):
+				try:
+					givenBook = input('input the isbn you want to get: ');
+				except:
+					print("given isbn is not an integer");
+					
+				getBook(givenBook);
+					
+		elif(givenInput == 'editBook'):
+				try:
+						givenISBN = input('select which isbn to edit: ');
+				except:
+						print("the given isbn must be an integer");
+						continue;
+				
+				givenString = raw_input('select one of the following to edit author, pages, title: ');
+
+				if(givenString == 'author'):
+						editBookAuthor(givenISBN);
+
+				elif(givenString == 'pages'):
+						try:
+								givenPages = input('select a new number of pages: ');
+						except:
+								print("the pages must be an integer");
+								continue;
+						editBookPages(givenISBN, givenPages);
+
+				elif(givenString == 'title'):
+						givenTitle = raw_input('select a new title:');
+						editBookTitle(givenISBN, givenTitle);
+				
+				else:
+						print('the given input was not recognized, editing stopped');
+
+		elif(givenInput == 'deleteBook'):
+				try:
+						givenBook = input('give Book ISBN to delete: ');
+					
+				except:
+						print("the given isbn must be an integer");
+						
+				deleteBook(givenBook);
+
+		elif(givenInput == 'addBook'):
+				givenTitle = raw_input("give Book Title: ");
+				givenAuthor = raw_input("give Book Author: ");
+				try:
+						givenIsbn = input("give Book ISBN (must give): ");
+				except:
+						print("the given isbn must be an integer");
+						continue;
+				pagesBool = raw_input('do you want to provide pages (yes/no): ');
+				if(pagesBool == 'no'):
+						addBook(givenTitle, givenAuthor, givenIsbn, -1);
+				else:
+						try:
+								givenPages = input("give Book Number Pages (must be an integer): ");
+						except:
+								print("the given input was not an integer");
+								continue;
+						addBook(givenTitle, givenAuthor, givenIsbn, givenPages);
+							
+		elif(givenInput == 'sort'):
+				givenSort = raw_input('sort by what? title, pages, author, or isbn: ');
+				if(givenSort == 'title'):
+						sortByTitle();
+				elif(givenSort =='pages'):
+						sortByPages();
+				elif(givenSort == 'author'):
+						sortByAuthor();
+				elif(givenSort == 'isbn'):
+						sortByISBN();
+
+		elif(givenInput == 'addBorrower'):
+				givenName = raw_input('please input your name: ');
+				givenUserName = raw_input('please input a unique username: ');
+				givenPhone = raw_input('please input a phone number: ');
+				addBorrower(givenName, givenUserName, givenPhone);
+
+		elif(givenInput == 'editBorrower'):
+				givenUser = raw_input('please input the username to edit: ');
+				givenEdit = raw_input('please select what you are editting, phone or name: ');
+				if(givenEdit == 'phone'):
+						givenPhone = raw_input('please input your new phone: ');
+						editBorrowerPhone(givenUser, givenPhone);
+				elif(givenEdit == 'name'):
+						givenName = raw_input('please input your new name: ');
+						editBorrowerName(givenUser, givenName);
+				else:
+						print('command not recognized');
+
+		elif(givenInput == 'deleteBorrower'):
+				givenUser = raw_input('please input the username to delete: ');
+				deleteUser(givenUser);
+
+		elif(givenInput == 'checkBorrower'):
+				try:
+						givenBook = input('please input the isbn of the book to check: ');
+				except:
+						print("the isbn must be an integer");
+						continue;
+				borrowerOfBook(givenBook);
+		
+		elif(givenInput == 'checkBooksByUser'):
+				givenuser = raw_input('please input the user to check: ');
+				numberBooksChecked(givenuser);
+
+		elif(givenInput == 'checkout'):
+				try:
+						givenBook = input('please input the book to checkout: ');
+				except:
+						print("the isbn must be an integer");
+						continue;
+				
+				givenUser = raw_input('please input the user to checkout: ');
+				checkoutBook(givenUser, givenBook);
+
+		elif(givenInput == 'return'):
+				try:
+						givenBook = input('please input the book to return: ');
+				except:
+						print("the isbn must be an integer");
+						continue;
+				givenUser = raw_input('please input the borrower returning: ');
+				returnBook(givenUser, givenBook);
+
+		elif(givenInput == 'searchBook'):
+				givenSearch = raw_input('please input your search method, isbn, title, author: ');
+				if(givenSearch == 'isbn'):
+						try:
+								givenISBN = input('please input the isbn: ');
+						except:
+								print("the isbn must be an integer");
+								continue;
+						searchByIsbn(givenISBN);
+				elif(givenSearch == 'title'):
+						givenTitle = raw_input('please input the title: ');
+						searchByTitle(givenTitle);
+				elif(givenSearch == 'author'):
+						givenAuthor = raw_input('please input the author: ');
+						searchByAuthor(givenAuthor);
+				else:
+						print('command not recognized');
+
+		elif(givenInput == 'searchUsers'):
+				givenSearch = raw_input('please input your search method, username or name: ');
+				if(givenSearch == 'username'):
+						givenUser = raw_input('please input the username: ');
+						searchByUser(givenUser);
+				elif(givenSearch == 'name'):
+						givenName = raw_input('please input the name: ');
+						searchByName(givenName);
+				else:
+						print('command not recognized');
+
+		elif(givenInput == 'getUsers'):
+				getUsers();
+				
+		#elif(givenInput == 'removeAttrBook'):
+		#		givenAttr = raw_input('please select a book attribute to remove, authors/title/pages: ');
+		#		try:
+		#				givenBook = input('please input the book to remove the attribute: ');
+		#		except:
+		#				print("the given book must be an integer");
+		#				continue;
+		#		if(givenAttr == 'authors'):
+		#				removeAttribute(givenBook, 'authors');
+		#		elif(givenAttr == 'title'):
+		#				removeAttribute(givenBook, 'title');
+		#		elif(givenAttr == 'pages'):
+		#				removeAttribute(givenBook, 'pages');
+		#		else:
+		#				print('attribute not recognized');
+		#				
+		elif(givenInput == 'rateBook'):
+				try:
+						givenBook = input('please select a book isbn to rate: ');
+				except:
+						print('the isbn must be an integer');
+						continue;
+				givenUser = raw_input('please input a user for the rating: ');
+				givenReview = raw_input('please input a review: ');
+				try:
+						givenRate = input('please input a rating between 1 and 5 (5 meaning great): ');
+				except:
+						print('the rating must be an integer');
+						continue;
+						
+				if(givenRate > 0 and givenRate < 6):
+						rateBook(givenUser, givenBook, givenRate, givenReview);
+						continue;
+				print('the number must be between 1 and 5');
+				
+		elif(givenInput == 'recom'):
+				givenUser = raw_input('please give a user: ');
+				recommendation(givenUser);
+
+		elif(givenInput == 'getAuthors'):
+				getAuthors();
+				
+		elif(givenInput == 'deleteAuthors'):
+				givenName = raw_input('input an author to delete: ');
+				deleteAuthor(givenName);
+
+		elif(givenInput == "exit"):
+				print('exiting now thank you!');
+				break;
+
+		else:
+				print('the given input is not a registered command');
+
+
