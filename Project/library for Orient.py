@@ -261,7 +261,7 @@ def borrowerOfBook(isbn):
 		for data in books:
 			edge = client.command("select * from checked_out where to = " + books[0]._rid)
 			for d in edge:
-				borrower = client.command("select * from user where _rid = " edge[0].from)
+				borrower = client.command("select * from user where _rid = " + edge[0].from)
 				print(borrower[0])
 				return 1
 			print("no one currently has the book")
@@ -278,45 +278,26 @@ def getAuthors():
 		result = client.command("select * from author")
 		for data in result:
 				print(data);
-				
-		print('and now to get relationships');
-		
-		result = session.run("Match (auth:Author)-[rel:Author_Of]->(book:Book) return rel");
-		
-		for data in result:
-				print('new');
-				print(data);
-				
-		print('and now to get ratings');
-		
-		result = session.run("MATCH (user:Borrower)-[rel:Rated]->(book:Book) RETURN rel");
-		
-		for data in result:
-				print(data);
 
 def searchByTitle(title):
-		data = {'title':title};
-		result = session.run("Match (book:Book {title:{title}}) OPTIONAL MATCH (auth:author)-[Author_Of]->(book) Return book, auth", data);
+		result = client.command("select * from book where title = '" + title + "'");
 		for data in result:
 				print(data);
 		
-		
+#TODODODODODOD
 def searchByAuthor(author):
-		data = {'author':author};
 		#find all results with an author
  		result = session.run("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data);
 		for data in result:
 				print(data);
 
 def searchByIsbn(isbn):
-		data = {'isbn':isbn};
-		result = session.run("Match (book:Book {isbn: {isbn}}) OPTIONAL MATCH (auth:Author)-[Author_Of]->(book) Return book, auth", data);
+		result = client.command("select * from book where title = '" + str(isbn);
 		for data in result:
-				print(data);
+				print(result);
 				
 def searchByUser(user):
-		data = {'username':user};
-		result = session.run("Match (user:Borrower {username:{username}}) Return user", data);
+		result = client.command("select * from book where username = '" + user + "'");
 		for data in result:
 				print(data);
 
