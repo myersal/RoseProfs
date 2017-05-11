@@ -141,7 +141,7 @@ def sortByISBN():
 		
 		for data in result:
 			for d in data:
-				print(d)
+				print(d.oRecordData)
 
 def sortByPages():
 		print('all books sorted by number of pages')
