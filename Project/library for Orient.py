@@ -3,42 +3,44 @@ from neo4j.v1 import GraphDatabase, basic_auth
 try:
 	import pyorient
 	import pyorient.ogm
-	client = pyorient.OrientDB("137.112.104.108", 2424);
-	session_id = client.connect( "root", "wai3feex" );
-	client.db_open( "library", "admin", "admin" );
+	client = pyorient.OrientDB("137.112.104.108", 2424)
+	session_id = client.connect( "root", "wai3feex" )
+	client.db_open( "library", "admin", "admin" )
 except:
 	print("Orient could not connect")
-	exit();
+	exit()
+	
+session = null
 
 def addBook(title, author, isbn, pages):
         
 		books = client.command("select * from book where isbn = '" + str(isbn) + "'")
 		
 		for record in books:
-				print('the book already exists');
-				return 0;
+				print('the book already exists')
+				return 0
 		
-		books = session.run("CREATE Vertex book SET isbn = " + str(isbn));
+		books = client.command("CREATE Vertex book SET isbn = " + str(isbn))
 		
 		if(title != ""):
-				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'");
+				client.command("select * from book where isbn = " + str(isbn) + " SET title = '" + title + "'")
 		
 		if(pages != -1):
-				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(pages));
+				client.command("select * from book where isbn = " + str(isbn) + " SET pages = " + str(pages))
 			
 		if(author != ''):
 				#check to see if author exists, if not create the author
-				result = client.command("select * from author where name = '" + author + "'");
+				result = client.command("select * from author where name = '" + author + "'")
 				
 				for data in result:
-					author = client.command("CREATE Vertex author SET name = '" + author + "'");
+					author = client.command("CREATE Vertex author SET name = '" + author + "'")
 					#break out of the for loop after creating one
 					break;
 				
 				#must search the same author again and use the RID to create edge
-				author = client.command("select * from author where name = '" + author + "'");
+				author = client.command("select * from author where name = '" + author + "'")
 				
-				client.command("CREATE Edge auth_of from " + author[0]._rid + " to " + books[0]._rid);
+				client.command("CREATE Edge auth_of from " + author[0]._rid + " to " + books[0]._rid)
 
 def deleteBook(isbn):
 		
@@ -247,8 +249,8 @@ def numberBooksChecked(username):
 				client.command("select * from checked_out where from = " + borrowers[0]._rid) 
 				count = 0;
 				for d in result2:
-					count = count + 1;
-				print(count);
+					count = count + 1
+				print(count)
 				return 1
 				
 		print('the user does not exist')
@@ -287,12 +289,12 @@ def searchByTitle(title):
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
- 		result = session.run("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data);
+ 		result = client.command("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data);
 		for data in result:
 				print(data);
 
 def searchByIsbn(isbn):
-		result = client.command("select * from book where title = '" + str(isbn));
+		result = client.command("select * from book where title = '" + str(isbn))
 		for data in result:
 				print(result)
 				
@@ -302,9 +304,9 @@ def searchByUser(user):
 				print(data)
 
 def searchByName(name):
-		result = client.command("select * from user where name = '" + name + "'");
+		result = client.command("select * from user where name = '" + name + "'")
 		for data in result:
-				print(data);
+				print(data)
 
 # not needed for neo4j I believe				
 def removeAttribute(db, isbn, attribute):
@@ -312,7 +314,7 @@ def removeAttribute(db, isbn, attribute):
 		print('attribute was removed');
 		
 def deleteAuthor(name):
-		session.run("MATCH (author:Author {name: \"" + name + "\"}) DETACH DELETE author");
+		client.command("delete vertex author where name = '" + name + "'")
 		
 def rateBook(username, isbn, number, review):
 		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user");
