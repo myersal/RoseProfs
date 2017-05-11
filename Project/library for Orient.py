@@ -69,29 +69,29 @@ def editBookAuthor(isbn):
 			#check if an author exists
 			
 			if(givenAnswer == "add"):
-					auth = client.command("select * from author where name = '" + givenAuthor + "'");
-					#create author if auth does not exist
-					for data in auth:
-						client.command("Create Vertex author SET name = '" + givenAuthor + "'");
-					auth = client.command("select * from author where name = '" + givenAuthor + "'");
-					
-					client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid);
+				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				#create author if auth does not exist
+				for data in auth:
+					client.command("Create Vertex author SET name = '" + givenAuthor + "'");
+				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				
+				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid);
 			
 			elif(givenAnswer == 'remove'):
-					auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				auth = client.command("select * from author where name = '" + givenAuthor + "'");
+				
+				for data in auth:
+					edges = client.command("SELECT * from auth_of where from = " + auth[0]._rid + "and to =" + books[0]._rid);
+					for data in edges:
+						client.command("DELETE Edge auth_of where from = " + auth[0]._rid + " and to = " + books[0]._rid);
+						print("the edge has been deleted");
+						return 1;
+					print("the author is not currently an author of that book");
 					
-					for data in auth:
-						edges = client.command("SELECT * from auth_of where from = " + auth[0]._rid + "and to =" + books[0]._rid);
-							for data in edges:
-								client.command("DELETE Edge auth_of where from = " + auth[0]._rid + " and to = " + books[0]._rid);
-								print("the edge has been deleted");
-								return 1;
-						print("the author is not currently an author of that book");
-						
-					print("author does not exist so cannot delete");
+				print("author does not exist so cannot delete");
 			else:
-					print('answer not recognized');
-					return 0;
+				print('answer not recognized');
+				return 0;
 			
 			print('author was edited');
 			return 1;
@@ -238,22 +238,23 @@ def returnBook(username, isbn):
 				print('the book does not exist');
 				return 0;
 				
-		print('the user does not exist');
-
-#FINISHED MAJORITY OF ORIENT STUFF TO HERE		
+		print('the user does not exist');	
 
 def numberBooksChecked(username):
-		data = {'username':username};
-		result = session.run("Match (user:Borrower {username: \"" + username + "\"}) RETURN user");
+		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in result:
-				result2 = session.run("Match (book)-[rel:Borrowed_By]->(user:Borrower {username: \"" + username + "\"}) Return COUNT(rel) as num");
+				client.command("select * from checked_out where from = " + borrowers[0]._rid) 
+				count = 0;
 				for d in result2:
-					print(d['num']);
-				return 1;
+					count = count + 1;
+				print(count);
+				return 1
 				
-		print('the user does not exist');
-		
+		print('the user does not exist')
+	
+#FINISHED MAJORITY OF ORIENT STUFF TO HERE	
+	
 def borrowerOfBook(isbn):
 		data = {'isbn':isbn};
 		result = session.run("Match (book:Book) WHERE book.isbn = {isbn} RETURN book", data);
