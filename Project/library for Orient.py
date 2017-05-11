@@ -10,7 +10,7 @@ except:
 	print("Orient could not connect")
 	exit()
 	
-session = null
+session = None
 
 def addBook(title, author, isbn, pages):
         
