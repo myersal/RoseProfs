@@ -337,7 +337,20 @@ def getAuthors():
 def searchByTitle(title):
 		result = client.command("select * from book where title = '" + title + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 		
 #TODODODODODOD
 def searchByAuthor(author):
@@ -350,10 +363,12 @@ def searchByAuthor(author):
 				print(" title: " + data.title),
 			except:
 				#stupid errors
+				print("")
 			try:
 				print(" pages: " + str(data.pages)),
 			except:
 				#stupid errors 2
+				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
 				print(" author : " + result[0].name),
@@ -366,12 +381,38 @@ def searchByIsbn(isbn):
 def searchByUser(user):
 		result = client.command("select * from user where username = '" + user + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def searchByName(name):
 		result = client.command("select * from user where name = '" + name + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 # not needed for neo4j I believe				
 def removeAttribute(db, isbn, attribute):
