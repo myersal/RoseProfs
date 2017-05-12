@@ -158,10 +158,12 @@ def sortByAuthor():
 					print(" title: " + data.title),
 				except:
 					#stupid errors
+					print("")
 				try:
 					print(" pages: " + str(data.pages)),
 				except:
 					#stupid errors 2
+					print("")
 
 def sortByISBN():
 		print('all books sorted by isbn')
@@ -173,10 +175,12 @@ def sortByISBN():
 				print(" title: " + data.title),
 			except:
 				#stupid errors
+				print("")
 			try:
 				print(" pages: " + str(data.pages)),
 			except:
 				#stupid errors 2
+				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
 				print(" author : " + result[0].name),
@@ -192,10 +196,12 @@ def sortByPages():
 				print(" title: " + data.title),
 			except:
 				#stupid errors
+				print("")
 			try:
 				print(" pages: " + str(data.pages)),
 			except:
 				#stupid errors 2
+				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
 				print(" author : " + result[0].name),
