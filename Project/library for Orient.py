@@ -141,7 +141,7 @@ def sortByAuthor():
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("Select * from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1) ORDER BY isbn")
+		result = client.command("Select expand( from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)) ORDER BY isbn")
 		
 		for data in result:
 			print(data)
