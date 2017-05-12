@@ -261,7 +261,7 @@ def checkoutBook(username, isbn):
 				books = client.command("select * from book where isbn = " + str(isbn))
 		
 				for data2 in books:
-						result3 = client.command("Select * from checked_out where in = " + borrowers[0]._rid + " and out = " + books[0]._rid)
+						result3 = client.command("Select * from checked_out where out = " + books[0]._rid)
 				
 						for data3 in result3:
 								print("The book is already checked out")
