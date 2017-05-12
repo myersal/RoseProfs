@@ -141,7 +141,7 @@ def sortByTitle():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 
 def sortByAuthor():
 		#####TODODODODODODODO
@@ -150,17 +150,17 @@ def sortByAuthor():
 		result = client.command("SELECT in() AS books, name from author ORDER BY name")
 		
 		for data in result:
-			print(" author : " + result[0].name),
+			print(" author : " + data[0].name),
 			for d in data.books:
 				result = client.command("SELECT * from books where @rid = " + str(d))
-				print("isbn: " + str(data.isbn)),
+				print("isbn: " + str(d.isbn)),
 				try:
-					print(" title: " + data.title),
+					print(" title: " + d.title),
 				except:
 					#stupid errors
 					print("")
 				try:
-					print(" pages: " + str(data.pages)),
+					print(" pages: " + str(d.pages)),
 				except:
 					#stupid errors 2
 					print("")
@@ -183,7 +183,7 @@ def sortByISBN():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 			
 
 def sortByPages():
@@ -204,7 +204,7 @@ def sortByPages():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 
 def addBorrower(name, username, phone):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -302,7 +302,7 @@ def numberBooksChecked(username):
 		
 		for data in result:
 				client.command("select * from checked_out where from = " + borrowers[0]._rid) 
-				count = 0;
+				count = 0
 				for d in result2:
 					count = count + 1
 				print(count)
@@ -371,7 +371,7 @@ def searchByAuthor(author):
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 
 def searchByIsbn(isbn):
 		result = client.command("select * from book where isbn = '" + str(isbn))
@@ -394,7 +394,7 @@ def searchByUser(user):
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 
 def searchByName(name):
 		result = client.command("select * from user where name = '" + name + "'")
@@ -412,7 +412,7 @@ def searchByName(name):
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + result[0].name),
+				print(" author : " + d[0].name),
 
 # not needed for neo4j I believe				
 def removeAttribute(db, isbn, attribute):
@@ -448,7 +448,7 @@ def rateBook(username, isbn, number, review):
 def recommendation(username):
 		#find users that have rated the same book the same
 		
-		result2 = client.command("Select * from (TRAVERSE * from (SELECT * from user where username = '" + username + "') WHILE $depth <= 3)")
+		result2 = client.command("Select * from (TRAVERSE out(rate_book), in(rate_book) from (SELECT * from user where username = '" + username + "') WHILE $depth <= 6) WHERE $depth = 3 and @class = 'book'")
 				
 		for data2 in result2:
 			print(data2)
