@@ -148,7 +148,7 @@ def sortByISBN():
 		#result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		#result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		
-		result = client.command("SELECT in.name, out.isbn from auth_of")
+		result = client.command("SELECT in.name, out.isbn from (select expand(auth_of))")
 		
 		for data in result:
 			print(data);
