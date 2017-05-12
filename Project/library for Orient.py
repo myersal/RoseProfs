@@ -454,17 +454,6 @@ def recommendation(username):
 			print(data2)
 			print('recommendation complete')
 		
-		print('real thing')
-		
-		for data in result:
-				result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book)<-[rel2:Rated]-(user2:Borrower)-[rel3:Rated]->(book2:Book) WHERE rel1.rate = rel2.rate AND rel3.rate >= 3 RETURN book2")
-				for data2 in result2:
-						print(data2)
-				print('recommendation complete')
-				return 0;
-						
-		print('the user does not exist')
-		return 0;
 
 while 1 > 0:
 		givenInput = raw_input("$>:")
