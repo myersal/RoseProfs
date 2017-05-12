@@ -147,11 +147,11 @@ def sortByISBN():
 		result = client.command("SELECT in() AS author, title, isbn, pages from book")
 		for data in result:
 			print('1');
-			print("isbn: " + data['isbn']),
-			print(" title: " + data['title']),
-			print(" pages: " + data['pages']),
+			print("isbn: " + data.isbn),
+			print(" title: " + data.title),
+			print(" pages: " + data.pages),
 			for d in data['author']:
-				print(" name: " + d['name'])
+				print(" name: " + d.name)
 			
 
 def sortByPages():
