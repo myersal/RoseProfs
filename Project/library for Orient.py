@@ -261,7 +261,7 @@ def checkoutBook(username, isbn):
 				books = client.command("select * from book where isbn = " + str(isbn))
 		
 				for data2 in books:
-						result3 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
+						result3 = client.command("Select * from checked_out where in = " + borrowers[0]._rid + " and out = " + books[0]._rid)
 				
 						for data3 in result3:
 								print("The book is already checked out")
@@ -282,12 +282,12 @@ def returnBook(username, isbn):
 				books = client.command("select * from book where isbn = " + str(isbn))
 		
 				for data2 in books:
-						result3 = client.command("Select * from checked_out where from = " + books[0]._rid)
+						result3 = client.command("Select * from checked_out where out = " + books[0]._rid)
 				
 						for data3 in result3:
-								result4 = client.command("Select * from checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
+								result4 = client.command("Select * from checked_out where in =" + borrowers[0]._rid + " and out = " + books[0]._rid)
 								for data4 in result4:
-										client.command("DELETE EDGE checked_out where to =" + borrowers[0]._rid + " and from = " + books[0]._rid)
+										client.command("DELETE EDGE checked_out where in =" + borrowers[0]._rid + " and out = " + books[0]._rid)
 										print("the book has been returned")
 										return 1;
 								print('the book is not checked out by that user')
@@ -305,11 +305,11 @@ def numberBooksChecked(username):
 		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in result:
-				client.command("select * from checked_out where from = " + borrowers[0]._rid) 
+				client.command("select * from checked_out where out = " + borrowers[0]._rid) 
 				count = 0
 				for d in result2:
 					count = count + 1
-				print(count)
+				print(str(count))
 				return 1
 				
 		print('the user does not exist')	
@@ -318,9 +318,9 @@ def borrowerOfBook(isbn):
 		books = client.command("select * from book where isbn = " + str(isbn))
 		
 		for data in books:
-			edge = client.command("select * from checked_out where to = " + books[0]._rid)
+			edge = client.command("select * from checked_out where in = " + books[0]._rid)
 			for d in edge:
-				borrower = client.command("select * from user where _rid = " + edge[0]._from)
+				borrower = client.command("select * from user where @rid = " + edge[0]._rid)
 				print(borrower[0])
 				return 1
 			print("no one currently has the book")
@@ -467,220 +467,203 @@ while 1 > 0:
 				print('checkBooksByUser - to check how many books a user currently has checked')
 				print('searchBook - search for book stuff')
 				print('searchUsers - search for user stuff')
-				print('removeAttrBook - removes a specified attribute for a book')
 				print('rateBook - rate a given book')
 				print('recom - find recommendations for a user')
 
 		elif(givenInput == 'getBook'):
 				try:
-					givenBook = input('input the isbn you want to get: ');
+					givenBook = input('input the isbn you want to get: ')
 				except:
-					print("given isbn is not an integer");
+					print("given isbn is not an integer")
 					
-				getBook(givenBook);
+				getBook(givenBook)
 					
 		elif(givenInput == 'editBook'):
 				try:
-						givenISBN = input('select which isbn to edit: ');
+						givenISBN = input('select which isbn to edit: ')
 				except:
-						print("the given isbn must be an integer");
-						continue;
+						print("the given isbn must be an integer")
+						continue
 				
-				givenString = raw_input('select one of the following to edit author, pages, title: ');
+				givenString = raw_input('select one of the following to edit author, pages, title: ')
 
 				if(givenString == 'author'):
-						editBookAuthor(givenISBN);
+						editBookAuthor(givenISBN)
 
 				elif(givenString == 'pages'):
 						try:
-								givenPages = input('select a new number of pages: ');
+								givenPages = input('select a new number of pages: ')
 						except:
-								print("the pages must be an integer");
-								continue;
-						editBookPages(givenISBN, givenPages);
+								print("the pages must be an integer")
+								continue
+						editBookPages(givenISBN, givenPages)
 
 				elif(givenString == 'title'):
-						givenTitle = raw_input('select a new title:');
-						editBookTitle(givenISBN, givenTitle);
+						givenTitle = raw_input('select a new title:')
+						editBookTitle(givenISBN, givenTitle)
 				
 				else:
-						print('the given input was not recognized, editing stopped');
+						print('the given input was not recognized, editing stopped')
 
 		elif(givenInput == 'deleteBook'):
 				try:
-						givenBook = input('give Book ISBN to delete: ');
+						givenBook = input('give Book ISBN to delete: ')
 					
 				except:
-						print("the given isbn must be an integer");
+						print("the given isbn must be an integer")
 						
-				deleteBook(givenBook);
+				deleteBook(givenBook)
 
 		elif(givenInput == 'addBook'):
-				givenTitle = raw_input("give Book Title: ");
-				givenAuthor = raw_input("give Book Author: ");
+				givenTitle = raw_input("give Book Title: ")
+				givenAuthor = raw_input("give Book Author: ")
 				try:
-						givenIsbn = input("give Book ISBN (must give): ");
+						givenIsbn = input("give Book ISBN (must give): ")
 				except:
-						print("the given isbn must be an integer");
+						print("the given isbn must be an integer")
 						continue;
-				pagesBool = raw_input('do you want to provide pages (yes/no): ');
+				pagesBool = raw_input('do you want to provide pages (yes/no): ')
 				if(pagesBool == 'no'):
-						addBook(givenTitle, givenAuthor, givenIsbn, -1);
+						addBook(givenTitle, givenAuthor, givenIsbn, -1)
 				else:
 						try:
-								givenPages = input("give Book Number Pages (must be an integer): ");
+								givenPages = input("give Book Number Pages (must be an integer): ")
 						except:
-								print("the given input was not an integer");
-								continue;
-						addBook(givenTitle, givenAuthor, givenIsbn, givenPages);
+								print("the given input was not an integer")
+								continue
+						addBook(givenTitle, givenAuthor, givenIsbn, givenPages)
 							
 		elif(givenInput == 'sort'):
-				givenSort = raw_input('sort by what? title, pages, author, or isbn: ');
+				givenSort = raw_input('sort by what? title, pages, author, or isbn: ')
 				if(givenSort == 'title'):
-						sortByTitle();
+						sortByTitle()
 				elif(givenSort =='pages'):
-						sortByPages();
+						sortByPages()
 				elif(givenSort == 'author'):
-						sortByAuthor();
+						sortByAuthor()
 				elif(givenSort == 'isbn'):
-						sortByISBN();
+						sortByISBN()
 
 		elif(givenInput == 'addBorrower'):
-				givenName = raw_input('please input your name: ');
-				givenUserName = raw_input('please input a unique username: ');
-				givenPhone = raw_input('please input a phone number: ');
-				addBorrower(givenName, givenUserName, givenPhone);
+				givenName = raw_input('please input your name: ')
+				givenUserName = raw_input('please input a unique username: ')
+				givenPhone = raw_input('please input a phone number: ')
+				addBorrower(givenName, givenUserName, givenPhone)
 
 		elif(givenInput == 'editBorrower'):
-				givenUser = raw_input('please input the username to edit: ');
-				givenEdit = raw_input('please select what you are editting, phone or name: ');
+				givenUser = raw_input('please input the username to edit: ')
+				givenEdit = raw_input('please select what you are editting, phone or name: ')
 				if(givenEdit == 'phone'):
-						givenPhone = raw_input('please input your new phone: ');
-						editBorrowerPhone(givenUser, givenPhone);
+						givenPhone = raw_input('please input your new phone: ')
+						editBorrowerPhone(givenUser, givenPhone)
 				elif(givenEdit == 'name'):
-						givenName = raw_input('please input your new name: ');
-						editBorrowerName(givenUser, givenName);
+						givenName = raw_input('please input your new name: ')
+						editBorrowerName(givenUser, givenName)
 				else:
-						print('command not recognized');
+						print('command not recognized')
 
 		elif(givenInput == 'deleteBorrower'):
-				givenUser = raw_input('please input the username to delete: ');
-				deleteUser(givenUser);
+				givenUser = raw_input('please input the username to delete: ')
+				deleteUser(givenUser)
 
 		elif(givenInput == 'checkBorrower'):
 				try:
-						givenBook = input('please input the isbn of the book to check: ');
+						givenBook = input('please input the isbn of the book to check: ')
 				except:
-						print("the isbn must be an integer");
-						continue;
-				borrowerOfBook(givenBook);
+						print("the isbn must be an integer")
+						continue
+				borrowerOfBook(givenBook)
 		
 		elif(givenInput == 'checkBooksByUser'):
-				givenuser = raw_input('please input the user to check: ');
-				numberBooksChecked(givenuser);
+				givenuser = raw_input('please input the user to check: ')
+				numberBooksChecked(givenuser)
 
 		elif(givenInput == 'checkout'):
 				try:
-						givenBook = input('please input the book to checkout: ');
+						givenBook = input('please input the book to checkout: ')
 				except:
-						print("the isbn must be an integer");
-						continue;
+						print("the isbn must be an integer")
+						continue
 				
-				givenUser = raw_input('please input the user to checkout: ');
-				checkoutBook(givenUser, givenBook);
+				givenUser = raw_input('please input the user to checkout: ')
+				checkoutBook(givenUser, givenBook)
 
 		elif(givenInput == 'return'):
 				try:
-						givenBook = input('please input the book to return: ');
+						givenBook = input('please input the book to return: ')
 				except:
-						print("the isbn must be an integer");
-						continue;
-				givenUser = raw_input('please input the borrower returning: ');
-				returnBook(givenUser, givenBook);
+						print("the isbn must be an integer")
+						continue
+				givenUser = raw_input('please input the borrower returning: ')
+				returnBook(givenUser, givenBook)
 
 		elif(givenInput == 'searchBook'):
-				givenSearch = raw_input('please input your search method, isbn, title, author: ');
+				givenSearch = raw_input('please input your search method, isbn, title, author: ')
 				if(givenSearch == 'isbn'):
 						try:
-								givenISBN = input('please input the isbn: ');
+								givenISBN = input('please input the isbn: ')
 						except:
-								print("the isbn must be an integer");
-								continue;
-						searchByIsbn(givenISBN);
+								print("the isbn must be an integer")
+								continue
+						searchByIsbn(givenISBN)
 				elif(givenSearch == 'title'):
-						givenTitle = raw_input('please input the title: ');
-						searchByTitle(givenTitle);
+						givenTitle = raw_input('please input the title: ')
+						searchByTitle(givenTitle)
 				elif(givenSearch == 'author'):
-						givenAuthor = raw_input('please input the author: ');
-						searchByAuthor(givenAuthor);
+						givenAuthor = raw_input('please input the author: ')
+						searchByAuthor(givenAuthor)
 				else:
-						print('command not recognized');
+						print('command not recognized')
 
 		elif(givenInput == 'searchUsers'):
-				givenSearch = raw_input('please input your search method, username or name: ');
+				givenSearch = raw_input('please input your search method, username or name: ')
 				if(givenSearch == 'username'):
-						givenUser = raw_input('please input the username: ');
-						searchByUser(givenUser);
+						givenUser = raw_input('please input the username: ')
+						searchByUser(givenUser)
 				elif(givenSearch == 'name'):
-						givenName = raw_input('please input the name: ');
-						searchByName(givenName);
+						givenName = raw_input('please input the name: ')
+						searchByName(givenName)
 				else:
-						print('command not recognized');
+						print('command not recognized')
 
 		elif(givenInput == 'getUsers'):
-				getUsers();
-				
-		#elif(givenInput == 'removeAttrBook'):
-		#		givenAttr = raw_input('please select a book attribute to remove, authors/title/pages: ');
-		#		try:
-		#				givenBook = input('please input the book to remove the attribute: ');
-		#		except:
-		#				print("the given book must be an integer");
-		#				continue;
-		#		if(givenAttr == 'authors'):
-		#				removeAttribute(givenBook, 'authors');
-		#		elif(givenAttr == 'title'):
-		#				removeAttribute(givenBook, 'title');
-		#		elif(givenAttr == 'pages'):
-		#				removeAttribute(givenBook, 'pages');
-		#		else:
-		#				print('attribute not recognized');
-		#				
+				getUsers()
+							
 		elif(givenInput == 'rateBook'):
 				try:
-						givenBook = input('please select a book isbn to rate: ');
+						givenBook = input('please select a book isbn to rate: ')
 				except:
-						print('the isbn must be an integer');
-						continue;
-				givenUser = raw_input('please input a user for the rating: ');
-				givenReview = raw_input('please input a review: ');
+						print('the isbn must be an integer')
+						continue
+				givenUser = raw_input('please input a user for the rating: ')
+				givenReview = raw_input('please input a review: ')
 				try:
-						givenRate = input('please input a rating between 1 and 5 (5 meaning great): ');
+						givenRate = input('please input a rating between 1 and 5 (5 meaning great): ')
 				except:
-						print('the rating must be an integer');
-						continue;
+						print('the rating must be an integer')
+						continue
 						
 				if(givenRate > 0 and givenRate < 6):
-						rateBook(givenUser, givenBook, givenRate, givenReview);
-						continue;
-				print('the number must be between 1 and 5');
+						rateBook(givenUser, givenBook, givenRate, givenReview)
+						continue
+				print('the number must be between 1 and 5')
 				
 		elif(givenInput == 'recom'):
-				givenUser = raw_input('please give a user: ');
-				recommendation(givenUser);
+				givenUser = raw_input('please give a user: ')
+				recommendation(givenUser)
 
 		elif(givenInput == 'getAuthors'):
-				getAuthors();
+				getAuthors()
 				
 		elif(givenInput == 'deleteAuthors'):
-				givenName = raw_input('input an author to delete: ');
-				deleteAuthor(givenName);
+				givenName = raw_input('input an author to delete: ')
+				deleteAuthor(givenName)
 
 		elif(givenInput == "exit"):
-				print('exiting now thank you!');
-				break;
+				print('exiting now thank you!')
+				break
 
 		else:
-				print('the given input is not a registered command');
+				print('the given input is not a registered command')
 
 
