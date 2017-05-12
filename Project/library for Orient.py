@@ -151,7 +151,7 @@ def sortByAuthor():
 		result = client.command("SELECT in() AS books, name from author ORDER BY name")
 		
 		for data in result:
-			print(" author : " + data[0].name),
+			print(" author : " + data.name),
 			for d in data.books:
 				result = client.command("SELECT * from books where @rid = " + str(d))
 				print("isbn: " + str(d.isbn)),
