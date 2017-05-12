@@ -142,7 +142,7 @@ def sortByTitle():
 			for d in data.author:
 				result2 = client.command("SELECT * from author where @rid = " + str(d))
 				for data2 in result2:
-					print(" author : " + result[0].name),
+					print(" author : " + result2[0].name),
 
 def sortByAuthor():
 		#####TODODODODODODODO
@@ -185,7 +185,7 @@ def sortByISBN():
 			for d in data.author:
 				result2 = client.command("SELECT * from author where @rid = " + str(d))
 				for data2 in result2:
-					print(" author : " + result[0].name),
+					print(" author : " + result2[0].name),
 			
 
 def sortByPages():
@@ -207,7 +207,7 @@ def sortByPages():
 			for d in data.author:
 				result2 = client.command("SELECT * from author where @rid = " + str(d))
 				for data2 in result2:
-					print(" author : " + result[0].name),
+					print(" author : " + result2[0].name),
 
 def addBorrower(name, username, phone):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -354,29 +354,28 @@ def searchByTitle(title):
 			for d in data.author:
 				result2 = client.command("SELECT * from author where @rid = " + str(d))
 				for data2 in result2:
-					print(" author : " + result[0].name),
+					print(" author : " + result2[0].name),
 		
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
- 		result = client.command("SELECT in() AS author, title, isbn, pages from book WHERE name = '" + author + "' ORDER BY pages")
+		result = client.command("SELECT in() AS books, name from author WHERE name = '" + author + "' ORDER BY name")
 		
 		for data in result:
-			print("isbn: " + str(data.isbn)),
-			try:
-				print(" title: " + data.title),
-			except:
-				#stupid errors
-				print("")
-			try:
-				print(" pages: " + str(data.pages)),
-			except:
-				#stupid errors 2
-				print("")
-			for d in data.author:
-				result2 = client.command("SELECT * from author where @rid = " + str(d))
-				for data2 in result2:
-					print(" author : " + result[0].name),
+			print(" author : " + data[0].name),
+			for d in data.books:
+				result = client.command("SELECT * from books where @rid = " + str(d))
+				print("isbn: " + str(d.isbn)),
+				try:
+					print(" title: " + d.title),
+				except:
+					#stupid errors
+					print("")
+				try:
+					print(" pages: " + str(d.pages)),
+				except:
+					#stupid errors 2
+					print("")
 
 def searchByIsbn(isbn):
 		result = client.command("select * from book where isbn = '" + str(isbn))
@@ -395,7 +394,7 @@ def searchByIsbn(isbn):
 			for d in data.author:
 				result2 = client.command("SELECT * from author where @rid = " + str(d))
 				for data2 in result2:
-					print(" author : " + result[0].name),
+					print(" author : " + result2[0].name),
 				
 def searchByUser(user):
 		result = client.command("select * from user where username = '" + user + "'")
