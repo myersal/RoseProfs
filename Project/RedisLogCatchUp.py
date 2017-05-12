@@ -79,25 +79,25 @@ while True:
 					add_prof(record)
 				except:
 					print("Redis down 1")
-					continue
+					break
 			elif record["type"] == "del_prof":
 				try:
 					del_prof(record)
 				except:
 					print("Redis down 2")
-					continue
+					break
 			elif record["type"] == "add_class_to_prof":
 				try:
 					add_class_to_prof(record)
 				except:
 					print("Redis down 3")
-					continue
+					break
 			elif record["type"] == "del_class_from_prof":
 				try:
 					del_class_from_prof(record)
 				except:
 					print("Redis down 4")
-					continue
+					break
 			logs.update_one({'_id': record["_id"]}, {'$set': {'redis': -1}})
 			print(record["type"] + " was executed!")
 

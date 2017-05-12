@@ -142,7 +142,7 @@ def orientDeleteStudent(record):
 def updateLog(record):
 	logs.update_one({'_id': record["_id"]}, {'$set' : {'orient': -1}})
 	
-	
+conn = True
 print("Data is being brought up to date!")
 while True:
 	time.sleep(1)
@@ -155,68 +155,85 @@ while True:
 	try:
 		orientLogsTodo = logs.find({"orient": 0}).sort("$natural", 1)
 		#found one huge error in current logs!!! if it doesnt go through the first time then we need to continue the while loop, not continue the for loop
-		finishBool = False
+		if conn == False:
+			try:
+				client = pyorient.OrientDB("137.112.104.108", 2424)
+				session_id = client.connect( "root", "wai3feex" )
+				client.db_open("roseprofs", "admin", "admin")
+				conn = True
+			except:
+				print("Orient Down Bro!")
+				continue
+		
 		for record in orientLogsTodo:
-			finishBool = False
-			while not finishBool:
+			
+				
 				if (record["type"] == "rate_prof"):
 					try:
 						orientRateProf(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 					
 				elif (record["type"] == "rate_class"):
 					try:
 						orientRateClass(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 					
 				elif (record["type"] == "add_prof"):
 					try:
 						orientAddProf(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 					
 				elif (record["type"] == "del_prof"):
 					try:
 						orientDelProf(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 				
 				elif (record["type"] == "add_class_to_prof"):
 					try:
 						orientAddClassToProf(record)
 					except:
 						print("Orient Down")
+						conn = False
+						break
 					
 				elif (record["type"] == "del_class_from_prof"):
 					try:
 						orientDelClassFromProf(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 				
 				elif (record["type"] == "add_student"):
 					try:
 						orientAddStudent(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 				
 				elif (record["type"] == "del_student"):
 					try:
 						orientDeleteStudent(record)
 					except:
 						print("Orient Down")
-						continue
+						conn = False
+						break
 				
 				print(record['type'] + " was executed!")
 				updateLog(record)
-				finishBool = True
 					
 			
 	except Exception as e:
