@@ -72,11 +72,15 @@ def editBookAuthor(isbn):
 				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				#create author if auth does not exist
 				for data in auth:
-					client.command("Create Vertex author SET name = '" + givenAuthor + "'")
-				auth = client.command("select * from author where name = '" + givenAuthor + "'")
+					client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
+					print('author added')
+					return 1
 				
-				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
-			
+				auth2 = client.command("Create Vertex author SET name = '" + givenAuthor + "'")
+				client.command("CREATE Edge auth_of from " + auth2[0]._rid + " to " + books[0]._rid)
+				print('author added')
+				return 1
+				
 			elif(givenAnswer == 'remove'):
 				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				
@@ -122,32 +126,85 @@ def editBookTitle(isbn, newTitle):
 		
 def sortByTitle():
 		print('all books sorted by title')
-		result = client.command("select IN() from book ORDER BY title")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY title")
 		for data in result:
-			print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def sortByAuthor():
-		#####TODODODODODODODOD
+		#####TODODODODODODODO
 
 		print('all books sorted by author')
-		result = client.command("select * from book ORDER BY title")
+		result = client.command("SELECT in() AS books, name from author ORDER BY name")
 		
 		for data in result:
-			print(data)
+			print(" author : " + result[0].name),
+			for d in data.books:
+				result = client.command("SELECT * from books where @rid = " + str(d))
+				print("isbn: " + str(data.isbn)),
+				try:
+					print(" title: " + data.title),
+				except:
+					#stupid errors
+					print("")
+				try:
+					print(" pages: " + str(data.pages)),
+				except:
+					#stupid errors 2
+					print("")
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("Select * from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		
 		for data in result:
-			print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
+			
 
 def sortByPages():
 		print('all books sorted by number of pages')
-		result = client.command("select IN() from book ORDER BY pages")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY pages")
 		
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def addBorrower(name, username, phone):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -280,14 +337,41 @@ def getAuthors():
 def searchByTitle(title):
 		result = client.command("select * from book where title = '" + title + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 		
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
- 		result = client.command("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data)
+ 		result = client.command("SELECT in() AS author, title, isbn, pages from book WHERE name = '" + author + "' ORDER BY pages")
+		
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def searchByIsbn(isbn):
 		result = client.command("select * from book where isbn = '" + str(isbn))
@@ -297,12 +381,38 @@ def searchByIsbn(isbn):
 def searchByUser(user):
 		result = client.command("select * from user where username = '" + user + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def searchByName(name):
 		result = client.command("select * from user where name = '" + name + "'")
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+				print("")
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+				print("")
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 # not needed for neo4j I believe				
 def removeAttribute(db, isbn, attribute):
@@ -313,19 +423,19 @@ def deleteAuthor(name):
 		client.command("delete vertex author where name = '" + name + "'")
 		
 def rateBook(username, isbn, number, review):
-		result = client.command("select * from user where name = '" + name + "'")
+		result = client.command("select * from user where username = '" + username + "'")
 		
 		for data in result:
-				result2 = client.command("select * from book where isbn = '" + str(isbn))
+				result2 = client.command("select * from book where isbn = " + str(isbn))
 				for data2 in result2:
-						result3 = client.command("select * from rate_book where from = " + result[0]._rid + " and to = " + result2[0]._rid)
+						result3 = client.command("select * from rate_book where out = " + result[0]._rid + " and in = " + result2[0]._rid)
 						#if there is already a rating then update, else create the rating then update
 						for data3 in result3:
-								client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
+								client.command("UPDATE rate_book SET review = '" + review + "', rate = " + str(number))
 								print("the rating has been updated");
 								return 1;
 						client.command("CREATE EDGE rate_book from " + result[0]._rid + " to " + result2[0]._rid)
-						client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
+						client.command("UPDATE rate_book SET review = '" + review + "', rate = " + str(number))
 						print('the rating has been created')
 						return 1
 				
@@ -336,26 +446,14 @@ def rateBook(username, isbn, number, review):
 		return 0
 		
 def recommendation(username):
-		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user")
-		print('test data')
+		#find users that have rated the same book the same
 		
-		result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book) RETURN rel1")
+		result2 = client.command("Select * from (TRAVERSE * from (SELECT * from user where username = '" + username + "') WHILE $depth <= 3)")
 				
 		for data2 in result2:
 			print(data2)
 			print('recommendation complete')
 		
-		print('real thing')
-		
-		for data in result:
-				result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book)<-[rel2:Rated]-(user2:Borrower)-[rel3:Rated]->(book2:Book) WHERE rel1.rate = rel2.rate AND rel3.rate >= 3 RETURN book2")
-				for data2 in result2:
-						print(data2)
-				print('recommendation complete')
-				return 0;
-						
-		print('the user does not exist')
-		return 0;
 
 while 1 > 0:
 		givenInput = raw_input("$>:")
