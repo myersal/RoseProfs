@@ -153,15 +153,15 @@ def sortByAuthor():
 		for data in result:
 			print(" author : " + data.name),
 			for d in data.books:
-				result = client.command("SELECT * from books where @rid = " + str(d))
-				print("isbn: " + str(d.isbn)),
+				result = client.command("SELECT * from book where @rid = " + str(d))
+				print("isbn: " + str(result.isbn)),
 				try:
-					print(" title: " + d.title),
+					print(" title: " + result.title),
 				except:
 					#stupid errors
 					print("")
 				try:
-					print(" pages: " + str(d.pages)),
+					print(" pages: " + str(result.pages)),
 				except:
 					#stupid errors 2
 					print("")
