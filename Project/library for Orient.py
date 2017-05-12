@@ -148,8 +148,8 @@ def sortByISBN():
 		for data in result:
 			print('1');
 			print("isbn: " + data['isbn']),
-			print(" title: "data['title']),
-			print(" pages: "data['pages']),
+			print(" title: " + data['title']),
+			print(" pages: " + data['pages']),
 			for d in data['author']:
 				print(" name: " + d['name'])
 			
