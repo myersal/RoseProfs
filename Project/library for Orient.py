@@ -130,14 +130,15 @@ def sortByAuthor():
 		#####TODODODODODODODOD
 
 		print('all books sorted by author')
-		result = client.command("select from book ORDER BY title")
+		result = client.command("select * from book ORDER BY title")
 		
 		for data in result:
 			print(data)
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("select $c Let $a = (select * from book ORDER BY isbn), $b = (select * from author), $c = UNIONALL($a, $b) WHERE $c.out_auth_of = $c.in_auth_of")
+		result = client.command("Select * from book")
+		#(TRAVERSE(both('auth_of') FROM (Select * from book) WHILE $depth <= 1))")
 		
 		for data in result:
 			print(data)
