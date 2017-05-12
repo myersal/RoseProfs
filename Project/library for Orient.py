@@ -304,7 +304,7 @@ def returnBook(username, isbn):
 def numberBooksChecked(username):
 		borrowers = client.command("select * from user where username = '" + username + "'")
 		
-		for data in result:
+		for data in borrowers:
 				client.command("select * from checked_out where out = " + borrowers[0]._rid) 
 				count = 0
 				for d in result2:
