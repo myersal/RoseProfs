@@ -76,8 +76,8 @@ def editBookAuthor(isbn):
 					print('author added')
 					return 1
 				
-				auth = client.command("Create Vertex author SET name = '" + givenAuthor + "'")
-				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
+				auth2 = client.command("Create Vertex author SET name = '" + givenAuthor + "'")
+				client.command("CREATE Edge auth_of from " + auth2[0]._rid + " to " + books[0]._rid)
 				print('author added')
 				return 1
 				
