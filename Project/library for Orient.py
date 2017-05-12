@@ -159,7 +159,7 @@ def sortByISBN():
 			print(" title: " + data.title),
 			print(" pages: " + str(data.pages))
 			for d in data.author:
-				print(d + " "),
+				print(d)
 			
 
 def sortByPages():
