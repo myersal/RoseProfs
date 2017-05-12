@@ -426,7 +426,7 @@ def rateBook(username, isbn, number, review):
 		result = client.command("select * from user where username = '" + username + "'")
 		
 		for data in result:
-				result2 = client.command("select * from book where isbn = '" + str(isbn))
+				result2 = client.command("select * from book where isbn = " + str(isbn))
 				for data2 in result2:
 						result3 = client.command("select * from rate_book where from = " + result[0]._rid + " and to = " + result2[0]._rid)
 						#if there is already a rating then update, else create the rating then update
