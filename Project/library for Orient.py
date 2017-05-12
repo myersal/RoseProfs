@@ -267,7 +267,7 @@ def checkoutBook(username, isbn):
 								print("The book is already checked out")
 								return 0;
 								
-						client.command("CREATE EDGE checked_out from = " + books[0]._rid + " to =" + borrowers[0]._rid)
+						client.command("CREATE EDGE checked_out from = " + books[0]._rid + " to = " + borrowers[0]._rid)
 						return 1;
 						
 				print('the book does not exist')
