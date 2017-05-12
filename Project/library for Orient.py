@@ -160,7 +160,7 @@ def sortByISBN():
 			#print(" pages: " + str(data.pages)),
 			for d in data.author:
 				print(d)
-				result = client.command("SELECT * from author where @rid = " + d)
+				result = client.command("SELECT * from author where @rid = " + str(d))
 				print("author : " + result[0].name)
 			
 
