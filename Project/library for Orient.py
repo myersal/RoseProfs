@@ -397,10 +397,9 @@ def rateBook(username, isbn, number, review):
 		return 0
 		
 def recommendation(username):
-		result = session.run("Match (user:Borrower {username:\"" + username + "\"}) RETURN user")
-		print('test data')
+		#find users that have rated the same book the same
 		
-		result2 = session.run("MATCH (user1:Borrower {username:\"" + username + "\"})-[rel1:Rated]->(book1:Book) RETURN rel1")
+		result2 = client.command("TRAVERSE rate_book from (SELECT * from user where username = '" + username + "') where $depth <= 2")
 				
 		for data2 in result2:
 			print(data2)
