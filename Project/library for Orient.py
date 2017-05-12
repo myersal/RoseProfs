@@ -423,7 +423,7 @@ def deleteAuthor(name):
 		client.command("delete vertex author where name = '" + name + "'")
 		
 def rateBook(username, isbn, number, review):
-		result = client.command("select * from user where name = '" + name + "'")
+		result = client.command("select * from user where name = '" + username + "'")
 		
 		for data in result:
 				result2 = client.command("select * from book where isbn = '" + str(isbn))
