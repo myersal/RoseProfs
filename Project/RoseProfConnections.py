@@ -12,8 +12,8 @@ databaseOpen = True
 try:
 	import pymongo
 	from pymongo import MongoClient
-	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109', 40000)
-	db = mongoClient['rose-profs']
+	mongoClient = MongoClient('mongodb://137.112.104.109', 40000)
+	db = mongoClient['roseprofs']
 	students = db.students
 	professors = db.professors
 	logs = db.logs
@@ -25,7 +25,7 @@ except:
 
 try:
 	import redis
-	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0)
+	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0, socket_timeout=5)
 	conn = redis.Redis(connection_pool = POOL)
 except:
 	print("Some functionality may be slower and/or limited due to problems outside of your control")

@@ -8,8 +8,8 @@ import time
 try:
 	import pymongo
 	from pymongo import MongoClient
-	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109', 40000)
-	db = mongoClient['rose-profs']
+	mongoClient = MongoClient('mongodb://137.112.104.109', 40000)
+	db = mongoClient['roseprofs']
 	students = db.students
 	professors = db.professors
 	logs = db.logs

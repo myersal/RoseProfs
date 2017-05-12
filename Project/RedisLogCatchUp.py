@@ -10,10 +10,12 @@ import re
 try:
 	import pymongo
 	from pymongo import MongoClient
-	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109', 40000)
-	db = mongoClient['rose-profs']
+	#mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109', 40000)
+	mongoClient = MongoClient('mongodb://137.112.104.109', 40000)
+	db = mongoClient['roseprofs']
 	students = db.students
 	professors = db.professors
+	print("hello?")
 	logs = db.logs
 except:
 	print("Could not connect to Mongo")
@@ -21,7 +23,7 @@ except:
 	
 try:
 	import redis
-	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0)
+	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0, socket_timeout=5)
 	conn = redis.Redis(connection_pool=POOL)
 except:
 	print("Could not connect to Redis")
@@ -63,11 +65,11 @@ def del_class_from_prof(record):
 print("Data is being brought up to date!")
 while True:
 	time.sleep(1)
-	try:
-		logs.remove({"mongo": -1, "redis": -1, "orient": -1})
-	except:
-		print("Mongo Down")
-		continue
+	#try:
+	logs.remove({"mongo": -1, "redis": -1, "orient": -1})
+	#except:
+		#print("Mongo Down 1")
+		#continue
 		
 	try:
 		redisLogsTodo = logs.find({"redis": 0}).sort("$natural", 1)
@@ -101,5 +103,5 @@ while True:
 
 	except Exception as e:
 		#print str(e)
-		print("Mongo Down")
+		print("Mongo Down 2")
 		continue
