@@ -338,7 +338,7 @@ def getAuthors():
 				print(data)
 
 def searchByTitle(title):
-		result = client.command("select * from book where title = '" + title + "'")
+		result = client.command("select in() AS author, title, isbn, pages from book where title = '" + title + "'")
 		for data in result:
 			print("isbn: " + str(data.isbn)),
 			try:
@@ -378,7 +378,7 @@ def searchByAuthor(author):
 					print("")
 
 def searchByIsbn(isbn):
-		result = client.command("select * from book where isbn = " + str(isbn))
+		result = client.command("select in() AS author, title, isbn, pages from book where isbn = " + str(isbn))
 		for data in result:
 			print("isbn: " + str(data.isbn)),
 			try:
