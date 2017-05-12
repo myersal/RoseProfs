@@ -141,7 +141,7 @@ def sortByTitle():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + d[0].name),
+				print(" author : " + result[0].name),
 
 def sortByAuthor():
 		#####TODODODODODODODO
@@ -183,7 +183,7 @@ def sortByISBN():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + d[0].name),
+				print(" author : " + result[0].name),
 			
 
 def sortByPages():
@@ -204,7 +204,7 @@ def sortByPages():
 				print("")
 			for d in data.author:
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print(" author : " + d[0].name),
+				print(" author : " + result[0].name),
 
 def addBorrower(name, username, phone):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -448,8 +448,8 @@ def rateBook(username, isbn, number, review):
 def recommendation(username):
 		#find users that have rated the same book the same
 		
-		result2 = client.command("Select * from (TRAVERSE out(rate_book), in(rate_book) from (SELECT * from user where username = '" + username + "') WHILE $depth <= 6) WHERE $depth = 3 and @class = 'book'")
-				
+		result2 = client.command("Select * from (TRAVERSE out(rate_book), in(rate_book) from (SELECT * from user where username = '" + username + "') WHILE $depth <= 3) WHERE $depth = 3 and @class = 'book'")
+		
 		for data2 in result2:
 			print(data2)
 			print('recommendation complete')
