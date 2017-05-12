@@ -435,7 +435,7 @@ def rateBook(username, isbn, number, review):
 								print("the rating has been updated");
 								return 1;
 						client.command("CREATE EDGE rate_book from " + result[0]._rid + " to " + result2[0]._rid)
-						client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
+						client.command("UPDATE rate_book SET review = '" + review + "', rate = " + str(number))
 						print('the rating has been created')
 						return 1
 				
