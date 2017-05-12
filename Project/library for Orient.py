@@ -126,50 +126,77 @@ def editBookTitle(isbn, newTitle):
 		
 def sortByTitle():
 		print('all books sorted by title')
-		result = client.command("select IN() from book ORDER BY title")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY title")
 		for data in result:
-			print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def sortByAuthor():
-		#####TODODODODODODODOD
+		#####TODODODODODODODO
 
 		print('all books sorted by author')
-		result = client.command("select * from book ORDER BY title")
+		result = client.command("SELECT in() AS books, name from author ORDER BY name")
 		
 		for data in result:
-			print(data)
+			print(" author : " + result[0].name),
+			for d in data.books:
+				result = client.command("SELECT * from books where @rid = " + str(d))
+				print("isbn: " + str(data.isbn)),
+				try:
+					print(" title: " + data.title),
+				except:
+					#stupid errors
+				try:
+					print(" pages: " + str(data.pages)),
+				except:
+					#stupid errors 2
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		#result = client.command("Select expand( from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)) ORDER BY isbn")
-		#result = client.command("SELECT expand($c) Let $a = (select * from book), $b = (select expand(in()) book), $c = unionall($a, $b)")
-		
-		#result = client.command("SELECT $c, title, isbn, pages from book LET $c = (Select expand(in()) from book) where $c.isbn = isbn")
-		#result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		
-		#result = client.command("SELECT in.name, out.isbn from (select expand(auth_of)) from book")
-		
-		#for data in result:
-		#	print(data);
-		
 		for data in result:
-			print('1');
 			print("isbn: " + str(data.isbn)),
-			print(" title: " + data.title),
-			#print(" pages: " + str(data.pages)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
 			for d in data.author:
-				print(d)
 				result = client.command("SELECT * from author where @rid = " + str(d))
-				print("author : " + result[0].name)
+				print(" author : " + result[0].name),
 			
 
 def sortByPages():
 		print('all books sorted by number of pages')
-		result = client.command("select IN() from book ORDER BY pages")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY pages")
 		
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def addBorrower(name, username, phone):
 		borrowers = client.command("select * from user where username = '" + username + "'")
@@ -307,9 +334,21 @@ def searchByTitle(title):
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
- 		result = client.command("MATCH (author:Author {author: {author}})-[rel:Author_Of]->(book) Return book, author", data)
+ 		result = client.command("SELECT in() AS author, title, isbn, pages from book WHERE name = '" + author + "' ORDER BY pages")
+		
 		for data in result:
-				print(data)
+			print("isbn: " + str(data.isbn)),
+			try:
+				print(" title: " + data.title),
+			except:
+				#stupid errors
+			try:
+				print(" pages: " + str(data.pages)),
+			except:
+				#stupid errors 2
+			for d in data.author:
+				result = client.command("SELECT * from author where @rid = " + str(d))
+				print(" author : " + result[0].name),
 
 def searchByIsbn(isbn):
 		result = client.command("select * from book where isbn = '" + str(isbn))
