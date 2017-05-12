@@ -144,7 +144,7 @@ def sortByISBN():
 		#result = client.command("Select expand( from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)) ORDER BY isbn")
 		#result = client.command("SELECT expand($c) Let $a = (select * from book), $b = (select * from author), $c = unionall($a, $b)")
 		#result = client.command("SELECT ")
-		result = client.command("SELECT $c, title, isbn, pages from book LET $c = (Select expand('auth_of') from book)")
+		result = client.command("SELECT $c, title, isbn, pages from book LET $c = (Select expand(in()) from book)")
 		for data in result:
 			print('1');
 			print(data)
