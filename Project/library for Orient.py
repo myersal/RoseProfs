@@ -72,11 +72,15 @@ def editBookAuthor(isbn):
 				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				#create author if auth does not exist
 				for data in auth:
-					client.command("Create Vertex author SET name = '" + givenAuthor + "'")
-				auth = client.command("select * from author where name = '" + givenAuthor + "'")
+					client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
+					print('author added')
+					return 1
 				
+				client.command("Create Vertex author SET name = '" + givenAuthor + "'")
 				client.command("CREATE Edge auth_of from " + auth[0]._rid + " to " + books[0]._rid)
-			
+				print('author added')
+				return 1
+				
 			elif(givenAnswer == 'remove'):
 				auth = client.command("select * from author where name = '" + givenAuthor + "'")
 				
@@ -137,7 +141,7 @@ def sortByAuthor():
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("Select * from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)")
+		result = client.command("Select * from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1) ORDER BY isbn")
 		
 		for data in result:
 			print(data)
