@@ -321,8 +321,8 @@ def borrowerOfBook(isbn):
 		for data in books:
 			edge = client.command("select * from checked_out where out = " + books[0]._rid)
 			for d in edge:
-				#borrower = client.command("select * from (TRAVERSE in(checked_out), out(checked_out) from (SELECT * from book where isbn = " + str(isbn) + ") WHILE depth <= 4)")
-				borrower = client.command("select * from user where in_checked_out = " + d._rid)
+				borrower = client.command("select * from (TRAVERSE in(checked_out), out(checked_out) from (SELECT * from book where isbn = " + str(isbn) + ") WHILE $depth <= 4)")
+				#borrower = client.command("select * from user where in_checked_out = " + d._rid)
 				for data2 in borrower:
 					print(data2)
 					return 1
