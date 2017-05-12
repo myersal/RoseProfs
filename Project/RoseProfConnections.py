@@ -12,7 +12,7 @@ databaseOpen = True
 try:
 	import pymongo
 	from pymongo import MongoClient
-	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109')
+	mongoClient = MongoClient('mongodb://csse:Poos4iko@137.112.104.109', 40000)
 	db = mongoClient['rose-profs']
 	students = db.students
 	professors = db.professors
