@@ -153,7 +153,7 @@ def sortByAuthor():
 		for data in result:
 			print(" author : " + data.name),
 			for d in data.books:
-				result = client.command("SELECT * from book where @rid = " + str(d))
+				result2 = client.command("SELECT * from book where @rid = " + str(d))
 				for data2 in result2:
 					print("isbn: " + str(data2.isbn)),
 					try:
