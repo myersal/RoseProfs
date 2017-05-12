@@ -378,7 +378,7 @@ def searchByAuthor(author):
 					print("")
 
 def searchByIsbn(isbn):
-		result = client.command("select * from book where isbn = '" + str(isbn))
+		result = client.command("select * from book where isbn = " + str(isbn))
 		for data in result:
 			print("isbn: " + str(data.isbn)),
 			try:
