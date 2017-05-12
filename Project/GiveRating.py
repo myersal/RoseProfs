@@ -385,6 +385,8 @@ try:
 				if ans.lower() == "yes":
 					del_student(username)
 					break
+			elif cmd.lower() == "check" or cmd.lower() == "check!":
+				continue
 
 			else:
 				print("invalid command")

@@ -30,8 +30,9 @@ def rate_prof(r):
 		return
 	if professors.count({"Name": professor}) == 0:
 		return
+	idd = students.find_one({'Username': username})["_id"]
 	students.update_one(
-				{'Username': username},
+				{'Username': username, '_id': idd},
 				{'$addToSet': {
 					'ProfRating':
 						{
@@ -59,9 +60,9 @@ def rate_class(r):
 		return
 	if professors.count({"Name": professor}) == 0:
 		return
-
+	idd = students.find_one({'Username': username})["_id"]
 	students.update_one(
-		{'Username': username},
+		{'Username': username, '_id': idd},
 		{'$addToSet': {
 			'ClassRating': 
 				{
@@ -83,6 +84,7 @@ def add_prof(r):
 
 	if professors.count({"Name": name}) != 0:
 		return
+	
 
 	professors.insert_one(
 		{
@@ -127,9 +129,11 @@ def edit_prof_name(r):
 
 	if professors.count({"Name": name}) == 0:
 		return
+	
+	idd = professors.find_one({'Name': name})["_id"]
 
 	professors.update_one(
-		{'Name': str(name)},
+		{'Name': str(name), '_id': idd},
 		{'$set': {'Name': str(new_name)}}
 	)
 
@@ -140,9 +144,11 @@ def edit_prof_dept(r):
 	
 	if professors.count({"Name": name}) == 0:
 		return
+	
+	idd = professors.find_one({'Name': name})["_id"]
 
 	professors.update_one(
-		{'Name': str(name)},
+		{'Name': str(name), '_id': idd},
 		{'$set': {'Department': str(new_dept)}}
 	)
 
@@ -152,8 +158,10 @@ def del_prof(r):
 
 	if professors.count({"Name": name}) == 0:
 		return
+	
+	idd = professors.find_one({'Name': name})["_id"]
 
-	professors.delete_one({'Name': str(name)})
+	professors.delete_one({'Name': str(name), '_id': idd})
 
 
 def add_class_to_prof(r):
@@ -168,9 +176,11 @@ def add_class_to_prof(r):
 		return
 	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': name})["_id"]
 
 	professors.update_one(
-		{'Name': str(professor)},
+		{'Name': str(professor), '_id': idd},
 		{'$addToSet':{
 			'Classes':
 			{
@@ -193,10 +203,13 @@ def edit_class_name(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
 
 	professors.update_one(
 		{
 			'Name': str(professor),
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
@@ -214,10 +227,13 @@ def edit_class_number(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
 
 	professors.update_one(
 		{
 			'Name': str(professor),
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
@@ -235,10 +251,13 @@ def edit_class_dept(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
 
 	professors.update_one(
 		{
 			'Name': str(professor),
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
@@ -256,10 +275,13 @@ def edit_class_alt_dept(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
 
 	professors.update_one(
 		{
 			'Name': str(professor),
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
@@ -277,10 +299,13 @@ def edit_class_gen(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
 
 	professors.update_one(
 		{
 			'Name': str(professor),
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
@@ -297,9 +322,12 @@ def del_class_from_prof(r):
 		return
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	idd = professors.find_one({'Name': professor})["_id"]
+
 
 	professors.update_one(
-		{'Name': str(professor)},
+		{'Name': str(professor), '_id': idd},
 		{'$pull': {
 			'Classes': {
 				'Number': str(number)
@@ -334,9 +362,11 @@ def edit_student_username(r):
 	
 	if students.count({"Username": username}) == 0:
 		return
+	
+	idd = students.find_one({'Username': username})["_id"]
 
 	students.update_one(
-		{'Username': str(username)},
+		{'Username': str(username), '_id': idd},
 		{'$set': {'Username': str(new_username)}}
 	)
 
@@ -347,9 +377,11 @@ def edit_student_password(r):
 	
 	if students.count({"Username": username}) == 0:
 		return
+	
+	idd = students.find_one({'Username': username})["_id"]
 
 	students.update_one(
-		{'Username': str(username)},
+		{'Username': str(username), '_id': idd},
 		{'$set': {'Password': str(new_password)}}
 	)
 
@@ -360,9 +392,11 @@ def edit_student_year(r):
 	
 	if students.count({"Username": username}) == 0:
 		return
+	
+	idd = students.find_one({'Username': username})["_id"]
 
 	students.update_one(
-		{'Username': str(username)},
+		{'Username': str(username), '_id': idd},
 		{'$set': {'Year': str(new_year)}}
 	)
 
@@ -373,9 +407,11 @@ def edit_student_major(r):
 	
 	if students.count({"Username": username}) == 0:
 		return
+	
+	idd = students.find_one({'Username': username})["_id"]
 
 	students.update_one(
-		{'Username': str(username)},
+		{'Username': str(username), '_id': idd},
 		{'$set': {'Major': str(new_major)}}
 	)
 
@@ -384,7 +420,10 @@ def del_student(r):
 	username = r["Username"]
 	if students.count({"Username": username}) == 0:
 		return
-	students.delete_one({'Username': str(username)})
+	
+	idd = students.find_one({'Username': username})["_id"]
+	
+	students.delete_one({'Username': str(username), '_id': idd})
 
 
 
