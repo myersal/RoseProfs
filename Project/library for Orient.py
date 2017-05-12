@@ -321,7 +321,7 @@ def borrowerOfBook(isbn):
 		for data in books:
 			edge = client.command("select * from checked_out where out = " + books[0]._rid)
 			for d in edge:
-				borrower = client.command("select * from user where @rid = " + edge[0]._rid)
+				borrower = client.command("select * from user where out = " + edge[0]._rid)
 				print(borrower[0])
 				return 1
 			print("no one currently has the book")
