@@ -137,7 +137,7 @@ def sortByAuthor():
 
 def sortByISBN():
 		print('all books sorted by isbn')
-		result = client.command("select c Let $a = (select * from book ORDER BY isbn), $b = (select * from author), $c = UNIONALL($a, $b) WHERE .out_auth_of = .in_auth_of")
+		result = client.command("select $c Let $a = (select * from book ORDER BY isbn), $b = (select * from author), $c = UNIONALL($a, $b) WHERE $c.out_auth_of = $c.in_auth_of")
 		
 		for data in result:
 			print(data)
