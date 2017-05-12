@@ -326,6 +326,8 @@ def borrowerOfBook(isbn):
 				for data2 in borrower:
 					print(data2)
 					return 1
+				print(d)
+				print(data)
 				print('borrower not found')
 				return 1
 			print("no one currently has the book")
