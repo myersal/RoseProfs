@@ -148,7 +148,7 @@ def sortByAuthor():
 		#####TODODODODODODODO
 
 		print('all books sorted by author')
-		result = client.command("SELECT in() AS books, name from author ORDER BY name")
+		result = client.command("SELECT out() AS books, name from author ORDER BY name")
 		
 		for data in result:
 			print(" author : " + data.name),
@@ -359,10 +359,10 @@ def searchByTitle(title):
 #TODODODODODOD
 def searchByAuthor(author):
 		#find all results with an author
-		result = client.command("SELECT in() AS books, name from author WHERE name = '" + author + "' ORDER BY name")
+		result = client.command("SELECT out() AS books, name from author WHERE name = '" + author + "' ORDER BY name")
 		
 		for data in result:
-			print(" author : " + data[0].name),
+			print(" author : " + data.name),
 			for d in data.books:
 				result = client.command("SELECT * from books where @rid = " + str(d))
 				print("isbn: " + str(d.isbn)),
