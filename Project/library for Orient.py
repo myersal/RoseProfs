@@ -431,7 +431,7 @@ def rateBook(username, isbn, number, review):
 						result3 = client.command("select * from rate_book where out = " + result[0]._rid + " and in = " + result2[0]._rid)
 						#if there is already a rating then update, else create the rating then update
 						for data3 in result3:
-								client.command("UPDATE rate_book SET review = '" + review + "' and rate = " + str(number))
+								client.command("UPDATE rate_book SET review = '" + review + "', rate = " + str(number))
 								print("the rating has been updated");
 								return 1;
 						client.command("CREATE EDGE rate_book from " + result[0]._rid + " to " + result2[0]._rid)
