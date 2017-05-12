@@ -144,12 +144,12 @@ def sortByISBN():
 		#result = client.command("Select expand( from (TRAVERSE both('auth_of') FROM (Select * from book) WHILE $depth <= 1)) ORDER BY isbn")
 		#result = client.command("SELECT expand($c) Let $a = (select * from book), $b = (select expand(in()) book), $c = unionall($a, $b)")
 		#result = client.command("SELECT $c, title, isbn, pages from book LET $c = (Select expand(in()) from book) where $c.isbn = isbn")
-		result = client.command("SELECT in() AS author, title, isbn, pages from book")
+		result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
 		for data in result:
 			print('1');
-			print("isbn: " + data.isbn),
+			print("isbn: " + str(data.isbn)),
 			print(" title: " + data.title),
-			print(" pages: " + data.pages),
+			print(" pages: " + str(data.pages)),
 			for d in data['author']:
 				print(" name: " + d.name)
 			
