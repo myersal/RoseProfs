@@ -154,17 +154,18 @@ def sortByAuthor():
 			print(" author : " + data.name),
 			for d in data.books:
 				result = client.command("SELECT * from book where @rid = " + str(d))
-				print("isbn: " + str(result.isbn)),
-				try:
-					print(" title: " + result.title),
-				except:
-					#stupid errors
-					print("")
-				try:
-					print(" pages: " + str(result.pages)),
-				except:
-					#stupid errors 2
-					print("")
+				for data2 in result2:
+					print("isbn: " + str(data2.isbn)),
+					try:
+						print(" title: " + data2.title),
+					except:
+						#stupid errors
+						print("")
+					try:
+						print(" pages: " + str(data2.pages)),
+					except:
+						#stupid errors 2
+						print("")
 
 def sortByISBN():
 		print('all books sorted by isbn')
@@ -227,7 +228,7 @@ def editBorrowerName(username, newName):
 		borrowers = client.command("select * from user where username = '" + username + "'")
 		
 		for data in borrowers:
-				client.command("UPDATE user SET name = '" + name + "' where username = '" + username + "'")
+				client.command("UPDATE user SET name = '" + newName + "' where username = '" + username + "'")
 				print('the borrower has been updated')
 				return 1;
 				
@@ -364,18 +365,19 @@ def searchByAuthor(author):
 		for data in result:
 			print(" author : " + data.name),
 			for d in data.books:
-				result = client.command("SELECT * from book where @rid = " + str(d))
-				print("isbn: " + str(result.isbn)),
-				try:
-					print(" title: " + result.title),
-				except:
-					#stupid errors
-					print("")
-				try:
-					print(" pages: " + str(result.pages)),
-				except:
-					#stupid errors 2
-					print("")
+				result2 = client.command("SELECT * from book where @rid = " + str(d))
+				for data2 in result2:
+					print("isbn: " + str(data2.isbn)),
+					try:
+						print(" title: " + data2.title),
+					except:
+						#stupid errors
+						print("")
+					try:
+						print(" pages: " + str(data2.pages)),
+					except:
+						#stupid errors 2
+						print("")
 
 def searchByIsbn(isbn):
 		result = client.command("select in() AS author, title, isbn, pages from book where isbn = " + str(isbn))
