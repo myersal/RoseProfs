@@ -146,7 +146,9 @@ def sortByISBN():
 		
 		#result = client.command("SELECT $c, title, isbn, pages from book LET $c = (Select expand(in()) from book) where $c.isbn = isbn")
 		#result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
-		result = client.command("SELECT flatten(in()) AS author, title, isbn, pages from book ORDER BY isbn")
+		#result = client.command("SELECT in() AS author, title, isbn, pages from book ORDER BY isbn")
+		
+		result = client.command("SELECT from.name, out from auth_of")
 		
 		for data in result:
 			print(data);
