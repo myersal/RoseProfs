@@ -448,7 +448,7 @@ def rateBook(username, isbn, number, review):
 def recommendation(username):
 		#find users that have rated the same book the same
 		
-		result2 = client.command("TRAVERSE rate_book from (SELECT * from user where username = '" + username + "') where $depth <= 2")
+		result2 = client.command("TRAVERSE rate_book from (SELECT * from user where username = '" + username + "') WHILE $depth <= 2")
 				
 		for data2 in result2:
 			print(data2)
