@@ -511,6 +511,7 @@ while 1 > 0:
 					
 				except:
 						print("the given isbn must be an integer")
+						continue
 						
 				deleteBook(givenBook)
 
