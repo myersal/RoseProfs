@@ -325,6 +325,7 @@ def borrowerOfBook(isbn):
 				#borrower = client.command("select * from user where in_checked_out = " + d._rid)
 				for data2 in borrower:
 					print(data2)
+					return 1
 					
 				print(d)
 				print(data)
