@@ -407,9 +407,20 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	#prints out the name of the prof that this recom recommends for the given inputs
 	print("The recommended prof for the given class is: " + highestRate.name)
 
+
 def search_professors(name):
 	if not checkIfProfessorExists(name):
 		return
 	professor = professors.find_one({'Name': name})
 	entry = "Name: " + professor['Name'] + ", Department: " + professor['Department']
 	return entry
+
+
+def search_class_prof(name, number):
+	if not checkIfProfessorExists(name):
+		return
+	professor = professors.find_one({'Name': name})
+	entry = ''
+	for clas in professor['Classes']:
+		if clas['Number'] == number:
+			entry = "Name: " + clas['Name'] + ", Number: " + clas['Number'] + ", Department: " + clas['Department'] + ", Cross-list-Department: " + clas['Cross-list-Department'] + ", Generic: " + clas['Generic']
