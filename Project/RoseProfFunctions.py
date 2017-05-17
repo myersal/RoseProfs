@@ -385,7 +385,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	lowestDif = 50 #not possible to have this large of difference so can use it as a max
 
 	#must traverse the prof_class pairs and find all the class ratings from users
-
+	print("got to loop")
 	for pairs in initialClassConns:
 		ratings = client.command("SELECT * from (TRAVERSE both(class_rate) from (Select * from prof_class WHERE class = " + pairs._rid + ") WHILE $depth <= 2) WHERE @class = 'class_rate'")
 		# Must traverse the ratings for each class and find the highest match to the users desired rating
