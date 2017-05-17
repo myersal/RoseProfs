@@ -379,7 +379,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	
 	#gives the potential prof_class pairs of the class
 
-	initialClassConns = client.command("SELECT * from (TRAVERSE both(class_of) from (Select * from class WHERE class = '" + given_class + "') WHILE $ depth <= 2) WHERE @class = 'prof_class'")
+	initialClassConns = client.command("SELECT * FROM (TRAVERSE both(class_of) FROM (Select * from class WHERE class = '" + given_class + "') WHILE $depth <= 2) WHERE @class = 'prof_class'")
 
 	highestRate = None
 	lowestDif = 50 #not possible to have this large of difference so can use it as a max
