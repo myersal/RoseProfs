@@ -52,8 +52,8 @@ while True:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if work > 4:
-				print("The max rating is 4")
+			if work > 4 or work < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -70,8 +70,8 @@ while True:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if diff > 4:
-				print("The max rating is 4")
+			if diff > 4 or diff < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -88,8 +88,8 @@ while True:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if fun > 4:
-				print("The max rating is 4")
+			if fun > 4 or fun < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			know = points
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
@@ -159,8 +159,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if comm > 4:
-				print("The max rating is 4")
+			if comm > 4 or comm < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -177,8 +177,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if grade > 4:
-				print("The max rating is 4")
+			if grade > 4 or grade < 0:
+				print("The max rating is 4. The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -195,8 +195,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if helpp > 4:
-				print("The max rating is 4")
+			if helpp > 4 or helpp < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			cool = points
 			print("That leaves " + str(points) + " points for the coolness rating!")
@@ -236,8 +236,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if work > 4:
-				print("The max rating is 4")
+			if work > 4 or work < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -254,8 +254,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if diff > 4:
-				print("The max rating is 4")
+			if diff > 4 or diff < 0:
+				print("The max rating is 4.  The min rating is 0")
 				continue
 			print(
 				"On a scale from 0-4 with 4 being the most positive, \n"
@@ -272,8 +272,8 @@ if databaseOpen:
 			if points < 0:
 				print("You have distributed too many points!")
 				continue
-			if fun > 4:
-				print("The max rating is 4")
+			if fun > 4 or fun < 0:
+				print("The max rating is 4 and the min rating is 0")
 				continue
 			know = points
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
