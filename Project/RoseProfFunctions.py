@@ -412,7 +412,10 @@ def search_professors(name):
 	if not checkIfProfessorExists(name):
 		return
 	professor = professors.find_one({'Name': name})
-	entry = "Name: " + professor['Name'] + ", Department: " + professor['Department']
+	department = ""
+	if not professor['Department'] is None:
+		department = professor['Department']
+	entry = "Name: " + name + ", Department: " + department
 	return entry
 
 
@@ -421,8 +424,20 @@ def search_class_prof(name, number):
 		return
 	professor = professors.find_one({'Name': name})
 	entry = ''
+	name = ''
+	department = ''
+	alt_department = ''
+	generic = ''
 	for clas in professor['Classes']:
 		if clas['Number'] == number:
-			entry = "Name: " + clas['Name'] + ", Number: " + clas['Number'] + ", Department: " + clas['Department'] + ", Cross-list-Department: " + clas['Cross-list-Department'] + ", Generic: " + clas['Generic']
+			if not clas['Name'] is None:
+				name = clas['Name']
+			if not clas['Department'] is None:
+				department = clas['Department']
+			if not clas['Cross-list-Department']:
+				alt_department = clas['Cross-list-Department']
+			if not clas['Generic'] is None:
+				generic = clas['Generic']
+			entry = "Name: " + name + ", Number: " + number + ", Department: " + department + ", Cross-list-Department: " + alt_department + ", Generic: " + generic
 			return entry
 	return entry
