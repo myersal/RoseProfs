@@ -424,3 +424,5 @@ def search_class_prof(name, number):
 	for clas in professor['Classes']:
 		if clas['Number'] == number:
 			entry = "Name: " + clas['Name'] + ", Number: " + clas['Number'] + ", Department: " + clas['Department'] + ", Cross-list-Department: " + clas['Cross-list-Department'] + ", Generic: " + clas['Generic']
+			return entry
+	return entry
