@@ -5,6 +5,7 @@ Created on Apr 26, 2017
 '''
 import RoseProfConnections
 import CommonFunctions
+import math
 from CommonFunctions import *
 from RoseProfConnections import *
 from time import gmtime, strftime;
