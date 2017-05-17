@@ -166,8 +166,6 @@ def del_prof(r):
 
 
 def add_class_to_prof(r):
-	print("here1")
-
 	professor = r["Professor"]
 	name = r["Name"]
 	number = r["Number"]
@@ -181,6 +179,8 @@ def add_class_to_prof(r):
 		return
 	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
+	
+	print("here1")
 	
 	idd = professors.find_one({'Name': name})["_id"]
 	
