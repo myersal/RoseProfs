@@ -1,5 +1,6 @@
 def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	#assumes the method is given a class, and the desired rating for the individual student
+	# may need to import something for the math calls
 	
 	#gives the potential prof_class pairs of the class
 

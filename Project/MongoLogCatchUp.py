@@ -341,6 +341,11 @@ def add_student(r):
 	password = r["Password"]
 	year = r["Year"]
 	major = r["Major"]
+	desDiff = r['DesDiff']
+	desWork = r['DesWork']
+	desFun = r['DesFun']
+	desKnow = r['DesKnow']
+	
 
 	if students.count({'Username': username}) != 0:
 		return
@@ -350,7 +355,11 @@ def add_student(r):
 				'Username': str(username),
 				'Password': str(password),
 				'Year': str(year),
-				'Major': str(major)
+				'Major': str(major),
+				'DesDiff': str(desDiff),
+				'DesWork': str(desWork),
+				'DesFun': str(desFun),
+				'DesKnow': str(desKnow)
 		}
 	)
 
