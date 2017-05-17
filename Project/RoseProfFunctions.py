@@ -394,7 +394,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 		for rates in ratings:
 			print("found a rating")
 			#print(rates)
-			difference = abs(desWork - rates.work) + abs(desDiff - rates.diff) + abs(desFun - rates.fun) + abs(desKnow - rates.know)
+			difference = abs(int(desWork) - rates.work) + abs(int(desDiff) - rates.diff) + abs(int(desFun) - rates.fun) + abs(int(desKnow) - rates.know)
 			if difference < lowestDif: #checks to see if the difference is lower than the current match
 				print("found a desired rating")
 				lowestDif = difference #sets the lowestDif
