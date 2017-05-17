@@ -172,19 +172,13 @@ def add_class_to_prof(r):
 	dept = r["Department"]
 	alt_dept = r["Cross-list-Department"]
 	gen = r["Generic"]
-
-	print("here2")
 	
 	if professors.count({"Name": professor}) == 0:
 		return
 	if 1 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
 		return
 	
-	print("here1")
-	
 	idd = professors.find_one({'Name': professor})["_id"]
-	
-	print("here")
 	
 	professors.update_one(
 		{'Name': str(professor), '_id': idd},
