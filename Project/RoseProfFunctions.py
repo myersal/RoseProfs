@@ -10,6 +10,7 @@ from CommonFunctions import *
 from RoseProfConnections import *
 from time import gmtime, strftime;
 from datetime import datetime
+from math import *
 
 
 def checkIfProfessorExists(ProfName):
