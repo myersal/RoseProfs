@@ -379,7 +379,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	
 	#gives the potential prof_class pairs of the class
 
-	initialClassConns = client.command("SELECT * FROM (TRAVERSE both(class_of) FROM (Select * from class WHERE class = '" + given_class + "') WHILE $depth <= 2) WHERE @class = 'prof_class'")
+	initialClassConns = client.command("SELECT * FROM (TRAVERSE both(class_of) FROM (Select * from class WHERE number = '" + given_class + "') WHILE $depth <= 2) WHERE @class = 'prof_class'")
 
 	highestRate = None
 	lowestDif = 50 #not possible to have this large of difference so can use it as a max
@@ -388,7 +388,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	print("got to loop")
 	for pairs in initialClassConns:
 		print("found a pair")
-		ratings = client.command("SELECT * from (TRAVERSE both(class_rate) from (Select * from prof_class WHERE class = " + pairs._rid + ") WHILE $depth <= 2) WHERE @class = 'class_rate'")
+		ratings = client.command("SELECT * from (TRAVERSE both(class_rate) from (Select * from prof_class WHERE @RID = " + pairs._rid + ") WHILE $depth <= 2) WHERE @class = 'class_rate'")
 		# Must traverse the ratings for each class and find the highest match to the users desired rating
 		for rates in ratings:
 			print("found a rating")
