@@ -179,7 +179,9 @@ def add_class_to_prof(r):
 		return
 	
 	idd = professors.find_one({'Name': name})["_id"]
-
+	
+	print("here")
+	
 	professors.update_one(
 		{'Name': str(professor), '_id': idd},
 		{'$addToSet':{
