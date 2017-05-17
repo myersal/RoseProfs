@@ -182,7 +182,7 @@ def add_class_to_prof(r):
 	
 	print("here1")
 	
-	idd = professors.find_one({'Name': name})["_id"]
+	idd = professors.find_one({'Name': professor})["_id"]
 	
 	print("here")
 	
