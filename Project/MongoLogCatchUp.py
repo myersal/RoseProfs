@@ -165,7 +165,7 @@ def del_prof(r):
 
 
 def add_class_to_prof(r):
-	professor = r["Name"]
+	professor = r["Professor"]
 	name = r["Name"]
 	number = r["Number"]
 	dept = r["Department"]
