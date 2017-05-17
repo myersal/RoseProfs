@@ -32,67 +32,67 @@ while True:
 			major = raw_input(':')
 			
 			points = 8;
-				print(
-					"You have 8 points to distribute among these four catagories"
-					"for your ideal class: "
-					"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
-				)
-				print(
-					"On a scale from 0-4 with 4 being the most positive, \n"
-					"how do you rank your ideal class's amount of work?  \n"
-					"You have " + str(points) + " points left!"
-				)
-				work = raw_input(':')
-				try:
-					work = int(work)
-				except:
-					print("That is not a integer between 0 and 4")
-					continue
-				points = points - work
-				if points < 0:
-					print("You have distributed too many points!")
-					continue
-				if work > 4:
-					print("The max rating is 4")
-					continue
-				print(
-					"On a scale from 0-4 with 4 being the most positive, \n"
-					"how do you rank your ideal classes technical difficulty?  \n"
-					"You have " + str(points) + " points left!"
-				)
-				diff = raw_input(':')
-				try:
-					diff = int(diff)
-				except:
-					print("That is not a integer between 0 and 4")
-					continue
-				points = points - diff
-				if points < 0:
-					print("You have distributed too many points!")
-					continue
-				if diff > 4:
-					print("The max rating is 4")
-					continue
-				print(
-					"On a scale from 0-4 with 4 being the most positive, \n"
-					"how do you rank how much fun your ideal class would be?  \n"
-					"You have " + str(points) + " points left!"
-				)
-				fun = raw_input(':')
-				try:
-					fun = int(fun)
-				except:
-					print("That is not a integer between 0 and 4")
-					continue
-				points = points - fun
-				if points < 0:
-					print("You have distributed too many points!")
-					continue
-				if fun > 4:
-					print("The max rating is 4")
-					continue
-				know = points
-				print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
+			print(
+				"You have 8 points to distribute among these four catagories"
+				"for your ideal class: "
+				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
+			)
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal class's amount of work?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			work = raw_input(':')
+			try:
+				work = int(work)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - work
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if work > 4:
+				print("The max rating is 4")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal classes technical difficulty?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			diff = raw_input(':')
+			try:
+				diff = int(diff)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - diff
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if diff > 4:
+				print("The max rating is 4")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank how much fun your ideal class would be?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			fun = raw_input(':')
+			try:
+				fun = int(fun)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - fun
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if fun > 4:
+				print("The max rating is 4")
+				continue
+			know = points
+			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
 			try:
 				add_student(username, pwd, year, major, work, diff, fun, know)
 			except:
