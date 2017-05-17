@@ -389,15 +389,16 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	for pairs in initialClassConns:
 		print("found a pair")
 		print(pairs._rid)
-		ratings = client.command("SELECT * from (TRAVERSE both(class_rate) from (Select * from prof_class WHERE @rid = " + pairs._rid + ") WHILE $depth <= 2) WHERE @class = 'class_rate'")
+		ratings = client.command("SELECT * from (TRAVERSE both(class_rate) from (Select * from prof_class WHERE @rid = " + pairs._rid + ") WHILE $depth <= 2)")# WHERE @class = 'class_rate'")
 		# Must traverse the ratings for each class and find the highest match to the users desired rating
 		for rates in ratings:
 			print("found a rating")
-			difference = math.abs(desWork - rates.work) + math.abs(desDiff - rates.diff) + math.abs(desFun - rates.fun) + math.abs(desKnow - rates.know)
-			if difference < lowestDif: #checks to see if the difference is lower than the current match
-				print("found a desired rating")
-				lowestDif = difference #sets the lowestDif
-				highestRate = pairs #assigns highest rating to the prof_class pair
+			print(rates)
+			#difference = math.abs(desWork - rates.work) + math.abs(desDiff - rates.diff) + math.abs(desFun - rates.fun) + math.abs(desKnow - rates.know)
+			#if difference < lowestDif: #checks to see if the difference is lower than the current match
+			#	print("found a desired rating")
+			#	lowestDif = difference #sets the lowestDif
+			#	highestRate = pairs #assigns highest rating to the prof_class pair
 	
 	if highestRate is None:
 		print('the class does not exist or does not currently have any ratings')
