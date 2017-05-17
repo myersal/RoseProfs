@@ -5,12 +5,10 @@ Created on Apr 26, 2017
 '''
 import RoseProfConnections
 import CommonFunctions
-import math
 from CommonFunctions import *
 from RoseProfConnections import *
 from time import gmtime, strftime;
 from datetime import datetime
-from math import *
 
 
 def checkIfProfessorExists(ProfName):
@@ -396,7 +394,7 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 		for rates in ratings:
 			print("found a rating")
 			#print(rates)
-			difference = math.abs(desWork - rates.work) + math.abs(desDiff - rates.diff) + math.abs(desFun - rates.fun) + math.abs(desKnow - rates.know)
+			difference = abs(desWork - rates.work) + abs(desDiff - rates.diff) + abs(desFun - rates.fun) + abs(desKnow - rates.know)
 			if difference < lowestDif: #checks to see if the difference is lower than the current match
 				print("found a desired rating")
 				lowestDif = difference #sets the lowestDif
