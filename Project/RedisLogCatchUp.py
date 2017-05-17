@@ -31,25 +31,35 @@ except:
 
 
 def add_prof(record):
-	if not conn.zscore('professors', record['Name']) is None:
+	name = record['Name']
+	if not conn.zscore('professors', name) is None:
 		return
-	conn.zadd('professors', record['Name'], 0)
+	conn.zadd('professors', name, 0)
+	for i in range(1, len(name)):
+		conn.zadd('auto_professors', name[:i], 0)
+	conn.zadd('auto_professors', name + "*", 0)
 
 
 def del_prof(record):
-	if conn.zscore('professors', record['Name']) is None:
+	name = record['Name']
+	if conn.zscore('professors', name) is None:
 		return
-	conn.zrem('professors', record['Name'])
+	conn.zrem('professors', name)
+	conn.zrem('auto_professors', name + "*")
 
 
 def add_class_to_prof(record):
-	if conn.zscore('professors', record['Professor']) is None:
+	prof = record['Professor']
+	number = record['Number']
+	if conn.zscore('professors', prof) is None:
 		return
-	if not conn.zscore(record['Number'], record['Professor']) is None:
+	if not conn.zscore(number, prof) is None:
 		return
-	
-	conn.zadd('classes', record['Number'], 0)
-	conn.zadd(record['Number'], record['Professor'], 0)
+	conn.zadd('classes', number, 0)
+	conn.zadd(number, prof, 0)
+	for i in range(1, len(number)):
+		conn.zadd('auto_classes', number[:i], 0)
+	conn.zadd('auto_classes', number + "*", 0)
 
 
 def del_class_from_prof(record):
@@ -60,6 +70,7 @@ def del_class_from_prof(record):
 	conn.zrem(record['Number'], record['Professor'])
 	if conn.zcount(record['Number'], 0, -1) == 0:
 		conn.zrem('classes', record['Number'])
+	conn.zrem('auto_classes', number + "*")
 
 	
 print("Data is being brought up to date!")
