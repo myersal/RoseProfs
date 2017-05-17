@@ -89,7 +89,8 @@ def add_prof(r):
 	professors.insert_one(
 		{
 			'Name': name,
-			'Department': dept
+			'Department': dept,
+			'Classes': []
 		}
 	)
 
