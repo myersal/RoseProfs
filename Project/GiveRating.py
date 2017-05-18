@@ -12,26 +12,47 @@ RE_SPACE = re.compile('.*\s+$', re.M)
 class Completer(object):
 	def complete(self, text, state):
 		"Generic readline completion entry point."
-		bufferr = readline.get_line_buffer()
-		line = readline.get_line_buffer().split()
+		#bufferr = readline.get_line_buffer()
+		#line = readline.get_line_buffer().split()
 		# show all commands
-		if not line:
-			return [c + '' for c in COMMANDS][state]
+		#if not line:
+		#	return [c + '' for c in COMMANDS][state]
 		# account for last argument ending in a space
 		#if RE_SPACE.match(bufferr):
 		#	line.append('')
 		# resolve command to the implementation function
 		cmd = line[0].strip()
-		if bufferr in COMMANDS:
+		#if bufferr in COMMANDS:
 			##impl = getattr(self, 'complete_%s' % cmd)
 			##args = line[1:]
 			##if args:
 			##	return (impl(args) + [None])[state]
-			return [bufferr + '']#[state]
+			#return [bufferr + '']#[state]
 		
 
-		results = [c + '' for c in COMMANDS if c.startswith(bufferr)] + [None]
-		return results[state]
+		#results = [c + '' for c in COMMANDS if c.startswith(bufferr)] + [None]
+		#return results[state]
+		bufferr = readline.get_line_buffer()
+		line = readline.get_line_buffer().split()
+
+		if not line:
+			list = conn.zrange('auto_professors', 0, -1)
+			return [c for c in list]
+
+		if command == 0:
+			return ""
+		if command == 1:
+			pos = conn.zrank('auto_professors', bufferr)
+			list = conn.zrank('auto_professors', pos + 1, pos + 50)
+			for entry in list:
+				if entry[len(entry)] == '*':
+					return entry[:-1]
+		if commmand == 2:
+			pos = conn.zrank('auto_classes', bufferr)
+			list = conn.zrank('auto_classes', pos + 1, pos + 50)
+			for entry in list:
+				if entry[len(entry)] == '*':
+					return entry[:-1]
 
 
 comp = Completer()
