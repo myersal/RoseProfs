@@ -22,7 +22,7 @@ class Completer(object):
 		#if RE_SPACE.match(bufferr):
 		#	line.append('')
 		# resolve command to the implementation function
-		cmd = line[0].strip()
+		#cmd = line[0].strip()
 		#if bufferr in COMMANDS:
 			##impl = getattr(self, 'complete_%s' % cmd)
 			##args = line[1:]
@@ -38,7 +38,7 @@ class Completer(object):
 
 		if not line:
 			list = conn.zrange('professors', 0, -1)
-			return [c for c in list]
+			return [c for c in list][state]
 
 		if command == 0:
 			return ""
@@ -46,13 +46,13 @@ class Completer(object):
 			pos = conn.zrank('auto_professors', bufferr)
 			list = conn.zrange('auto_professors', pos + 1, pos + 50)
 			for entry in list:
-				if entry[len(entry)] == '*':
+				if entry[len(entry) - 1] == '*':
 					return entry[:-1]
 		if commmand == 2:
 			pos = conn.zrank('auto_classes', bufferr)
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
 			for entry in list:
-				if entry[len(entry)] == '*':
+				if entry[len(entry) - 1] == '*':
 					return entry[:-1]
 
 
