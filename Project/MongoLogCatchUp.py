@@ -326,6 +326,7 @@ def del_class_from_prof(r):
 	
 	idd = professors.find_one({'Name': professor})["_id"]
 
+	print("got through checks")
 
 	professors.update_one(
 		{'Name': str(professor), '_id': idd},
