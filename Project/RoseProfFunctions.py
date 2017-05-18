@@ -437,8 +437,8 @@ def search_class_prof(name, number):
 	alt_department = ''
 	generic = ''
 	for clas in professor['Classes']:
-		entry = ''
 		if clas['Number'] == number:
+			entry = ''
 			if not clas['Name'] is None:
 				name = clas['Name']
 			if not clas['Department'] is None:
