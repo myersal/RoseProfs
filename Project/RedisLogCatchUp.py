@@ -70,7 +70,7 @@ def del_class_from_prof(record):
 	conn.zrem(record['Number'], record['Professor'])
 	if conn.zcount(record['Number'], 0, -1) == 0:
 		conn.zrem('classes', record['Number'])
-	conn.zrem('auto_classes', number + "*")
+	conn.zrem('auto_classes', record['Number'] + "*")
 
 	
 print("Data is being brought up to date!")
