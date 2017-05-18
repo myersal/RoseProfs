@@ -37,20 +37,20 @@ class Completer(object):
 		line = readline.get_line_buffer().split()
 
 		if not line:
-			list = conn.zrange('auto_professors', 0, -1)
+			list = conn.zrange('professors', 0, -1)
 			return [c for c in list]
 
 		if command == 0:
 			return ""
 		if command == 1:
 			pos = conn.zrank('auto_professors', bufferr)
-			list = conn.zrank('auto_professors', pos + 1, pos + 50)
+			list = conn.zrange('auto_professors', pos + 1, pos + 50)
 			for entry in list:
 				if entry[len(entry)] == '*':
 					return entry[:-1]
 		if commmand == 2:
 			pos = conn.zrank('auto_classes', bufferr)
-			list = conn.zrank('auto_classes', pos + 1, pos + 50)
+			list = conn.zrange('auto_classes', pos + 1, pos + 50)
 			for entry in list:
 				if entry[len(entry)] == '*':
 					return entry[:-1]
