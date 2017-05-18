@@ -70,6 +70,9 @@ def del_class_from_prof(record):
 	conn.zrem(record['Number'], record['Professor'])
 	if conn.zcount(record['Number'], 0, -1) == 0:
 		conn.zrem('classes', record['Number'])
+		
+	bob = alice
+	
 	conn.zrem('auto_classes', record['Number'] + "*")
 
 	
@@ -104,8 +107,8 @@ while True:
 					print("Redis down 3")
 					break
 			elif record["type"] == "del_class_from_prof":
-				conn = None
 				try:
+					print('attempt')
 					del_class_from_prof(record)
 				except Exception as e:
 					print(str(e))
