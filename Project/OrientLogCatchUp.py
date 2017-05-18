@@ -88,7 +88,8 @@ def orientDelProf(record):
 	#don't need to check inputs since the sql check has already been done an if it doesn't exist then nothing occurs
 	
 	client.command("delete vertex prof where name = '" + name + "'")
-
+	client.command("delete vertex prof_class where name = '" + name + "'")
+	
 def orientAddClassToProf(record):
 
 	number = record['Number']
