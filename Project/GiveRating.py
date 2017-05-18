@@ -7,7 +7,7 @@ import readline
 
 
 COMMANDS = []
-command = 1
+command = 0
 RE_SPACE = re.compile('.*\s+$', re.M)
 
 class Completer(object):
@@ -41,7 +41,8 @@ class Completer(object):
 			return [c for c in list][state]
 
 		if command == 0:
-			return ""
+			list = [bufferr] + [None]
+			return list[state]
 		if command == 1:
 			pos = conn.zrank('auto_professors', bufferr)
 			list = conn.zrange('auto_professors', pos + 1, pos + 50)
@@ -54,7 +55,8 @@ class Completer(object):
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
 			for entry in list:
 				if entry[len(entry) - 1] == '*':
-					return entry[:-1][state]
+					result = [entry[:-1]] + [None]
+					return result[state]
 		list = conn.zrange('professors', 0, -1)
 		return [c for c in list][state]
 
@@ -195,7 +197,9 @@ if databaseOpen:
 
 		if cmd.lower() == "rate prof":
 			print("What professor would you like to rate?")
+			command = 1
 			prof = raw_input(':')
+			command = 0
 			boolP = checkIfProfessorExists(prof)
 			if(not boolP):
 				print('The professor does not exist')
@@ -265,13 +269,17 @@ if databaseOpen:
 
 		elif cmd.lower() == "rate class":
 			print("What professor teaches this class?")
+			command = 1
 			prof = raw_input(':')
+			command = 0
 			boolP = checkIfProfessorExists(prof)
 			if(not boolP):
 				print('The professor does not exist')
 				continue
 			print("What is the class number?")
+			command = 2
 			classToRate = raw_input(':')
+			command = 0
 			try:
 				numOfClasses = professors.count({"Name":prof, "Classes.Number": classToRate})
 			except:
@@ -357,13 +365,10 @@ if databaseOpen:
 			pwd = raw_input(':')
 			edit_student_password(username, pwd)
 			print("Password changed!")
-	
 
-			
 		elif cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor":
 			print("Who is the new Professor?")
 			name = raw_input(':')
-			
 			boolP = checkIfProfessorExists(name)
 			if(boolP):
 				print('The professor already exists')
@@ -379,29 +384,26 @@ if databaseOpen:
 
 		elif cmd.lower() == "edit department" or cmd.lower() == "editdepartment":
 			print("Who is the Professor?")
+			command = 1
 			name = raw_input(':')
+			command = 0
 			print("What is his/her new department")
 			dept = raw_input(':')
 			edit_prof_dept(name, dept)
 			print("Department changed!")
 
-
-
 		elif cmd.lower() == "delete professor" or cmd.lower() == "deleteprofessor" or cmd.lower() == "delete prof" or cmd.lower() == "deleteprof":
 			print("Who is the Professor to be deleted?")
+			command = 1
 			name = raw_input(':')
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			del_prof(name)
 			print("Professor deleted")
-			
-			
-			
-			
+
 		elif cmd.lower() == "help":
 			print("rate prof - allows you to rate a professor")
 			print("rate class - allows you to rate a class")
@@ -421,44 +423,36 @@ if databaseOpen:
 			print("search class - search for a class in the database")
 			print("end/logout - quits the program")
 			
-			
-			
-			
-			
 		elif cmd.lower() == "search professor" or cmd.lower() == "searchprofessor" or cmd.lower() == "search prof" or cmd.lower() == "searhprof":
-			
 			if redisDead:
 				print("This is down sorry bro!!")
 				continue
-			COMMANDS = conn.zrange("professors", 0, -1)
 			print("Who is the Professor you want to search for?  Hit TAB to see sorted list of professors")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
 			print(search_professors(name))
-			
 
 		elif cmd.lower() == "search class" or cmd.lower() == "searchclass" or cmd.lower() == "search class" or cmd.lower() == "searhclass":
-			
 			if redisDead:
 				print("This is down sorry bro!!")
 				continue
-			COMMANDS = conn.zrange("professors", 0, -1)
 			print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What class do you want to search?")
+			command = 2
 			classNum = raw_input(':')
-			
+			command = 0
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
 			except:
@@ -466,123 +460,106 @@ if databaseOpen:
 				continue
 			
 			print(search_class_prof(name, classNum))
-			
-			
+
 		elif cmd.lower() == "edit class name" or cmd.lower() == "editclassname":
-			
 			if not redisDead:
-				COMMANDS = conn.zrange("professors", 0, -1)
 				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
 			else:
 				print("Who is the Professor that teaches this class?")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What class do you want to edit?")
+			command = 2
 			classNum = raw_input(':')
-			
+			command = 0
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
 			except:
 				print("That is not a class taught by that professor")
 				continue
-			
 			print(search_class_prof(name, classNum))
 			print("What should the new name be?")
 			newName = raw_input(':')
-			
 			edit_class_name(name, classNum, newName)
 			
 		elif cmd.lower().replace(' ', '') == "editclassdept" or cmd.lower().replace(' ', '') == "editclassdepartment":
-			
 			if not redisDead:
-				COMMANDS = conn.zrange("professors", 0, -1)
 				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
 			else:
 				print("Who is the Professor that teaches this class?")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What class do you want to edit?")
+			command = 2
 			classNum = raw_input(':')
-			
+			command = 0
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
 			except:
 				print("That is not a class taught by that professor")
 				continue
-			
 			print(search_class_prof(name, classNum))
 			print("What should the new department be?")
 			newDept = raw_input(':')
-			
 			edit_class_dept(name, classNum, newDept)
-			
-			
+
 		elif cmd.lower().replace(' ', '') == "editclassaltdept" or cmd.lower().replace(' ', '') == "editclassalternatedepartment":
-			
 			if not redisDead:
-				COMMANDS = conn.zrange("professors", 0, -1)
 				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
 			else:
 				print("Who is the Professor that teaches this class?")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What class do you want to edit?")
+			command = 2
 			classNum = raw_input(':')
-			
+			command = 1
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
 			except:
 				print("That is not a class taught by that professor")
 				continue
-			
 			print(search_class_prof(name, classNum))
 			print("What should the new alternate department be?")
 			newAltDept = raw_input(':')
-			
 			edit_class_alt_dept(name, classNum, newAltDept)
 			
 		elif cmd.lower().replace(' ', '') == "editclassgen" or cmd.lower().replace(' ', '') == "editclassgeneral":
-			
 			if not redisDead:
-				COMMANDS = conn.zrange("professors", 0, -1)
 				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
 			else:
 				print("Who is the Professor that teaches this class?")
+			command = 1
 			name = raw_input(':')
-			COMMANDS = []
-			
+			command = 0
 			boolP = checkIfProfessorExists(name)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What class do you want to edit?")
+			command = 2
 			classNum = raw_input(':')
-			
+			command = 0
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
 			except:
 				print("That is not a class taught by that professor")
 				continue
-			
 			print(search_class_prof(name, classNum))
 			print("Is this a general class? \"yes\" or \"no\"")
 			gen = raw_input(':')
@@ -593,38 +570,30 @@ if databaseOpen:
 			if gen != "False" and gen != "True":
 				print("Invalid input. Make sure it is yes or no")
 				continue
-			
 			edit_class_gen(name, classNum, gen)
 
 		elif cmd.lower() == "get professors" or cmd.lower() == "getprofesors" or cmd.lower() == "get profs" or cmd.lower() == "getprofs":
-			
 			if redisDead:
 				print("This is down sorry bro!!")
 				continue
-			COMMANDS = conn.zrange("classes", 0, -1)
 			print("For what class do you want profesors for?  Hit TAB to see sorted list of classes")
+			command = 2
 			classNum = raw_input(':')
-			COMMANDS = []
-			
-			
-			print(conn.zrange(classNum, 0, -1))
-
-
-
-
+			command = 0
+			print conn.zrange(classNum, 0, -1)
 
 		elif cmd.lower() == "end" or cmd.lower() == "End" or cmd.lower() == "END" or cmd.lower() == "quit":
 				break
 
 		elif cmd.lower() == "new class" or cmd.lower() == "new class":
 			print("Who is the Professor who teaches the class?")
+			command = 1
 			professor = raw_input(':')
-			
+			command = 0
 			boolP = checkIfProfessorExists(professor)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What is the name of the class?")
 			name = raw_input(':')
 			print("What is the number of the class?")
@@ -646,15 +615,17 @@ if databaseOpen:
 
 		elif cmd.lower() == "delete class" or cmd.lower() == "deleteclass":
 			print("Who is the Professor who teaches the class?")
+			command = 1
 			professor = raw_input(':')
-			
+			command = 0
 			boolP = checkIfProfessorExists(professor)
-			if(not boolP):
+			if not boolP:
 				print('The professor does not exist')
 				continue
-			
 			print("What is the number of the class?")
+			command = 2
 			num = raw_input(':')
+			command = 0
 			try:
 				int(conn.zrank("classes", num))
 			except:
@@ -663,30 +634,24 @@ if databaseOpen:
 			del_class_from_prof(professor, num)
 
 		elif cmd.lower() == "create forum" or cmd.lower() == "createforum":
-			
 			prof = ""
 			subject = raw_input('what is your subject: ')
 			boolProfessor = raw_input('do you want to list what professor yes/no (if neither is input no is assumed): ')
 			if boolProfessor.lower() == 'yes':
+				command = 1
 				prof = raw_input('please input the professor\'s name: ')
+				command = 0
 				numOfProfs = -1
 				boolP = checkIfProfessorExists(name)
-				if(not boolP):
+				if not boolP:
 					print('The professor does not exist')
 					continue
-					
-				
 			message = raw_input('please type your message for the forum: ')
-		
 			#Now for the important part, the above may change when the application is actually in user
-		
 			answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
-		
-			if(answer.lower() == 'yes'):
+			if answer.lower() == 'yes':
 				time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
 				createForum(username, subject, boolProfessor, prof, message, time)
-
-
 
 		elif cmd.lower() == "log out" or cmd.lower() == "logout":
 			print("You just logged out!!!!! Bye!")	
@@ -698,31 +663,28 @@ if databaseOpen:
 			if ans.lower() == "yes":
 				del_student(username)
 				break
+
 		elif cmd.lower() == "check" or cmd.lower() == "check!":
 			continue
 		
 		elif cmd.lower() == "see classes" or cmd.lower() == "seeclasses":
-			if (redisDead):
+			if redisDead:
 				print("Sorry that service is unavailable")
 				continue
-			print(conn.zrange("classes", 0, -1))
+			print conn.zrange("classes", 0, -1)
 			
 		elif cmd.lower() == "recommend prof":
 			if orientDead:
 				print("recommendations are currently offline, please wait until the service is back up")
 				continue
-			
-			
 			print("Please input the class you want to get a recommended professor for")
+			command = 2
 			given_class = raw_input(":")	
-			
+			command = 0
 			currentStud = students.find_one({"Username": username})
-			
 			#DEBUG PRINT
 			print("got student")
-			
 			recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
-
 		else:
 			print("invalid command")
 
