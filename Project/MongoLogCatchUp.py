@@ -321,8 +321,13 @@ def del_class_from_prof(r):
 
 	if professors.count({"Name": professor}) == 0:
 		return
+		
+	print("got through 1")
 	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : str(number)}}):
 		return
+		
+	
+	print("got through 2")
 	
 	idd = professors.find_one({'Name': professor})["_id"]
 
