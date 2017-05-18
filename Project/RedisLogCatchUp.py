@@ -73,6 +73,7 @@ def del_class_from_prof(record):
 		
 	bob = alice
 	
+	print("here")
 	print(bob)
 	
 	conn.zrem('auto_classes', record['Number'] + "*")
