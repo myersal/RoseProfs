@@ -50,7 +50,7 @@ class Completer(object):
 				if entry[len(entry) - 1] == '*':
 					result = [entry[:-1]] + [None]
 					return result[state]
-		if commmand == 2:
+		if command == 2:
 			pos = conn.zrank('auto_classes', bufferr)
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
 			for entry in list:
