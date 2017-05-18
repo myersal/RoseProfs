@@ -7,6 +7,7 @@ import readline
 
 
 COMMANDS = []
+command = 1
 RE_SPACE = re.compile('.*\s+$', re.M)
 
 class Completer(object):
