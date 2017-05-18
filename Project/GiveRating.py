@@ -10,30 +10,32 @@ COMMANDS = []
 RE_SPACE = re.compile('.*\s+$', re.M)
 
 class Completer(object):
-    def complete(self, text, state):
-        "Generic readline completion entry point."
-        buffer = readline.get_line_buffer()
-        line = readline.get_line_buffer().split()
-        # show all commands
-        if not line:
-            return [c + '' for c in COMMANDS][state]
-        # account for last argument ending in a space
-        if RE_SPACE.match(buffer):
-            line.append('')
-        # resolve command to the implementation function
-        cmd = line[0].strip()
-        if cmd in COMMANDS:
-            impl = getattr(self, 'complete_%s' % cmd)
-            args = line[1:]
-            if args:
-                return (impl(args) + [None])[state]
-            return [cmd + ''][state]
-        results = [c + '' for c in COMMANDS if c.startswith(cmd)] + [None]
-        return results[state]
+	def complete(self, text, state):
+		"Generic readline completion entry point."
+		bufferr = readline.get_line_buffer()
+		line = readline.get_line_buffer().split()
+		# show all commands
+		if not line:
+			return [c + '' for c in COMMANDS][state]
+		# account for last argument ending in a space
+		#if RE_SPACE.match(bufferr):
+		#	line.append('')
+		# resolve command to the implementation function
+		cmd = line[0].strip()
+		if bufferr in COMMANDS:
+			##impl = getattr(self, 'complete_%s' % cmd)
+			##args = line[1:]
+			##if args:
+			##	return (impl(args) + [None])[state]
+			return [bufferr + '']#[state]
+		
+
+		results = [c + '' for c in COMMANDS if c.startswith(bufferr)] + [None]
+		return results[state]
 
 
 comp = Completer()
-readline.set_completer_delims(' \t\n;')
+readline.set_completer_delims('\t\n;')
 readline.parse_and_bind("tab: complete")
 readline.set_completer(comp.complete)
 
@@ -126,11 +128,6 @@ while True:
 				print("The max rating is 4.  The min rating is 0")
 				continue
 			know = points
-			
-			if(know > 4):
-				print("you left too many points for the last rating")
-				continue
-			
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
 			try:
 				add_student(username, pwd, year, major, work, diff, fun, know)
@@ -238,11 +235,6 @@ if databaseOpen:
 				print("The max rating is 4.  The min rating is 0")
 				continue
 			cool = points
-			
-			if(cool > 4):
-				print("you left too many points for the last rating")
-				continue
-			
 			print("That leaves " + str(points) + " points for the coolness rating!")
 			rateProf(username, prof, comm, grade, helpp, cool)
 
@@ -320,11 +312,6 @@ if databaseOpen:
 				print("The max rating is 4 and the min rating is 0")
 				continue
 			know = points
-			
-			if(know > 4):
-				print("you left too many points for the last rating")
-				continue
-			
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
 			rateClass(username, prof, classToRate, work, diff, fun, know)
 
@@ -345,81 +332,6 @@ if databaseOpen:
 			pwd = raw_input(':')
 			edit_student_password(username, pwd)
 			print("Password changed!")
-	
-		elif cmd.lower() == "edit desires" or cmd.lower() == "editdesires":
-			points = 8;
-			print(
-				"You have 8 points to distribute among these four catagories"
-				"for your ideal class: "
-				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
-			)
-			print(
-				"On a scale from 0-4 with 4 being the most positive, \n"
-				"how do you rank your ideal class's amount of work?  \n"
-				"You have " + str(points) + " points left!"
-			)
-			work = raw_input(':')
-			try:
-				work = int(work)
-			except:
-				print("That is not a integer between 0 and 4")
-				continue
-			points = points - work
-			if points < 0:
-				print("You have distributed too many points!")
-				continue
-			if work > 4 or work < 0:
-				print("The max rating is 4.  The min rating is 0")
-				continue
-			print(
-				"On a scale from 0-4 with 4 being the most positive, \n"
-				"how do you rank your ideal classes technical difficulty?  \n"
-				"You have " + str(points) + " points left!"
-			)
-			diff = raw_input(':')
-			try:
-				diff = int(diff)
-			except:
-				print("That is not a integer between 0 and 4")
-				continue
-			points = points - diff
-			if points < 0:
-				print("You have distributed too many points!")
-				continue
-			if diff > 4 or diff < 0:
-				print("The max rating is 4.  The min rating is 0")
-				continue
-			print(
-				"On a scale from 0-4 with 4 being the most positive, \n"
-				"how do you rank how much fun your ideal class would be?  \n"
-				"You have " + str(points) + " points left!"
-			)
-			fun = raw_input(':')
-			try:
-				fun = int(fun)
-			except:
-				print("That is not a integer between 0 and 4")
-				continue
-			points = points - fun
-			if points < 0:
-				print("You have distributed too many points!")
-				continue
-			if fun > 4 or fun < 0:
-				print("The max rating is 4.  The min rating is 0")
-				continue
-			know = points
-			
-			if(know > 4):
-				print("you left too many points for the last rating")
-				continue
-			
-			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
-			try:
-				edit_student_desires(username, work, diff, fun, know)
-			except:
-				print("Rose Profs is currently unavailable")
-				exit()
-			print("User updated")
 	
 
 			
@@ -480,9 +392,8 @@ if databaseOpen:
 			print("delete profile - allows you to permanently delete your profile")
 			print("check - forces the program to check if the other systems are up")
 			print("recommend prof - recommends a professor for a given class")
-			print("search professor - search for a professor in the databases")
+			print("search prof - search for a professor in the databases")
 			print("search class - search for a class in the database")
-			print("get professors - get professors that teach a desired class")
 			print("end/logout - quits the program")
 			
 			
@@ -531,7 +442,134 @@ if databaseOpen:
 			
 			print(search_class_prof(name, classNum))
 			
-
+			
+		elif cmd.lower() == "edit class name" or cmd.lower() == "editclassname":
+			
+			if not redisDead:
+				COMMANDS = conn.zrange("professors", 0, -1)
+				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
+			else:
+				print("Who is the Professor that teaches this class?")
+			name = raw_input(':')
+			COMMANDS = []
+			
+			boolP = checkIfProfessorExists(name)
+			if(not boolP):
+				print('The professor does not exist')
+				continue
+			
+			print("What class do you want to edit?")
+			classNum = raw_input(':')
+			
+			try:
+				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
+			except:
+				print("That is not a class taught by that professor")
+				continue
+			
+			print(search_class_prof(name, classNum))
+			print("What should the new name be?")
+			newName = raw_input(':')
+			
+			edit_class_name(name, classNum, newName)
+			
+		elif cmd.lower().replace(' ', '') == "editclassdept" or cmd.lower().replace(' ', '') == "editclassdepartment":
+			
+			if not redisDead:
+				COMMANDS = conn.zrange("professors", 0, -1)
+				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
+			else:
+				print("Who is the Professor that teaches this class?")
+			name = raw_input(':')
+			COMMANDS = []
+			
+			boolP = checkIfProfessorExists(name)
+			if(not boolP):
+				print('The professor does not exist')
+				continue
+			
+			print("What class do you want to edit?")
+			classNum = raw_input(':')
+			
+			try:
+				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
+			except:
+				print("That is not a class taught by that professor")
+				continue
+			
+			print(search_class_prof(name, classNum))
+			print("What should the new department be?")
+			newDept = raw_input(':')
+			
+			edit_class_dept(name, classNum, newDept)
+			
+			
+		elif cmd.lower().replace(' ', '') == "editclassaltdept" or cmd.lower().replace(' ', '') == "editclassalternatedepartment":
+			
+			if not redisDead:
+				COMMANDS = conn.zrange("professors", 0, -1)
+				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
+			else:
+				print("Who is the Professor that teaches this class?")
+			name = raw_input(':')
+			COMMANDS = []
+			
+			boolP = checkIfProfessorExists(name)
+			if(not boolP):
+				print('The professor does not exist')
+				continue
+			
+			print("What class do you want to edit?")
+			classNum = raw_input(':')
+			
+			try:
+				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
+			except:
+				print("That is not a class taught by that professor")
+				continue
+			
+			print(search_class_prof(name, classNum))
+			print("What should the new alternate department be?")
+			newAltDept = raw_input(':')
+			
+			edit_class_alt_dept(name, classNum, newAltDept)
+			
+		elif cmd.lower().replace(' ', '') == "editclassgen" or cmd.lower().replace(' ', '') == "editclassgeneral":
+			
+			if not redisDead:
+				COMMANDS = conn.zrange("professors", 0, -1)
+				print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
+			else:
+				print("Who is the Professor that teaches this class?")
+			name = raw_input(':')
+			COMMANDS = []
+			
+			boolP = checkIfProfessorExists(name)
+			if(not boolP):
+				print('The professor does not exist')
+				continue
+			
+			print("What class do you want to edit?")
+			classNum = raw_input(':')
+			
+			try:
+				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
+			except:
+				print("That is not a class taught by that professor")
+				continue
+			
+			print(search_class_prof(name, classNum))
+			print("Is this a general class? \"yes\" or \"no\"")
+			gen = raw_input(':')
+			if gen.lower() == "yes" or gen.lower == "y":
+				gen = "True"
+			if gen.lower() == "no" or gen.lower == "n":
+				gen = "False"
+			if gen != "False" and gen != "True":
+				print("Invalid input. Make sure it is yes or no")
+				continue
+			
+			edit_class_gen(name, classNum, gen)
 
 		elif cmd.lower() == "get professors" or cmd.lower() == "getprofesors" or cmd.lower() == "get profs" or cmd.lower() == "getprofs":
 			
@@ -654,6 +692,9 @@ if databaseOpen:
 			given_class = raw_input(":")	
 			
 			currentStud = students.find_one({"Username": username})
+			
+			#DEBUG PRINT
+			print("got student")
 			
 			recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
 
