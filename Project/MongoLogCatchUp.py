@@ -321,7 +321,7 @@ def del_class_from_prof(r):
 
 	if professors.count({"Name": professor}) == 0:
 		return
-	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : number}}):
+	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : str(number)}}):
 		return
 	
 	idd = professors.find_one({'Name': professor})["_id"]
