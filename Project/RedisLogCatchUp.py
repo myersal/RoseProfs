@@ -21,9 +21,9 @@ except:
 	print("Could not connect to Mongo")
 	
 	
-try:
+try:#should be 109 at end
 	import redis
-	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0, socket_timeout=5)
+	POOL = redis.ConnectionPool(host='137.112.104.108', port=6379, db=0, socket_timeout=5)
 	conn = redis.Redis(connection_pool=POOL)
 except:
 	print("Could not connect to Redis")
@@ -70,11 +70,6 @@ def del_class_from_prof(record):
 	conn.zrem(record['Number'], record['Professor'])
 	if conn.zcount(record['Number'], 0, -1) == 0:
 		conn.zrem('classes', record['Number'])
-		
-	bob = alice
-	
-	print("here")
-	print(bob)
 	
 	conn.zrem('auto_classes', record['Number'] + "*")
 
