@@ -105,6 +105,7 @@ while True:
 					print("Redis down 3")
 					break
 			elif record["type"] == "del_class_from_prof":
+				conn = None
 				try:
 					del_class_from_prof(record)
 				except Exception as e:
