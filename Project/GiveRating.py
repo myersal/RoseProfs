@@ -375,7 +375,24 @@ if databaseOpen:
 			
 			
 			
-			
+		elif cmd.lower() == "help":
+			print("rate prof - allows you to rate a professor")
+			print("rate class - allows you to rate a class")
+			print("edit major - allows you to edit your major")
+			print("edit year - allows you to edit your year")
+			print("edit password - allows you to edit your password")
+			print("add prof - allows you to add a professor")
+			print("edit department - allows you to change a professor's department")
+			print("delete professor - allows you to delete a professor")
+			print("new class - allows you to create a new class")
+			print("delete class - allows you to delete a class")
+			print("create forum - allows you to create a forum")
+			print("delete profile - allows you to permanently delete your profile")
+			print("check - forces the program to check if the other systems are up")
+			print("recommend prof - recommends a professor for a given class")
+			print("search prof - search for a professor in the databases")
+			print("search class - search for a class in the database")
+			print("end/logout - quits the program")
 			
 			
 			
@@ -389,7 +406,7 @@ if databaseOpen:
 			COMMANDS = conn.zrange("professors", 0, -1)
 			print("Who is the Professor you want to search for?  Hit TAB to see sorted list of professors")
 			name = raw_input(':')
-			
+			COMMANDS = []
 			boolP = checkIfProfessorExists(name)
 			if(not boolP):
 				print('The professor does not exist')
@@ -405,6 +422,7 @@ if databaseOpen:
 			COMMANDS = conn.zrange("professors", 0, -1)
 			print("Who is the Professor that teaches this class?  Hit TAB to see sorted list of professors")
 			name = raw_input(':')
+			COMMANDS = []
 			
 			boolP = checkIfProfessorExists(name)
 			if(not boolP):
@@ -432,11 +450,8 @@ if databaseOpen:
 			COMMANDS = conn.zrange("classes", 0, -1)
 			print("For what class do you want profesors for?  Hit TAB to see sorted list of classes")
 			classNum = raw_input(':')
+			COMMANDS = []
 			
-			
-			if (not COMMANDS.__contains__(classNum)):
-				print(classNum + " is not a class")
-				continue
 			
 			print(conn.zrange(classNum, 0, -1))
 
@@ -531,17 +546,17 @@ if databaseOpen:
 				break
 		elif cmd.lower() == "check" or cmd.lower() == "check!":
 			continue
-			
-		elif cmd.lower() == "recommend prof":
-			if orientDead:
-				print("recommendations are currently offline, please wait until the service is back up")
-				continue
-			
+		
 		elif cmd.lower() == "see classes" or cmd.lower() == "seeclasses":
 			if (redisDead):
 				print("Sorry that service is unavailable")
 				continue
 			print(conn.zrange("classes", 0, -1))
+			
+		elif cmd.lower() == "recommend prof":
+			if orientDead:
+				print("recommendations are currently offline, please wait until the service is back up")
+				continue
 			
 			
 			print("Please input the class you want to get a recommended professor for")
