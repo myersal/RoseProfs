@@ -431,12 +431,13 @@ def search_class_prof(name, number):
 	if not checkIfProfessorExists(name):
 		return
 	professor = professors.find_one({'Name': name})
-	entry = ''
+	entry = 'the given professor does not teach that class'
 	name = ''
 	department = ''
 	alt_department = ''
 	generic = ''
 	for clas in professor['Classes']:
+		entry = ''
 		if clas['Number'] == number:
 			if not clas['Name'] is None:
 				name = clas['Name']
