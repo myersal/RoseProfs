@@ -47,8 +47,7 @@ class Completer(object):
 			list = conn.zrange('auto_professors', pos + 1, pos + 50)
 			for entry in list:
 				if entry[len(entry) - 1] == '*':
-					l = [buffer + entry[:-1]]
-					return l[state]
+					return entry[state]
 		if commmand == 2:
 			pos = conn.zrank('auto_classes', bufferr)
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
