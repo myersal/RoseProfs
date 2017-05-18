@@ -359,6 +359,19 @@ def edit_student_major(username, new_major):
 		'Major': str(new_major)})
 
 	return log
+	
+def edit_student_desires(username, work, diff, fun, know):
+	if SQLInjectionCheck(username):
+		print("usernames cannot contain special characters")
+		return
+	if students.count({'Username': username}) == 0:
+		return
+
+	log = logs.insert_one({
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_desires', 'Username': str(username),
+		'DesWork': str(work), 'DesDiff': str(diff), 'DesFun': str(fun), 'DesKnow': str(know)})
+
+	return log
 
 
 def del_student(username):
@@ -385,15 +398,10 @@ def recomProfForClass(given_class, desWork, desDiff, desFun, desKnow):
 	lowestDif = 50 #not possible to have this large of difference so can use it as a max
 
 	#must traverse the prof_class pairs and find all the class ratings from users
-	print("got to loop")
 	for pairs in initialClassConns:
-		print("found a pair")
-		print(pairs._rid)
 		ratings = client.command("SELECT * from class_rate where in = " + pairs._rid)
 		# Must traverse the ratings for each class and find the highest match to the users desired rating
 		for rates in ratings:
-			print("found a rating")
-			#print(rates)
 			difference = abs(int(desWork) - rates.work) + abs(int(desDiff) - rates.diff) + abs(int(desFun) - rates.fun) + abs(int(desKnow) - rates.know)
 			if difference < lowestDif: #checks to see if the difference is lower than the current match
 				print("found a desired rating")

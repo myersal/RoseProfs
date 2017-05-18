@@ -331,6 +331,76 @@ if databaseOpen:
 			edit_student_password(username, pwd)
 			print("Password changed!")
 	
+		elif cmd.lower() == "edit desires" or cmd.lower() == "editdesires":
+			points = 8;
+			print(
+				"You have 8 points to distribute among these four catagories"
+				"for your ideal class: "
+				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
+			)
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal class's amount of work?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			work = raw_input(':')
+			try:
+				work = int(work)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - work
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if work > 4 or work < 0:
+				print("The max rating is 4.  The min rating is 0")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal classes technical difficulty?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			diff = raw_input(':')
+			try:
+				diff = int(diff)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - diff
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if diff > 4 or diff < 0:
+				print("The max rating is 4.  The min rating is 0")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank how much fun your ideal class would be?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			fun = raw_input(':')
+			try:
+				fun = int(fun)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - fun
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if fun > 4 or fun < 0:
+				print("The max rating is 4.  The min rating is 0")
+				continue
+			know = points
+			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
+			try:
+				edit_student_desires(username, work, diff, fun, know)
+			except:
+				print("Rose Profs is currently unavailable")
+				exit()
+			print("User updated")
+	
 
 			
 		elif cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor":
@@ -390,8 +460,9 @@ if databaseOpen:
 			print("delete profile - allows you to permanently delete your profile")
 			print("check - forces the program to check if the other systems are up")
 			print("recommend prof - recommends a professor for a given class")
-			print("search prof - search for a professor in the databases")
+			print("search professor - search for a professor in the databases")
 			print("search class - search for a class in the database")
+			print("get professors - get professors that teach a desired class")
 			print("end/logout - quits the program")
 			
 			
@@ -563,9 +634,6 @@ if databaseOpen:
 			given_class = raw_input(":")	
 			
 			currentStud = students.find_one({"Username": username})
-			
-			#DEBUG PRINT
-			print("got student")
 			
 			recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
 

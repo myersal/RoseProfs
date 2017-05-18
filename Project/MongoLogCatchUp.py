@@ -435,7 +435,26 @@ def del_student(r):
 	
 	students.delete_one({'Username': str(username), '_id': idd})
 
+def edit_student_desires(r):
+	username = r["Username"]
+	desDiff = r['DesDiff']
+	desWork = r['DesWork']
+	desFun = r['DesFun']
+	desKnow = r['DesKnow']
+	
 
+	if students.count({'Username': username}) == 0:
+		return
+
+	idd = students.find_one({'Username': username})["_id"]
+
+	students.update_one(
+		{'Username': str(username), '_id': idd},
+		{'$set': {'DesDiff': str(desDiff),
+			'DesWork': str(desWork),
+			'DesFun': str(desFun),
+			'DesKnow': str(desKnow)}}
+	)
 
 
 
@@ -535,6 +554,8 @@ while True:
 				edit_student_major(record)
 			elif record["type"] == "del_student":
 				del_student(record)
+			elif record["type"] == 'edit_student_desires':
+				edit_student_desires(record)
 			logs.update_one({'_id': record["_id"]}, {'$set' : {'mongo': -1}})
 			print(record["type"] + " was executed!")
 			
