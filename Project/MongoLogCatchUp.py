@@ -323,7 +323,7 @@ def del_class_from_prof(r):
 		return
 		
 	print("got through 1")
-	if 0 == professors.count({'Name': professor, 'Classes': {'Number' : str(number)}}):
+	if 0 == professors.count({'Name': professor, 'Classes.Number': str(number)}):
 		return
 		
 	
