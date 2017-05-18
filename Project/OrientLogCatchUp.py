@@ -211,7 +211,8 @@ while True:
 				elif (record["type"] == "del_class_from_prof"):
 					try:
 						orientDelClassFromProf(record)
-					except:
+					except Exception as e:
+						print(str(e))
 						print("Orient Down")
 						conn = False
 						break
