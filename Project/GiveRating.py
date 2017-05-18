@@ -38,7 +38,7 @@ class Completer(object):
 
 		if not line:
 			list = conn.zrange('professors', 0, -1)
-			return [c for c in list][state]
+			return [c for c in list]
 
 		if command == 0:
 			return ""
@@ -54,6 +54,8 @@ class Completer(object):
 			for entry in list:
 				if entry[len(entry) - 1] == '*':
 					return entry[:-1]
+		list = conn.zrange('professors', 0, -1)
+		return [c for c in list]
 
 
 comp = Completer()
