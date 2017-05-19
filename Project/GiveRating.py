@@ -68,7 +68,7 @@ class Completer(object):
 				if not entry.startswith(bufferr):
 					break
 				if entry[len(entry) - 1] == '*':
-					result = [entry[:-1]]
+					result += [entry[:-1]]
 			result += [None]
 			return result[state]
 		list = [bufferr] + [None]
@@ -83,8 +83,6 @@ readline.set_completer(comp.complete)
 print("Welcome to Rose Profs!!!!\n")
 print("\n")
 print("Please type your username to log in.\n  Or type new to make a new user")
-
-
 
 while True:
 	username = raw_input(':')
@@ -108,7 +106,7 @@ while True:
 			print("What is your primary major?")
 			major = raw_input(':')
 			
-			points = 8;
+			points = 8
 			print(
 				"You have 8 points to distribute among these four catagories"
 				"for your ideal class: "
@@ -218,7 +216,7 @@ if databaseOpen:
 			if(not boolP):
 				print('The professor does not exist')
 				continue
-			points = 8;
+			points = 8
 			print(
 				"You have 8 points to distribute among these four categories: "
 				"Communication\nGrading\nHelpfulness\nCoolness"
@@ -299,7 +297,7 @@ if databaseOpen:
 			except:
 				print("That is not a class taught by that professor")
 				continue
-			points = 8;
+			points = 8
 			print(
 				"You have 8 points to distribute among these four catagories: "
 				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
