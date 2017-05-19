@@ -434,8 +434,7 @@ try:
 					continue
 				points = points - diff
 				if points < 0:
-					print("You have distrmongos> 
-ibuted too many points!")
+					print("You have distibuted too many points!")
 					continue
 				if diff > 4 or diff < 0:
 					print("The max rating is 4.  The min rating is 0")
@@ -480,7 +479,7 @@ ibuted too many points!")
 				print("What is his/her department")
 				dept = raw_input(':')
 				add_prof(name, dept)
-				print("Prof added!")mongos> 
+				print("Prof added!")
 
 	
 			elif cmd.lower() == "edit department" or cmd.lower() == "editdepartment":
