@@ -44,7 +44,7 @@ def orientRateProf(record):
 		else:
 			#update the edge instead
 			client.command("UPDATE prof_rate SET cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm)
-				+ ", grad = " + str(grade) + " WHERE in = " + studs[0]._rid + " and out = " + profs[0]._rid);
+				+ ", grad = " + str(grade) + " WHERE out = " + studs[0]._rid + " and in = " + profs[0]._rid);
 
 	return 1;
 
