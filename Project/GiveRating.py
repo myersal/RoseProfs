@@ -36,7 +36,7 @@ class Completer(object):
 		bufferr = readline.get_line_buffer()
 		line = readline.get_line_buffer().split()
 
-		if not line:
+		if not line or not bufferr:
 			if command == 1:
 				list = conn.zrange('professors', 0, -1)
 				return list[state]
