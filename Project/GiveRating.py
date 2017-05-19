@@ -383,6 +383,70 @@ if databaseOpen:
 			pwd = raw_input(':')
 			edit_student_password(username, pwd)
 			print("Password changed!")
+			
+		elif cmd.lower() == "edit desires":
+			points = 8
+			print(
+				"You have 8 points to distribute among these four catagories: "
+				"Amount of Work\nDifficulty\nFunness\nKnowledge of Prof"
+			)
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal class's amount of work?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			work = raw_input(':')
+			try:
+				work = int(work)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - work
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if work > 4 or work < 0:
+				print("The max rating is 4.  The min rating is 0")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank your ideal class's technical difficulty?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			diff = raw_input(':')
+			try:
+				diff = int(diff)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - diff
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if diff > 4 or diff < 0:
+				print("The max rating is 4.  The min rating is 0")
+				continue
+			print(
+				"On a scale from 0-4 with 4 being the most positive, \n"
+				"how do you rank how much fun your ideal class is?  \n"
+				"You have " + str(points) + " points left!"
+			)
+			fun = raw_input(':')
+			try:
+				fun = int(fun)
+			except:
+				print("That is not a integer between 0 and 4")
+				continue
+			points = points - fun
+			if points < 0:
+				print("You have distributed too many points!")
+				continue
+			if fun > 4 or fun < 0:
+				print("The max rating is 4 and the min rating is 0")
+				continue
+			know = points
+			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
+			edit_student_desires(username, work, diff, fun, know)
 
 		elif cmd.lower() == "add prof" or cmd.lower() == "addprof" or cmd.lower() == "add professor" or cmd.lower() == "addprofessor":
 			print("Who is the new Professor?")
