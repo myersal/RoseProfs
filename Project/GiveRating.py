@@ -732,7 +732,7 @@ try:
 					if not boolP:
 						print('The professor does not exist')
 						continue
-				message = raw_input('please type your message for the forum: ')
+				message = raw_input('Please type your message for the forum: ')
 				#Now for the important part, the above may change when the application is actually in user
 				answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
 				if answer.lower() == 'yes':
