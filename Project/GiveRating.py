@@ -630,6 +630,9 @@ if databaseOpen:
 			command = 1
 			try:
 				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
+				if numOfClasses <= 0:
+					print("That is not a class taught by that professor")
+					continue
 			except:
 				print("That is not a class taught by that professor")
 				continue
