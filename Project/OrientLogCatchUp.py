@@ -41,6 +41,10 @@ def orientRateProf(record):
 		currentEdges = client.command("select * from prof_rate where out = " + studs[0]._rid + " and in = " + profs[0]._rid);
 		if(len(currentEdges) == 0):
 			client.command("create edge prof_rate from " + studs[0]._rid + " to " + profs[0]._rid + " set cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm) + ", grad = " + str(grade));
+		else:
+			#update the edge instead
+			client.command("UPDATE prof_rate SET cool = " + str(cool) + ", help = " + str(helpp) + ", comm = " + str(comm)
+				+ ", grad = " + str(grade) + " WHERE in = " + studs[0]._rid + " and out = " + profs[0]._rid);
 
 	return 1;
 
@@ -65,10 +69,15 @@ def orientRateClass(record):
 			# insert edge
 			new_edge = client.command(
 				"create edge class_rate from " + studs[0]._rid + " to " + classes[0]._rid + " set work = " + str(
-					work) + ", diff = " + str(diff) + ", fun = " + str(fun) + ", know = " + str(know));
+					work) + ", diff = " + str(diff) + ", fun = " + str(fun) + ", know = " + str(know))
+			return 1
 
 		else:
-			return 0
+			#overwrite the edge
+			for edge in currentEdges:
+				client.command("UPDATE class_rate SET work = " + str(work) + ", diff = " + str(diff) + ", fun = "
+					+ str(fun) + ", know = " + str(know) + " WHERE out = " + studs[0]._rid + " and in = " + classes[0]._rid)
+			return 1
 	else:
 		return 0
 		
