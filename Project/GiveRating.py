@@ -39,10 +39,10 @@ class Completer(object):
 		if not line:
 			if command == 1:
 				list = conn.zrange('professors', 0, -1)
-				return [c for c in list][state]
+				return list[state]
 			if command == 2:
 				list = conn.zrange('classes', 0, -1)
-				return [c for c in list][state]
+				return list[state]
 
 		if command == 0:
 			list = [bufferr] + [None]
