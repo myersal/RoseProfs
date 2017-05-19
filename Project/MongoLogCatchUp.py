@@ -212,7 +212,7 @@ def edit_class_name(r):
 	professors.update_one(
 		{
 			'Name': str(professor),
-			'_id': idd,'Professor'
+			'_id': idd,
 			'Classes.Number': str(number)
 		},
 		{'$set': {
