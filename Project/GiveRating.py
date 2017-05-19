@@ -700,8 +700,6 @@ if databaseOpen:
 			given_class = raw_input(":")	
 			command = 0
 			currentStud = students.find_one({"Username": username})
-			#DEBUG PRINT
-			print("got student")
 			recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
 
 		else:
