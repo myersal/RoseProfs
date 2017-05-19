@@ -189,7 +189,7 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 		print("professor cannot contain special characters")
 		return
 	if SQLInjectionCheck(name):
-		print("Username cannot contain special characters")
+		print("class name cannot contain special characters")
 		return
 	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
