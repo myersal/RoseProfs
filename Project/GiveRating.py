@@ -52,17 +52,25 @@ class Completer(object):
 		if command == 1:
 			pos = conn.zrank('auto_professors', bufferr)
 			list = conn.zrange('auto_professors', pos + 1, pos + 50)
+			result = []
 			for entry in list:
+				if not entry.startswith(bufferr):
+					break
 				if entry[len(entry) - 1] == '*':
-					result = [entry[:-1]] + [None]
-					return result[state]
+					result += [entry[:-1]]
+			result += [None]
+			return result[state]
 		if command == 2:
 			pos = conn.zrank('auto_classes', bufferr)
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
+			result = []
 			for entry in list:
+				if not entry.startswith(bufferr):
+					break
 				if entry[len(entry) - 1] == '*':
-					result = [entry[:-1]] + [None]
-					return result[state]
+					result = [entry[:-1]]
+			result += [None]
+			return result[state]
 		list = [bufferr] + [None]
 		return list[state]
 
