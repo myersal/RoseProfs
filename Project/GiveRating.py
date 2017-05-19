@@ -576,9 +576,7 @@ if databaseOpen:
 			command = 2
 			classNum = raw_input(':')
 			command = 0
-			try:
-				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
-			except:
+			if not check_professor_teaches_class(name, classNum):
 				print("That is not a class taught by that professor")
 				continue
 			print(search_class_prof(name, classNum))
@@ -602,9 +600,7 @@ if databaseOpen:
 			command = 2
 			classNum = raw_input(':')
 			command = 0
-			try:
-				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
-			except:
+			if not check_professor_teaches_class(name, classNum):
 				print("That is not a class taught by that professor")
 				continue
 			print(search_class_prof(name, classNum))
@@ -628,12 +624,7 @@ if databaseOpen:
 			command = 2
 			classNum = raw_input(':')
 			command = 1
-			try:
-				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
-				if numOfClasses <= 0:
-					print("That is not a class taught by that professor")
-					continue
-			except:
+			if not check_professor_teaches_class(name, classNum):
 				print("That is not a class taught by that professor")
 				continue
 			print(search_class_prof(name, classNum))
@@ -657,9 +648,7 @@ if databaseOpen:
 			command = 2
 			classNum = raw_input(':')
 			command = 0
-			try:
-				numOfClasses = professors.count({"Name":name, "Classes.Number": classNum})
-			except:
+			if not check_professor_teaches_class(name, classNum):
 				print("That is not a class taught by that professor")
 				continue
 			print(search_class_prof(name, classNum))
