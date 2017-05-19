@@ -761,15 +761,19 @@ try:
 
 			elif cmd.lower() == "recommend prof":
 				if orientDead:
-					print("recommendations are currently offline, please wait until the service is back up")
+					print("Recommendations are currently offline, please wait until the service is back up")
 					continue
 				print("Please input the class you want to get a recommended professor for")
 				command = 2
 				given_class = raw_input(":")
 				command = 0
 				currentStud = students.find_one({"Username": username})
-				recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
-
+				try:
+					recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
+				except:
+					print("No can do.  Orient is downnos.")
+					orientDead = True
+					continue
 			else:
 				print("invalid command")
 
