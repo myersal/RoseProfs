@@ -216,7 +216,7 @@ def edit_class_name(professor, number, new_name):
 		return
 
 	log = logs.insert_one({
-		'mongo': 0, 'redis': -1, 'orient': -1, 'type': 'edit_class_name', 'Professor': professor, 'Number': number,
+		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_name', 'Professor': professor, 'Number': number,
 		'Name': new_name})
 
 	return log

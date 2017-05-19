@@ -204,7 +204,7 @@ def edit_class_name(r):
 
 	if professors.count({"Name": professor}) == 0:
 		return
-	if 0 == professors.count({'Name': professor, 'Classes.Number''Professor' : number}):
+	if 0 == professors.count({'Name': professor, 'Classes.Number' : number}):
 		return
 	
 	idd = professors.find_one({'Name': professor})["_id"]
