@@ -173,6 +173,10 @@ while True:
 				print("The max rating is 4.  The min rating is 0")
 				continue
 			know = points
+			if know > 4:
+				print("you left too many points for the last rating")
+				continue
+			
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")		
 			try:
 				add_student(username, pwd, year, major, work, diff, fun, know)
@@ -282,6 +286,11 @@ if databaseOpen:
 				print("The max rating is 4.  The min rating is 0")
 				continue
 			cool = points
+			
+			if cool > 4:
+				print("you left too many points for the last rating")
+				continue
+			
 			print("That leaves " + str(points) + " points for the coolness rating!")
 			rateProf(username, prof, comm, grade, helpp, cool)
 
@@ -363,6 +372,10 @@ if databaseOpen:
 				print("The max rating is 4 and the min rating is 0")
 				continue
 			know = points
+			if know > 4:
+				print("you left too many points for the last rating")
+				continue
+			
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
 			rateClass(username, prof, classToRate, work, diff, fun, know)
 
@@ -445,6 +458,10 @@ if databaseOpen:
 				print("The max rating is 4 and the min rating is 0")
 				continue
 			know = points
+			if know > 4:
+				print("you left too many points for the last rating")
+				continue
+			
 			print("That leaves " + str(points) + " points for the knowledge of prof rating!")
 			edit_student_desires(username, work, diff, fun, know)
 
