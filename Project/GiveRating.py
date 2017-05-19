@@ -307,7 +307,7 @@ try:
 				command = 2
 				classToRate = raw_input(':')
 				command = 0
-				if check_professor_teaches_class(prof, classToRate):
+				if not check_professor_teaches_class(prof, classToRate):
 					print("That is not a class taught by that professor")
 					continue
 				points = 8
@@ -550,7 +550,7 @@ try:
 				command = 2
 				classNum = raw_input(':')
 				command = 0
-				if check_professor_teaches_class(name, classNum):
+				if not check_professor_teaches_class(name, classNum):
 					print("That is not a class taught by that professor")
 					continue
 
