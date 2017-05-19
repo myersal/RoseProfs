@@ -173,7 +173,7 @@ def edit_prof_dept(name, new_dept):
 
 def del_prof(name):
 	if SQLInjectionCheck(name):
-		print("professor cannot contain special characters")
+		print("Professor cannot contain special characters")
 		return
 	if not checkIfProfessorExists(name):
 		return
@@ -186,10 +186,10 @@ def del_prof(name):
 
 def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if SQLInjectionCheck(professor):
-		print("professor cannot contain special characters")
+		print("Professor cannot contain special characters")
 		return
 	if SQLInjectionCheck(name):
-		print("class name cannot contain special characters")
+		print("Class name cannot contain special characters")
 		return
 	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
@@ -198,16 +198,16 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 		print("Dept cannot contain special characters")
 		return
 	if SQLInjectionCheck(alt_dept):
-		print("alt_dept cannot contain special characters")
+		print("Alt_dept cannot contain special characters")
 		return
 	if SQLInjectionCheck(gen):
-		print("gen cannot contain special characters")
+		print("Gen cannot contain special characters")
 		return
 	if not checkIfProfessorExists(professor):
-		print("professor does not exist")
+		print("Professor does not exist")
 		return
 	if check_professor_teaches_class(professor, number):
-		print("professor already teaches class")
+		print("Professor already teaches class")
 		return
 
 	log = logs.insert_one({
