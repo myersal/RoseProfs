@@ -51,6 +51,9 @@ class Completer(object):
 			return list[state]
 		if command == 1:
 			pos = conn.zrank('auto_professors', bufferr)
+			if pos == -1:
+				list = conn.zrange('professors', 0, -1)
+				return list[state]
 			list = conn.zrange('auto_professors', pos + 1, pos + 50)
 			result = []
 			for entry in list:
@@ -62,6 +65,9 @@ class Completer(object):
 			return result[state]
 		if command == 2:
 			pos = conn.zrank('auto_classes', bufferr)
+			if pos == -1:
+				list = conn.zrange('classes', 0, -1)
+				return list[state]
 			list = conn.zrange('auto_classes', pos + 1, pos + 50)
 			result = []
 			for entry in list:
