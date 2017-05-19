@@ -43,6 +43,8 @@ class Completer(object):
 			if command == 2:
 				list = conn.zrange('classes', 0, -1)
 				return list[state]
+			list = [bufferr] + [None]
+			return list[state]
 
 		if command == 0:
 			list = [bufferr] + [None]
