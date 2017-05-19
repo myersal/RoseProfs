@@ -46,6 +46,12 @@ def del_prof(record):
 		return
 	conn.zrem('professors', name)
 	conn.zrem('auto_professors', name + "*")
+	classes = conn.zrange('classes', 0, -1)
+	for number in classes:
+		if not conn.zscore(number, name) is None:
+			conn.zrem(number, name)
+			if conn.zrange(number, 0, -1) is None:
+				conn.zrem('classes', number)
 
 
 def add_class_to_prof(record):
@@ -68,7 +74,7 @@ def del_class_from_prof(record):
 	if conn.zscore(record['Number'], record['Professor']) is None:
 		return
 	conn.zrem(record['Number'], record['Professor'])
-	if conn.zcount(record['Number'], 0, -1) == 0:
+	if conn.zrange(record['Number'], 0, -1) is None:
 		conn.zrem('classes', record['Number'])
 	
 	conn.zrem('auto_classes', record['Number'] + "*")
