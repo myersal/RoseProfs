@@ -37,8 +37,12 @@ class Completer(object):
 		line = readline.get_line_buffer().split()
 
 		if not line:
-			list = conn.zrange('professors', 0, -1)
-			return [c for c in list][state]
+			if command == 1:
+				list = conn.zrange('professors', 0, -1)
+				return [c for c in list][state]
+			if command == 2:
+				list = conn.zrange('classes', 0, -1)
+				return [c for c in list][state]
 
 		if command == 0:
 			list = [bufferr] + [None]
@@ -57,8 +61,8 @@ class Completer(object):
 				if entry[len(entry) - 1] == '*':
 					result = [entry[:-1]] + [None]
 					return result[state]
-		list = conn.zrange('professors', 0, -1)
-		return [c for c in list][state]
+		list = [bufferr] + [None]
+		return list[state]
 
 
 comp = Completer()
@@ -685,6 +689,7 @@ if databaseOpen:
 			#DEBUG PRINT
 			print("got student")
 			recomProfForClass(given_class, currentStud['DesWork'], currentStud['DesDiff'], currentStud['DesFun'], currentStud['DesKnow'])
+
 		else:
 			print("invalid command")
 
