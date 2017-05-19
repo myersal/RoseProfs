@@ -734,7 +734,7 @@ try:
 						continue
 				message = raw_input('Please type your message for the forum: ')
 				#Now for the important part, the above may change when the application is actually in user
-				answer = raw_input('is the given information correct yes/no (no if yes is not input): ')
+				answer = raw_input('Is the given information correct yes/no (no if yes is not input): ')
 				if answer.lower() == 'yes':
 					time = strftime('%Y-%j-%d %H:%M:%S', gmtime())
 					createForum(username, subject, boolProfessor, prof, message, time)
