@@ -575,7 +575,7 @@ while True:
 			
 	except Exception as e:
 		print str(e)
-		print("Mongo Down to execute logs")
+		print("Mongo Down so cannot execute logs")
 		continue
 	
 	
