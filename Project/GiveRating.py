@@ -5,6 +5,7 @@ import sys
 import re
 import readline
 
+\
 
 COMMANDS = []
 command = 0
@@ -433,7 +434,8 @@ try:
 					continue
 				points = points - diff
 				if points < 0:
-					print("You have distributed too many points!")
+					print("You have distrmongos> 
+ibuted too many points!")
 					continue
 				if diff > 4 or diff < 0:
 					print("The max rating is 4.  The min rating is 0")
@@ -478,7 +480,8 @@ try:
 				print("What is his/her department")
 				dept = raw_input(':')
 				add_prof(name, dept)
-				print("Prof added!")
+				print("Prof added!")mongos> 
+
 	
 			elif cmd.lower() == "edit department" or cmd.lower() == "editdepartment":
 				print("Who is the Professor?")
