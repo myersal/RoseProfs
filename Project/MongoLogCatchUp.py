@@ -32,7 +32,7 @@ def rate_prof(r):
 		return
 	idd = students.find_one({'Username': username})["_id"]
 	if students.count({"Username": username, "ProfRating.Name" : professor}):
-		students.update_one({'Username': username, '_id': idd}, {'$pull': {"ProfRating.Name" :  professor}})
+		students.update_one({'Username': username, '_id': idd}, {'$pull': {"ProfRating" :{"Name" :  professor}}})
 	
 	students.update_one(
 				{'Username': username, '_id': idd},
@@ -65,7 +65,7 @@ def rate_class(r):
 		return
 	idd = students.find_one({'Username': username})["_id"]
 	if students.count({"Username": username, "ClassRating.Professor" : professor, "ClassRating.Class_Number" : clas}) > 0:
-		students.update_one({'Username': username, '_id': idd},{'$pull': {"ClassRating.Professor" :  professor, "ClassRating.Class_Number" : clas}})
+		students.update_one({'Username': username, '_id': idd},{'$pull': {"ClassRating" : {"Professor" :  professor, "Class_Number" : clas}}})
 	students.update_one(
 		{'Username': username, '_id': idd},
 		{'$addToSet': {
