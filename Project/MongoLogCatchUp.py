@@ -348,7 +348,7 @@ def del_class_from_prof(r):
 			}
 		}}
 	)
-	students.update({}, {"$pull": {"ClassRating" : {"Professor" : professor, "Class_Number" : number}}})
+	students.update_all({}, {"$pull": {"ClassRating" : {"Professor" : professor, "Class_Number" : number}}})
 
 def add_student(r):
 	username = r["Username"]
