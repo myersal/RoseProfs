@@ -725,9 +725,7 @@ if databaseOpen:
 			command = 2
 			num = raw_input(':')
 			command = 0
-			try:
-				int(conn.zrank("classes", num))
-			except:
+			if not check_professor_teaches_class(professor, num):
 				print("Not a valid class number")
 				continue
 			del_class_from_prof(professor, num)
