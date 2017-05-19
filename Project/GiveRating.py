@@ -88,6 +88,7 @@ readline.set_completer(comp.complete)
 
 print("Welcome to Rose Profs!!!!\n")
 print("\n")
+print("\n")
 print("Please type your username to log in.\n  Or type new to make a new user")
 
 while True:
