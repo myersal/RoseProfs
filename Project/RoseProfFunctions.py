@@ -16,7 +16,6 @@ def checkIfProfessorExists(ProfName):
 		try:
 			numOfProfs = conn.zscore("professors", ProfName)
 			if numOfProfs is None:
-				print("That is not a prof")
 				return False
 			return True
 		except Exception as e:
