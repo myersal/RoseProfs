@@ -21,7 +21,7 @@ except:
 	print("Could not connect to Mongo")
 	
 	
-try:#should be 109 at end
+try:
 	import redis
 	POOL = redis.ConnectionPool(host='137.112.104.109', port=6379, db=0, socket_timeout=5)
 	conn = redis.Redis(connection_pool=POOL)
@@ -50,8 +50,6 @@ def del_prof(record):
 	for number in classes:
 		if not conn.zscore(number, name) is None:
 			conn.zrem(number, name)
-			if conn.zrange(number, 0, -1) is None:
-				conn.zrem('classes', number)
 
 
 def add_class_to_prof(record):
@@ -74,20 +72,13 @@ def del_class_from_prof(record):
 	if conn.zscore(record['Number'], record['Professor']) is None:
 		return
 	conn.zrem(record['Number'], record['Professor'])
-	if conn.zrange(record['Number'], 0, -1) is None:
-		conn.zrem('classes', record['Number'])
-	
 	conn.zrem('auto_classes', record['Number'] + "*")
 
 	
 print("Data is being brought up to date!")
 while True:
 	time.sleep(1)
-	#try:
 	logs.remove({"mongo": -1, "redis": -1, "orient": -1})
-	#except:
-		#print("Mongo Down 1")
-		#continue
 		
 	try:
 		redisLogsTodo = logs.find({"redis": 0}).sort("$natural", 1)
@@ -122,6 +113,5 @@ while True:
 			print(record["type"] + " was executed!")
 
 	except Exception as e:
-		#print str(e)
 		print("Mongo Down 2")
 		continue
