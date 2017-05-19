@@ -38,7 +38,7 @@ def check_professor_teaches_class(professor, number):
 			print("Some functionality may be slower and/or limited due to problems outside of your control")
 			RoseProfConnections.redisDead = True
 	if RoseProfConnections.redisDead:
-		if professor.count({'Name': professor, 'Classes.Number': number}) > 0:
+		if professors.count({'Name': professor, 'Classes.Number': number}) > 0:
 			return True
 		return False
 	return False
