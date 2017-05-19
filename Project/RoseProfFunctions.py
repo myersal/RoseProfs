@@ -28,6 +28,22 @@ def checkIfProfessorExists(ProfName):
 	return True
 
 
+def check_professor_teaches_class(professor, number):
+	if not RoseProfConnections.redisDead:
+		try:
+			if conn.zscore(number, professor) is None:
+				return False
+			return True
+		except Exception as e:
+			print("Some functionality may be slower and/or limited due to problems outside of your control")
+			RoseProfConnections.redisDead = True
+	if RoseProfConnections.redisDead:
+		if professor.count({'Name': professor, 'Classes':{'$elemMatch': {'Number': number}}}) > 0:
+			return True
+		return False
+	return False
+
+
 def rateProf(username, professor, comm, grade, helpp, cool):
 	if SQLInjectionCheck(username):
 		print("Username cannot contain special characters")
@@ -50,7 +66,7 @@ def rateProf(username, professor, comm, grade, helpp, cool):
 	
 	if students.count({"Username": username}) == 0:
 		return
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
 	try:
 		log = logs.insert_one({
@@ -86,9 +102,9 @@ def rateClass(username, professor, clas, work, diff, fun, know):
 		return
 	if students.count({"Username": username}) == 0:
 		return
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(clas, professor) is None:
+	if not check_professor_teaches_class(professor, clas):
 		return
 
 	log = logs.insert_one({
@@ -121,16 +137,9 @@ def addProf(name):
 
 	
 def createForum(username, subject, boolProfessor, prof, message, time):
-
-
-
 		mongLog = logs.insert_one({
 			'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'create_forum', 'Subject': subject,
 			'Username': username, 'Name': prof, 'Content': message, 'Date': time, 'bool': boolProfessor})
-
-
-	
-		
 		print('forum created')
 
 
@@ -155,7 +164,7 @@ def edit_prof_name(name, new_name):
 
 
 def edit_prof_dept(name, new_dept):
-	if conn.zscore('professors', name) is None:
+	if not checkIfProfessorExists(name):
 		return
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_prof_dept', 'Name': name, 'Department': new_dept})
@@ -163,10 +172,10 @@ def edit_prof_dept(name, new_dept):
 
 
 def del_prof(name):
-	if (SQLInjectionCheck(name)):
+	if SQLInjectionCheck(name):
 		print("professor cannot contain special characters")
 		return
-	if conn.zscore('professors', name) is None:
+	if not checkIfProfessorExists(name):
 		return
 
 	log = logs.insert_one({
@@ -176,7 +185,6 @@ def del_prof(name):
 
 
 def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
-	
 	if SQLInjectionCheck(professor):
 		print("professor cannot contain special characters")
 		return
@@ -195,10 +203,10 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 	if SQLInjectionCheck(gen):
 		print("gen cannot contain special characters")
 		return
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		print("professor does not exist")
 		return
-	if not conn.zscore(number, professor) is None:
+	if check_professor_teaches_class(professor, number):
 		print("professor already teaches class")
 		return
 
@@ -210,24 +218,21 @@ def add_class_to_prof(professor, name, number, dept, alt_dept, gen):
 
 
 def edit_class_name(professor, number, new_name):
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_name', 'Professor': professor, 'Number': number,
 		'Name': new_name})
-
 	return log
 
 
 def edit_class_number(professor, number, new_number):
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_number', 'Professor': professor, 'Number': number,
 		'New_Number': new_number})
@@ -236,11 +241,10 @@ def edit_class_number(professor, number, new_number):
 
 
 def edit_class_dept(professor, number, new_dept):
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_dept', 'Professor': professor,
 		'Number': number, 'Department': new_dept})
@@ -249,11 +253,10 @@ def edit_class_dept(professor, number, new_dept):
 
 
 def edit_class_alt_dept(professor, number, new_alt_dept):
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_alt_dept', 'Professor': professor,
 		'Number': number, 'Alt_Department': new_alt_dept})
@@ -262,11 +265,10 @@ def edit_class_alt_dept(professor, number, new_alt_dept):
 
 
 def edit_class_gen(professor, number, new_gen):
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_class_gen', 'Professor': professor,
 		'Number': number, 'Generic': new_gen})
@@ -280,11 +282,10 @@ def del_class_from_prof(professor, number):
 	if SQLInjectionCheck(number):
 		print("Number cannot contain special characters")
 		return
-	if conn.zscore('professors', professor) is None:
+	if not checkIfProfessorExists(professor):
 		return
-	if conn.zscore(number, professor) is None:
+	if not check_professor_teaches_class(professor, number):
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'del_class_from_prof', 'Professor': professor,
 		'Number': number})
@@ -297,12 +298,10 @@ def add_student(username, password, year, major, work, diff, fun, know):
 		return
 	if students.count({'Username': username}) != 0:
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'add_student', 'Username': str(username),
 		'Password': str(password), 'Year': str(year), 'Major': str(major), 'DesWork': str(work),
 		'DesDiff': str(diff), 'DesFun': str(fun), 'DesKnow': str(know)})
-
 	return log
 
 
@@ -323,42 +322,36 @@ def edit_student_username(username, new_username):
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_username', 'Username': username,
 		'New_Username': new_username})
-
 	return log
 
 
 def edit_student_password(username, new_password):
 	if students.count({'Username': username}) <= 0:
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_password', 'Username': username,
 		'Password': str(new_password)})
-
 	return log
 
 
 def edit_student_year(username, new_year):
 	if students.count({'Username': username}) <= 0:
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_year', 'Username': username,
 		'Year': str(new_year)})
-
 	return log
 
 
 def edit_student_major(username, new_major):
 	if students.count({'Username': username}) <= 0:
 		return
-
 	log = logs.insert_one({
 		'mongo': 0, 'redis': 0, 'orient': 0, 'type': 'edit_student_major', 'Username': username,
 		'Major': str(new_major)})
-
 	return log
-	
+
+
 def edit_student_desires(username, work, diff, fun, know):
 	if SQLInjectionCheck(username):
 		print("usernames cannot contain special characters")
