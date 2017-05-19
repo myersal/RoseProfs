@@ -38,11 +38,9 @@ class Completer(object):
 
 		if not line:
 			if command == 1:
-				print('hereP')
 				list = conn.zrange('professors', 0, -1)
 				return list[state]
 			if command == 2:
-				print('here')
 				list = conn.zrange('classes', 0, -1)
 				return list[state]
 			list = [bufferr] + [None]
